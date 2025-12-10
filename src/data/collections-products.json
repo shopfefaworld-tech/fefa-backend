@@ -1,0 +1,452 @@
+[
+  {
+    "id": "1",
+    "name": "Diamond Teardrop Earrings",
+    "price": 249.99,
+    "originalPrice": 299.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100829/fefa-jewelry/products/product/product-1.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100826/fefa-jewelry/products/product/product-1-hover.jpg"
+    ],
+    "slug": "diamond-teardrop-earrings",
+    "category": "earrings",
+    "occasions": [
+      "wedding",
+      "formal",
+      "party"
+    ],
+    "isNew": true,
+    "description": "Elegant diamond teardrop earrings crafted with precision. These stunning earrings feature high-quality diamonds set in 18k gold, creating a timeless piece that adds sophistication to any outfit.",
+    "details": [
+      "Material: 18k Gold",
+      "Stone: Diamond",
+      "Total Carat Weight: 0.5ct",
+      "Closure: Leverback"
+    ],
+    "sizes": [
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": {
+      "Small": 15,
+      "Medium": 8,
+      "Large": 12
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "2",
+    "name": "Gold Chain Necklace",
+    "price": 189.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100833/fefa-jewelry/products/product/product-2.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100831/fefa-jewelry/products/product/product-2-hover.jpg"
+    ],
+    "slug": "gold-chain-necklace",
+    "category": "necklaces",
+    "occasions": [
+      "casual",
+      "party",
+      "gift"
+    ],
+    "isBestSeller": true,
+    "description": "A delicate gold chain necklace that adds a touch of elegance to any outfit. This versatile piece can be worn alone for a minimalist look or layered with other necklaces for a more statement style.",
+    "details": [
+      "Material: 14k Gold",
+      "Length: 18 inches",
+      "Clasp: Lobster Clasp",
+      "Weight: 3.5g"
+    ],
+    "sizes": [
+      "16 inches",
+      "18 inches",
+      "20 inches",
+      "22 inches"
+    ],
+    "stock": {
+      "16 inches": 5,
+      "18 inches": 20,
+      "20 inches": 10,
+      "22 inches": 7
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "3",
+    "name": "Pearl Stud Earrings",
+    "price": 129.99,
+    "originalPrice": 159.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100837/fefa-jewelry/products/product/product-3.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100835/fefa-jewelry/products/product/product-3-hover.jpg"
+    ],
+    "slug": "pearl-stud-earrings",
+    "category": "earrings",
+    "occasions": [
+      "formal",
+      "wedding",
+      "anniversary"
+    ],
+    "description": "Classic pearl stud earrings that never go out of style. These elegant pieces feature lustrous pearls set in sterling silver, perfect for both professional and special occasions.",
+    "details": [
+      "Material: Sterling Silver",
+      "Pearl: Freshwater Pearl",
+      "Size: 8mm",
+      "Closure: Post & Butterfly"
+    ],
+    "sizes": [
+      "6mm",
+      "8mm",
+      "10mm"
+    ],
+    "stock": {
+      "6mm": 25,
+      "8mm": 18,
+      "10mm": 12
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "4",
+    "name": "Twisted Gold Bangle",
+    "price": 179.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100840/fefa-jewelry/products/product/product-4.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100839/fefa-jewelry/products/product/product-4-hover.jpg"
+    ],
+    "slug": "twisted-gold-bangle",
+    "category": "bangles",
+    "occasions": [
+      "casual",
+      "festival",
+      "gift"
+    ],
+    "description": "A beautifully twisted gold bangle that adds a modern twist to traditional jewelry. The unique design makes it a statement piece that can be worn alone or stacked with other bangles.",
+    "details": [
+      "Material: 14k Gold",
+      "Width: 8mm",
+      "Diameter: 6.5cm",
+      "Weight: 12g"
+    ],
+    "sizes": [
+      "Small (6cm)",
+      "Medium (6.5cm)",
+      "Large (7cm)"
+    ],
+    "stock": {
+      "Small (6cm)": 8,
+      "Medium (6.5cm)": 15,
+      "Large (7cm)": 10
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "5",
+    "name": "Sapphire Pendant",
+    "price": 299.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100844/fefa-jewelry/products/product/product-5.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100842/fefa-jewelry/products/product/product-5-hover.jpg"
+    ],
+    "slug": "sapphire-pendant",
+    "category": "necklaces",
+    "occasions": [
+      "formal",
+      "anniversary",
+      "birthday"
+    ],
+    "description": "A stunning sapphire pendant that captures the essence of elegance. The deep blue sapphire is set in a delicate gold frame, creating a piece that's both timeless and contemporary.",
+    "details": [
+      "Material: 18k Gold",
+      "Stone: Blue Sapphire",
+      "Carat Weight: 0.75ct",
+      "Chain Length: 18 inches"
+    ],
+    "sizes": [
+      "16 inches",
+      "18 inches",
+      "20 inches"
+    ],
+    "stock": {
+      "16 inches": 6,
+      "18 inches": 12,
+      "20 inches": 8
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "6",
+    "name": "Diamond Engagement Ring",
+    "price": 1299.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100847/fefa-jewelry/products/product/product-6.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100846/fefa-jewelry/products/product/product-6-hover.jpg"
+    ],
+    "slug": "diamond-engagement-ring",
+    "category": "rings",
+    "occasions": [
+      "engagement",
+      "wedding",
+      "anniversary"
+    ],
+    "description": "A breathtaking diamond engagement ring that symbolizes eternal love. This classic solitaire design features a brilliant cut diamond in a four-prong setting, ensuring maximum sparkle and security.",
+    "details": [
+      "Material: 18k Gold",
+      "Diamond: Round Brilliant Cut",
+      "Carat Weight: 0.5ct",
+      "Setting: Four Prong"
+    ],
+    "sizes": [
+      "Size 5",
+      "Size 6",
+      "Size 7",
+      "Size 8",
+      "Size 9"
+    ],
+    "stock": {
+      "Size 5": 3,
+      "Size 6": 5,
+      "Size 7": 8,
+      "Size 8": 6,
+      "Size 9": 4
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "7",
+    "name": "Gold Hoop Earrings",
+    "price": 149.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100850/fefa-jewelry/products/product/product-7.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100849/fefa-jewelry/products/product/product-7-hover.jpg"
+    ],
+    "slug": "gold-hoop-earrings",
+    "category": "earrings",
+    "occasions": [
+      "casual",
+      "party",
+      "gift"
+    ],
+    "description": "Versatile gold hoop earrings that complement any outfit. These classic hoops feature a smooth finish and comfortable fit, making them perfect for everyday wear.",
+    "details": [
+      "Material: 14k Gold",
+      "Diameter: 25mm",
+      "Thickness: 2mm",
+      "Closure: Hinged"
+    ],
+    "sizes": [
+      "20mm",
+      "25mm",
+      "30mm"
+    ],
+    "stock": {
+      "20mm": 20,
+      "25mm": 30,
+      "30mm": 15
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  },
+  {
+    "id": "8",
+    "name": "Silver Charm Bracelet",
+    "price": 119.99,
+    "images": [
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100854/fefa-jewelry/products/product/product-8.jpg",
+      "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100852/fefa-jewelry/products/product/product-8-hover.jpg"
+    ],
+    "slug": "silver-charm-bracelet",
+    "category": "bangles",
+    "occasions": [
+      "casual",
+      "birthday",
+      "gift"
+    ],
+    "description": "A charming silver bracelet adorned with delicate charms. This piece tells a story with its carefully selected charms, making it a meaningful gift or personal keepsake.",
+    "details": [
+      "Material: Sterling Silver",
+      "Length: 7 inches",
+      "Charms: 5 pieces",
+      "Clasp: Lobster Clasp"
+    ],
+    "sizes": [
+      "6 inches",
+      "7 inches",
+      "8 inches"
+    ],
+    "stock": {
+      "6 inches": 12,
+      "7 inches": 18,
+      "8 inches": 14
+    },
+    "pincodeDelivery": {
+      "110001": {
+        "available": true,
+        "deliveryTime": "2-3 days"
+      },
+      "400001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "560001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      },
+      "600001": {
+        "available": true,
+        "deliveryTime": "3-4 days"
+      },
+      "700001": {
+        "available": true,
+        "deliveryTime": "4-5 days"
+      }
+    }
+  }
+]

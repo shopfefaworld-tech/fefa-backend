@@ -1,0 +1,32 @@
+[
+  {
+    "name": "NECK SET",
+    "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100825/fefa-jewelry/categories/category/necklaces.jpg",
+    "slug": "neck-set"
+  },
+  {
+    "name": "EARRINGS",
+    "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100821/fefa-jewelry/categories/category/earrings.jpg",
+    "slug": "earrings"
+  },
+  {
+    "name": "FINGER RINGS",
+    "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100856/fefa-jewelry/categories/category/rings.jpg",
+    "slug": "finger-rings"
+  },
+  {
+    "name": "BANGLES",
+    "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100811/fefa-jewelry/categories/category/bangles.jpg",
+    "slug": "bangles"
+  },
+  {
+    "name": "BRACELETS",
+    "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100812/fefa-jewelry/categories/category/braceletts.jpg",
+    "slug": "bracelets"
+  },
+  {
+    "name": "CHAINS",
+    "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100819/fefa-jewelry/categories/category/chains.jpg",
+    "slug": "chains"
+  }
+]
