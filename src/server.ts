@@ -34,6 +34,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy - REQUIRED for Vercel and other reverse proxies
+// This allows Express to properly read X-Forwarded-For headers
+app.set('trust proxy', true);
+
 // CORS configuration - MUST be before other middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
