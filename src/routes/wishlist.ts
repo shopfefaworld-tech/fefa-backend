@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import mongoose from 'mongoose';
 import Wishlist, { IWishlist, IWishlistItem } from '../models/Wishlist';
 import Product from '../models/Product';
 import { verifyToken, AuthRequest } from '../middleware/auth';
@@ -77,23 +78,38 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response) => {
     const userId = req.user?._id;
     const { productId, variantId, notes } = req.body;
 
+    // Log request for debugging
+    console.log('[Wishlist] Add request:', { userId, productId, variantId, body: req.body });
+
     if (!productId) {
+      console.error('[Wishlist] Missing productId in request body');
       return res.status(400).json({
         success: false,
         message: 'Product ID is required'
       });
     }
 
+    // Validate productId format (should be a valid MongoDB ObjectId)
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      console.error('[Wishlist] Invalid productId format:', productId);
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format'
+      });
+    }
+
     // Verify product exists and is active
     const product = await Product.findById(productId);
     if (!product) {
+      console.error('[Wishlist] Product not found:', productId);
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: `Product not found with ID: ${productId}`
       });
     }
 
     if (!product.isActive) {
+      console.error('[Wishlist] Product is inactive:', productId);
       return res.status(400).json({
         success: false,
         message: 'Product is not available'
@@ -127,6 +143,7 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response) => {
     );
 
     if (existingItem) {
+      console.log('[Wishlist] Item already exists in wishlist:', productId);
       return res.status(400).json({
         success: false,
         message: 'Item already in wishlist'
