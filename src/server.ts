@@ -34,6 +34,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy - REQUIRED for Vercel and rate limiting to work correctly
+// This tells Express to trust the X-Forwarded-* headers from Vercel's proxy
+app.set('trust proxy', true);
+
 // CORS configuration - MUST be before other middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
