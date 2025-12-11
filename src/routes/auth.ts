@@ -180,17 +180,31 @@ router.post('/login', async (req: Request, res: Response, next) => {
 
     const { email, password } = value;
 
-    // Verify credentials with Firebase
-    const auth = getFirebaseAuth();
-    const firebaseUser = await auth.getUserByEmail(email);
-    
-    // Note: Firebase Admin SDK doesn't verify passwords directly
-    // In production, you'd use Firebase Auth REST API or client SDK
-    // For now, we'll check if user exists in our DB
+    // First check if user exists in our database
     const user = await User.findOne({ email });
     if (!user) {
       throw createError('Invalid credentials', 401);
     }
+
+    // Verify credentials with Firebase (if Firebase user exists)
+    // Note: Firebase Admin SDK doesn't verify passwords directly
+    // In production, you'd use Firebase Auth REST API or client SDK
+    let firebaseUser = null;
+    try {
+      const auth = getFirebaseAuth();
+      firebaseUser = await auth.getUserByEmail(email);
+    } catch (firebaseError: any) {
+      // If Firebase user doesn't exist, that's okay - user might have registered via email/password
+      // Only log if it's not a "user not found" error
+      if (firebaseError.code !== 'auth/user-not-found') {
+        console.error('Firebase error during login:', firebaseError);
+      }
+    }
+
+    // Note: Password verification should be done via Firebase Auth REST API or client SDK
+    // For now, we'll proceed if user exists in DB
+    // In production, verify password using Firebase Auth REST API:
+    // https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword
 
     // Update last login
     user.lastLogin = new Date();

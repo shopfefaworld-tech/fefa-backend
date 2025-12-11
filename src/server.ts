@@ -179,6 +179,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Test route to verify routing works
+app.get('/api/test', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Test route works!',
+    url: req.url,
+    originalUrl: req.originalUrl
+  });
+});
+
 // API routes
 app.use('/api/auth', authRateLimit, authRoutes);
 app.use('/api/products', productRoutes);
