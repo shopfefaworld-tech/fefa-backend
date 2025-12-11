@@ -76,22 +76,49 @@ const ensureInitialized = async (): Promise<void> => {
 export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     // Ensure services are initialized before handling request
-    await ensureInitialized();
+    // Don't fail if initialization has errors - let Express handle the request
+    try {
+      await ensureInitialized();
+    } catch (initError) {
+      console.error('[Vercel] Initialization warning:', initError);
+      // Continue anyway - some endpoints might work without all services
+    }
     
     // Log the request path for debugging
     console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
     
+    // Set timeout for the request
+    const timeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(504).json({
+          success: false,
+          error: 'Request timeout'
+        });
+      }
+    }, 25000); // 25 second timeout (Vercel limit is 30s)
+    
     // Pass request to Express app
     // Express will handle routing including root /
-    return app(req, res);
+    app(req, res);
+    
+    // Clear timeout when response is sent
+    res.on('finish', () => {
+      clearTimeout(timeout);
+    });
+    
   } catch (error) {
     console.error('[Vercel] Serverless function error:', error);
     // Return error response instead of crashing
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+        ...(process.env.NODE_ENV === 'development' && { 
+          stack: error instanceof Error ? error.stack : undefined 
+        })
+      });
+    }
   }
 };
 

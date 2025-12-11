@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 // Import configurations
 import { connectDB } from './config/database';
@@ -148,13 +149,15 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Health check endpoint
+// Health check endpoint (no database required)
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     message: 'Fefa Jewelry API is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    vercel: !!process.env.VERCEL,
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 
@@ -163,7 +166,9 @@ app.get('/api/health', (req, res) => {
     status: 'OK',
     message: 'Fefa Jewelry API is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    vercel: !!process.env.VERCEL,
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 

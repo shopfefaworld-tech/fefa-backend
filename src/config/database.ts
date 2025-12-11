@@ -2,10 +2,18 @@ import mongoose from 'mongoose';
 
 export const connectDB = async (): Promise<void> => {
   try {
+    // Check if already connected
+    if (mongoose.connection.readyState === 1) {
+      console.log('MongoDB already connected');
+      return;
+    }
+
     const mongoURI = process.env.MONGODB_URI;
     
     if (!mongoURI) {
-      throw new Error('MONGODB_URI is not defined in environment variables');
+      const error = new Error('MONGODB_URI is not defined in environment variables');
+      console.error('MongoDB connection failed:', error.message);
+      throw error;
     }
 
     const options = {
@@ -19,26 +27,30 @@ export const connectDB = async (): Promise<void> => {
     
     console.log('MongoDB connected successfully');
     
-    // Handle connection events
-    mongoose.connection.on('error', (err) => {
-      console.error('MongoDB connection error:', err);
-    });
+    // Handle connection events (only register once)
+    if (!mongoose.connection.listeners('error').length) {
+      mongoose.connection.on('error', (err) => {
+        console.error('MongoDB connection error:', err);
+      });
 
-    mongoose.connection.on('disconnected', () => {
-      console.log('MongoDB disconnected');
-    });
+      mongoose.connection.on('disconnected', () => {
+        console.log('MongoDB disconnected');
+      });
 
-    mongoose.connection.on('reconnected', () => {
-      console.log('MongoDB reconnected');
-    });
+      mongoose.connection.on('reconnected', () => {
+        console.log('MongoDB reconnected');
+      });
+    }
 
   } catch (error) {
     console.error('MongoDB connection failed:', error);
     // Don't exit process in serverless - let it continue and retry on next request
-    if (process.env.VERCEL) {
-      throw error; // Re-throw for serverless to handle gracefully
+    if (process.env.VERCEL || process.env.VERCEL_ENV) {
+      // In serverless, just throw the error to be caught by caller
+      throw error;
     } else {
-      process.exit(1); // Only exit in regular server mode
+      // Only exit in regular server mode
+      process.exit(1);
     }
   }
 };
