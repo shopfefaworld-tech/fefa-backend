@@ -79,9 +79,6 @@ const corsOptions = {
 // Apply CORS to all routes FIRST - handles OPTIONS preflight automatically
 app.use(cors(corsOptions));
 
-// Explicitly handle OPTIONS requests for all routes (backup for CORS)
-app.options('*', cors(corsOptions));
-
 // Security middleware (configured to not interfere with CORS)
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
