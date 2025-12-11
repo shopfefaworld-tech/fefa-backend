@@ -72,8 +72,60 @@ app.use(morgan('combined'));
 // Apply general rate limiting to all routes
 app.use(generalRateLimit);
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Fefa Jewelry API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      users: '/api/users',
+      cart: '/api/cart',
+      orders: '/api/orders',
+      categories: '/api/categories',
+      banners: '/api/banners',
+      wishlist: '/api/wishlist',
+      reviews: '/api/reviews'
+    },
+    documentation: 'Visit /api/health for API status'
+  });
+});
+
+// API root endpoint
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Fefa Jewelry API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      users: '/api/users',
+      cart: '/api/cart',
+      orders: '/api/orders',
+      categories: '/api/categories',
+      banners: '/api/banners',
+      wishlist: '/api/wishlist',
+      reviews: '/api/reviews'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Fefa Jewelry API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     message: 'Fefa Jewelry API is running',
