@@ -47,6 +47,28 @@ const resetPasswordSchema = Joi.object({
   newPassword: Joi.string().min(6).required(),
 });
 
+// Root auth endpoint - provides info about available auth endpoints
+router.get('/', (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: 'Authentication API',
+    endpoints: {
+      register: 'POST /api/auth/register',
+      'register-email': 'POST /api/auth/register-email',
+      login: 'POST /api/auth/login',
+      google: 'POST /api/auth/google',
+      'forgot-password': 'POST /api/auth/forgot-password',
+      'reset-password': 'POST /api/auth/reset-password',
+      me: 'GET /api/auth/me',
+      profile: 'PUT /api/auth/profile',
+      'addresses-create': 'POST /api/auth/addresses',
+      'addresses-update': 'PUT /api/auth/addresses/:id',
+      'addresses-delete': 'DELETE /api/auth/addresses/:id',
+      logout: 'POST /api/auth/logout'
+    }
+  });
+});
+
 // Helper function to generate JWT tokens
 const generateTokens = (userId: string) => {
   const accessToken = jwt.sign(
