@@ -44,14 +44,24 @@ const allowedOrigins = [
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      console.log(`CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
+    if (!origin) {
+      return callback(null, true);
     }
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Allow in development mode
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    
+    // Log blocked origins for debugging
+    console.log(`CORS blocked origin: ${origin}`);
+    console.log(`Allowed origins:`, allowedOrigins);
+    callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -61,29 +71,7 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 
-// Handle OPTIONS requests FIRST - before any other middleware
-// Use middleware instead of app.options('*') since Express doesn't support '*' pattern
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    const origin = req.headers.origin;
-    
-    if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
-      res.header('Access-Control-Allow-Origin', origin);
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Max-Age', '86400'); // 24 hours
-      res.status(204).send();
-      return;
-    }
-    
-    res.status(204).send();
-    return;
-  }
-  next();
-});
-
-// Apply CORS to all routes
+// Apply CORS to all routes FIRST - handles OPTIONS preflight automatically
 app.use(cors(corsOptions));
 
 // Security middleware (configured to not interfere with CORS)
