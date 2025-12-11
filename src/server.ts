@@ -38,37 +38,42 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://fefa-frontend.vercel.app',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'http://localhost:3001'
 ].filter(Boolean);
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, curl requests, or same-origin requests)
     if (!origin) {
       return callback(null, true);
     }
     
-    // Check if origin is in allowed list
-    if (allowedOrigins.includes(origin)) {
+    // Normalize origin (remove trailing slash if present)
+    const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+    
+    // Check if origin (normalized or original) is in allowed list
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
     
     // Allow in development mode
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
       return callback(null, true);
     }
     
     // Log blocked origins for debugging
-    console.log(`CORS blocked origin: ${origin}`);
-    console.log(`Allowed origins:`, allowedOrigins);
+    console.log(`[CORS] Blocked origin: ${origin}`);
+    console.log(`[CORS] Allowed origins:`, allowedOrigins);
     callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
   exposedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
+  maxAge: 86400 // 24 hours - cache preflight requests
 };
 
 // Apply CORS to all routes FIRST - handles OPTIONS preflight automatically
@@ -90,6 +95,11 @@ app.use(compression());
 
 // Logging middleware
 app.use(morgan('combined'));
+
+// Favicon handler - prevent 404/500 errors from browser favicon requests
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
 
 // Root endpoint - MUST be before rate limiting to catch root requests
 app.get('/', (req, res) => {
