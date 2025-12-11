@@ -88,24 +88,33 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     }
     
     // Log the request path for debugging
-    const originalUrl = req.url || '/';
-    console.log(`[Vercel] Handling request: ${req.method} ${originalUrl}`);
-    console.log(`[Vercel] Request URL: ${req.url}, Query: ${JSON.stringify(req.query)}`);
+    let requestUrl = req.url || '/';
+    console.log(`[Vercel] Raw request URL: ${requestUrl}`);
     
-    // Vercel routes /api/* requests to api/index.ts
-    // The req.url should already contain the full path (e.g., /api/users)
-    // Ensure originalUrl is set for Express routing (Express uses this for route matching)
-    if (!(req as any).originalUrl) {
-      (req as any).originalUrl = originalUrl;
-    }
-    // Also ensure req.url is set correctly
-    if (!(req as any).url) {
-      (req as any).url = originalUrl;
+    // CRITICAL FIX: When Vercel routes /api/* to api/index.ts, it may strip the /api prefix
+    // OR it may pass the full path. We need to handle both cases.
+    // Check if URL starts with /api - if not, and it's an API route, prepend /api
+    if (!requestUrl.startsWith('/api')) {
+      // Check if this looks like an API route that should have /api prefix
+      const apiRoutePatterns = ['/auth', '/users', '/products', '/cart', '/orders', 
+                                '/categories', '/banners', '/wishlist', '/reviews', '/health'];
+      const isApiRoute = apiRoutePatterns.some(pattern => 
+        requestUrl === pattern || requestUrl.startsWith(pattern + '/')
+      );
+      
+      if (isApiRoute || requestUrl !== '/') {
+        requestUrl = '/api' + requestUrl;
+        console.log(`[Vercel] Adjusted URL from ${req.url} to ${requestUrl}`);
+      }
     }
     
-    // Log Express app state for debugging
+    // Set both url and originalUrl for Express routing
+    // Express uses originalUrl for route matching, url for internal routing
+    (req as any).url = requestUrl;
+    (req as any).originalUrl = requestUrl;
+    
+    console.log(`[Vercel] Final URL for Express: ${requestUrl}`);
     console.log(`[Vercel] Express app type: ${typeof app}, is function: ${typeof app === 'function'}`);
-    console.log(`[Vercel] Final URL: ${(req as any).url}, Original URL: ${(req as any).originalUrl}`);
     
     // Verify app is callable
     if (typeof app !== 'function') {
@@ -118,6 +127,24 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         });
       }
       return;
+    }
+    
+    // Debug: Log available routes (if possible)
+    try {
+      const routes = (app as any)._router?.stack;
+      if (routes) {
+        console.log(`[Vercel] Express has ${routes.length} registered routes`);
+        // Log first few routes for debugging
+        routes.slice(0, 5).forEach((route: any, idx: number) => {
+          if (route.route) {
+            console.log(`[Vercel] Route ${idx}: ${Object.keys(route.route.methods).join(',')} ${route.route.path}`);
+          } else if (route.regexp) {
+            console.log(`[Vercel] Middleware ${idx}: ${route.name || 'anonymous'}`);
+          }
+        });
+      }
+    } catch (e) {
+      console.log('[Vercel] Could not inspect routes:', e);
     }
     
     // Pass request to Express app directly
