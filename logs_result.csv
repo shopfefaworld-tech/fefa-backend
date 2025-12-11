@@ -1,767 +1,533 @@
 TimeUTC,timestampInMs,requestPath,requestMethod,requestQueryString,responseStatusCode,requestId,requestUserAgent,level,environment,branch,vercelCache,type,function,host,deploymentDomain,deploymentId,durationMs,region,maxMemoryUsed,memorySize,message,projectId,traceId,sessionId,invocationId,instanceId,concurrency
-2025-12-11 07:37:35,1765438655002,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,czwvx-1765438653497-571de9e54c17,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:33,1765438653497,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,czwvx-1765438653497-571de9e54c17,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1451,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65G133T7QK231FCDR8EGRW,,-1
-2025-12-11 07:37:31,1765438651385,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,qsvqz-1765438649924-85db5a175566,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:29,1765438649924,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,qsvqz-1765438649924-85db5a175566,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1405,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FXKDDERCWGMVH2Z101XZ,,-1
-2025-12-11 07:37:28,1765438648824,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,cgpsm-1765438647357-780419d24ef6,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:27,1765438647357,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,cgpsm-1765438647357-780419d24ef6,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1414,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FV326SYVHASTM1FGDHDB,,-1
-2025-12-11 07:37:27,1765438647322,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,dscdr-1765438645833-61740055c59e,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:25,1765438645833,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,dscdr-1765438645833-61740055c59e,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1437,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FSKD9JGM9HZME745MW0H,,-1
-2025-12-11 07:37:24,1765438644973,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,72nx8-1765438643414-4a1e90229433,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:23,1765438643414,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,72nx8-1765438643414-4a1e90229433,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1440,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FQ9TZ645CYKHXADEV9JK,,-1
-2025-12-11 07:37:23,1765438643774,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,jjn67-1765438642260-ac1dd2fec44f,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:22,1765438642260,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,jjn67-1765438642260-ac1dd2fec44f,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1450,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FP41X3XBMXJQ3AW3P7BK,,-1
-2025-12-11 07:37:23,1765438643186,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cfbv7-1765438641378-384763e9d8e6,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:21,1765438641378,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cfbv7-1765438641378-384763e9d8e6,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1438,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FNJ4EN74WF6BZ1CYEFSS,,-1
-2025-12-11 07:37:21,1765438641126,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,hdhdl-1765438639577-522827f0528b,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:19,1765438639577,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,hdhdl-1765438639577-522827f0528b,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1496,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FKFZ7CBR3RN6RQQKZCTN,,-1
-2025-12-11 07:37:19,1765438639463,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,xb8f4-1765438637882-fb2d30de8e3f,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:17,1765438637882,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,xb8f4-1765438637882-fb2d30de8e3f,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1528,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FHTZ4D9N6MAM3WE0C57Y,,-1
-2025-12-11 07:37:17,1765438637590,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,4nnp8-1765438636105-35e08d1dcfc8,vercel-screenshot/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:16,1765438636105,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,4nnp8-1765438636105-35e08d1dcfc8,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1435,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FG3EPPGR67T77GHSM82A,,-1
-2025-12-11 07:37:17,1765438637354,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,,rc7wh-1765438635871-d693b42dbf27,vercel-screenshot/1.0,error,production,main,,serverless,,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:15,1765438635871,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,,rc7wh-1765438635871-d693b42dbf27,vercel-screenshot/1.0,,production,main,,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1436,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FFW3S5ETVEX1Q53ZRFJA,,-1
-2025-12-11 07:37:16,1765438636806,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,l4jg9-1765438635090-bc1f17ca15ff,vercel-favicon/1.0,error,production,main,,serverless,,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:15,1765438635090,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,l4jg9-1765438635090-bc1f17ca15ff,vercel-favicon/1.0,,production,main,,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1667,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FF3NJ10X0SBVW9307J9B,,-1
-2025-12-11 07:37:16,1765438636048,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,sqwtx-1765438634501-737c9be0c19e,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:14,1765438634501,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,sqwtx-1765438634501-737c9be0c19e,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1490,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FEHBWM6Z9GFBWGJCT3NG,,-1
-2025-12-11 07:37:15,1765438635807,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,kf5kf-1765438634228-f12bbe4da713,vercel-screenshot/1.0,error,production,main,,serverless,,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:14,1765438634228,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,kf5kf-1765438634228-f12bbe4da713,vercel-screenshot/1.0,,production,main,,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1433,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FEBKY3KM604W8KWRB88W,,-1
-2025-12-11 07:37:15,1765438635486,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,t72s4-1765438632543-01236c9bdb8d,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"gexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:12,1765438632543,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,t72s4-1765438632543-01236c9bdb8d,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1196,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FCQ24GR1HY8S4W38XHRY,,-1
-2025-12-11 07:37:15,1765438635209,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cr7q2-1765438632038-33461344118f,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"ath-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:12,1765438632038,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cr7q2-1765438632038-33461344118f,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1379,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FC4980KDFP3YA0PRBGSG,,-1
-2025-12-11 07:37:14,1765438634397,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,fszl9-1765438631043-e6c266683699,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:11,1765438631043,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,fszl9-1765438631043-e6c266683699,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1488,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB561V6B3HB1TQMWB4QF,,-1
-2025-12-11 07:37:14,1765438634125,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,vkdbc-1765438631022-38b47ce90bfc,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"ist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:11,1765438631022,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,vkdbc-1765438631022-38b47ce90bfc,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1310,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB7DHHR4HWWT38F29CC6,,-1
-2025-12-11 07:37:14,1765438634192,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,g5dw8-1765438630699-53a028cdae05,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:10,1765438630699,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,g5dw8-1765438630699-53a028cdae05,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1463,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB07Y8ABGF8WCNA9ND85,,-1
-2025-12-11 07:37:14,1765438634244,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,9xjsq-1765438630671-7e7ae1767aab,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"ist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
-    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
-    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
-    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
-    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
-    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
-    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
-    at A.l._compile (/opt/rust/bytecode.js:2:3182)
-    at Object..js (node:internal/modules/cjs/loader:1893:10)
-    at Module.load (node:internal/modules/cjs/loader:1480:32)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
-  code: 'ERR_ERL_KEY_GEN_IPV6',
-  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
-}
-[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-(Use `node --trace-warnings ...` to show where the warning was created)
-(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
-[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
-PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
-    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
-    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
-    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
-    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
-    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
-    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
-    at router.route (/var/task/node_modules/router/index.js:428:17)
-    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
-    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
-    at Object.<anonymous> (/var/task/src/server.js:56:5) {
-  originalPath: '*'
-}
-Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
-2025-12-11 07:37:10,1765438630671,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,9xjsq-1765438630671-7e7ae1767aab,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1457,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB07Y8ABGF8WCHMAG53X,,-1
+2025-12-11 08:14:05,1765440845417,fefa-backend.vercel.app/favicon.ico,GET,,204,pdzww-1765440845304-24c9eea74bc7,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:14:05 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""-"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:14:05,1765440845304,fefa-backend.vercel.app/favicon.ico,GET,,204,pdzww-1765440845304-24c9eea74bc7,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,5,iad1,298,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67JXJSSJXNC1GWRFDVN4CS,AXko2fEkr81U,1
+2025-12-11 08:14:05,1765440845144,fefa-backend.vercel.app/,GET,,304,pdzww-1765440845028-861aa3f0d16f,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:14:05 +0000] ""GET / HTTP/1.1"" 200 368 ""https://vercel.com/"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:14:05,1765440845028,fefa-backend.vercel.app/,GET,,304,pdzww-1765440845028-861aa3f0d16f,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,9,iad1,298,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67JXA6BETY6FD6J190V7AR,AXko2fEkr81U,1
+2025-12-11 08:13:59,1765440839128,fefa-backend.vercel.app/favicon.ico,GET,,204,9nbjj-1765440838997-de69d5179c27,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:59 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""https://fefa-backend.vercel.app/api/health"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:58,1765440838997,fefa-backend.vercel.app/favicon.ico,GET,,204,9nbjj-1765440838997-de69d5179c27,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,20,iad1,298,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67JQDR59Q5V5WDPFT3BKA8,AXko2fEkr81U,1
+2025-12-11 08:13:49,1765440829811,fefa-backend.vercel.app/favicon.ico,GET,,204,pdzww-1765440829652-2716182c3c93,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:49 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""https://fefa-backend.vercel.app/api/auth"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:49,1765440829652,fefa-backend.vercel.app/favicon.ico,GET,,204,pdzww-1765440829652-2716182c3c93,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,47,iad1,299,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67JE9VSX2YBAJRBRGE91A3,AXko2fEkr81U,1
+2025-12-11 08:13:37,1765440817949,fefa-backend.vercel.app/favicon.ico,GET,,204,rd6c5-1765440817771-71cdf328c829,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:37 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""https://fefa-backend.vercel.app/api/users%22"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:37,1765440817771,fefa-backend.vercel.app/favicon.ico,GET,,204,rd6c5-1765440817771-71cdf328c829,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,57,iad1,361,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67J2PXACA5HP3F67V4NBT9,AXko2fEkr81U,1
+2025-12-11 08:13:35,1765440815893,fefa-backend.vercel.app/favicon.ico,GET,,204,gmd4f-1765440815720-119b7c266818,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:35 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""https://fefa-backend.vercel.app/api/users"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:35,1765440815720,fefa-backend.vercel.app/favicon.ico,GET,,204,gmd4f-1765440815720-119b7c266818,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,66,iad1,361,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67J0PVA5WA9WFJFTPRV3CW,AXko2fEkr81U,1
+2025-12-11 08:13:29,1765440809853,fefa-backend.vercel.app/favicon.ico,GET,,204,rd6c5-1765440809742-2a6373070762,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:29 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""https://fefa-backend.vercel.app/api/users%22"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:29,1765440809742,fefa-backend.vercel.app/favicon.ico,GET,,204,rd6c5-1765440809742-2a6373070762,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,7,iad1,360,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67HTVFVPWQA3ZKWJHX6BH5,AXko2fEkr81U,1
+2025-12-11 08:13:22,1765440802149,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (/var/task/node_modules/express-rate-limit/dist/index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at Object.keyGenerator (/var/task/node_modules/express-rate-limit/dist/index.cjs:740:20)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:801:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802149,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"ValidationError: The 'Forwarded' header (standardized X-Forwarded-For) is set but currently being ignored. Add a custom keyGenerator to use a value from this header. See https://express-rate-limit.github.io/ERR_ERL_FORWARDED_HEADER/ for more information.
+    at Object.forwardedHeader (/var/task/node_modules/express-rate-limit/dist/index.cjs:381:13)
+    at wrappedValidations.<computed> [as forwardedHeader] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at Object.keyGenerator (/var/task/node_modules/express-rate-limit/dist/index.cjs:741:20)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:801:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5 {
+  code: 'ERR_ERL_FORWARDED_HEADER',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_FORWARDED_HEADER/'
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802149,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802149,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802149,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.(Use `node --trace-warnings ...` to show where the warning was created)",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802149,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802153,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802153,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802169,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802169,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802256,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802256,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802457,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802457,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802759,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:22,1765440802759,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:23,1765440803161,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:23,1765440803161,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:23,1765440803662,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:23,1765440803662,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804189,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,MongoDB connected successfully,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804189,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,✅ Connected to MongoDB,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804189,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"⚠️ Redis is disabled, using fallback mode",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804189,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"⚠️ Redis unavailable, using in-memory caching",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804254,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,Firebase Admin SDK initialized successfully,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804254,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,✅ Firebase initialized,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804254,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,✅ Cloudinary initialized,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804270,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804270,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804971,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:24,1765440804971,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:25,1765440805773,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:25,1765440805773,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:26,1765440806674,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:26,1765440806674,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,❌ Redis connection failed after 10 retries,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Failed to connect to Redis: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807676,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"Error: Error: Not Found - /favicon.png
+    at notFound (/var/task/src/middleware/notFound.js:5:19)
+    at Layer.handleRequest (/var/task/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/var/task/node_modules/router/index.js:342:13)
+    at /var/task/node_modules/router/index.js:297:9
+    at processParams (/var/task/node_modules/router/index.js:582:12)
+    at next (/var/task/node_modules/router/index.js:291:5)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:899:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:27,1765440807679,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:27 +0000] ""GET /favicon.png HTTP/1.1"" 500 717 ""-"" ""vercel-favicon/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:20,1765440800698,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,bwmb7-1765440800698-f91a072750f1,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,6802,iad1,358,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67HHZ2VDQQ27G9Q9ZS5DJ5,AXko2fEkr81U,1
+2025-12-11 08:13:13,1765440793052,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (/var/task/node_modules/express-rate-limit/dist/index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at Object.keyGenerator (/var/task/node_modules/express-rate-limit/dist/index.cjs:740:20)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:801:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793052,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"ValidationError: The 'Forwarded' header (standardized X-Forwarded-For) is set but currently being ignored. Add a custom keyGenerator to use a value from this header. See https://express-rate-limit.github.io/ERR_ERL_FORWARDED_HEADER/ for more information.
+    at Object.forwardedHeader (/var/task/node_modules/express-rate-limit/dist/index.cjs:381:13)
+    at wrappedValidations.<computed> [as forwardedHeader] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at Object.keyGenerator (/var/task/node_modules/express-rate-limit/dist/index.cjs:741:20)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:801:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5 {
+  code: 'ERR_ERL_FORWARDED_HEADER',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_FORWARDED_HEADER/'
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793052,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"MongoDB connection failed: MongooseServerSelectionError: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/    at _handleConnectionErrors (/var/task/node_modules/mongoose/lib/connection.js:1165:11)    at NativeConnection.openUri (/var/task/node_modules/mongoose/lib/connection.js:1096:11)    at runNextTicks (node:internal/process/task_queues:65:5)    at process.processTimers (node:internal/timers:540:9)    at async connectDB (/var/task/src/config/database.js:26:9)    at async initializeServices (/var/task/src/server.js:153:9) {  errorLabelSet: Set(0) {},  reason: TopologyDescription {    type: 'ReplicaSetNoPrimary',    servers: Map(3) {      'ac-siarlti-shard-00-00.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-01.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-02.7us1awh.mongodb.net:27017' => [ServerDescription]    },    stale: false,    compatible: true,    heartbeatFrequencyMS: 10000,    localThresholdMS: 15,    setName: 'atlas-x5gh51-shard-0',    maxElectionId: null,    maxSetVersion: null,    commonWireVersion: 0,    logicalSessionTimeoutMinutes: null  },  code: undefined,  cause: TopologyDescription {    type: 'ReplicaSetNoPrimary',    servers: Map(3) {      'ac-siarlti-shard-00-00.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-01.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-02.7us1awh.mongodb.net:27017' => [ServerDescription]    },    stale: false,    compatible: true,    heartbeatFrequencyMS: 10000,    localThresholdMS: 15,    setName: 'atlas-x5gh51-shard-0',    maxElectionId: null,    maxSetVersion: null,    commonWireVersion: 0,    logicalSessionTimeoutMinutes: null  }}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793052,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Failed to initialize services: MongooseServerSelectionError: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/    at _handleConnectionErrors (/var/task/node_modules/mongoose/lib/connection.js:1165:11)    at NativeConnection.openUri (/var/task/node_modules/mongoose/lib/connection.js:1096:11)    at runNextTicks (node:internal/process/task_queues:65:5)    at process.processTimers (node:internal/timers:540:9)    at async connectDB (/var/task/src/config/database.js:26:9)    at async initializeServices (/var/task/src/server.js:153:9) {  errorLabelSet: Set(0) {},  reason: TopologyDescription {    type: 'ReplicaSetNoPrimary',    servers: Map(3) {      'ac-siarlti-shard-00-00.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-01.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-02.7us1awh.mongodb.net:27017' => [ServerDescription]    },    stale: false,    compatible: true,    heartbeatFrequencyMS: 10000,    localThresholdMS: 15,    setName: 'atlas-x5gh51-shard-0',    maxElectionId: null,    maxSetVersion: null,    commonWireVersion: 0,    logicalSessionTimeoutMinutes: null  },  code: undefined,  cause: TopologyDescription {    type: 'ReplicaSetNoPrimary',    servers: Map(3) {      'ac-siarlti-shard-00-00.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-01.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-02.7us1awh.mongodb.net:27017' => [ServerDescription]    },    stale: false,    compatible: true,    heartbeatFrequencyMS: 10000,    localThresholdMS: 15,    setName: 'atlas-x5gh51-shard-0',    maxElectionId: null,    maxSetVersion: null,    commonWireVersion: 0,    logicalSessionTimeoutMinutes: null  }}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793052,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Failed to initialize services on Vercel: MongooseServerSelectionError: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/    at _handleConnectionErrors (/var/task/node_modules/mongoose/lib/connection.js:1165:11)    at NativeConnection.openUri (/var/task/node_modules/mongoose/lib/connection.js:1096:11)    at runNextTicks (node:internal/process/task_queues:65:5)    at process.processTimers (node:internal/timers:540:9)    at async connectDB (/var/task/src/config/database.js:26:9)    at async initializeServices (/var/task/src/server.js:153:9) {  errorLabelSet: Set(0) {},  reason: TopologyDescription {    type: 'ReplicaSetNoPrimary',    servers: Map(3) {      'ac-siarlti-shard-00-00.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-01.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-02.7us1awh.mongodb.net:27017' => [ServerDescription]    },    stale: false,    compatible: true,    heartbeatFrequencyMS: 10000,    localThresholdMS: 15,    setName: 'atlas-x5gh51-shard-0',    maxElectionId: null,    maxSetVersion: null,    commonWireVersion: 0,    logicalSessionTimeoutMinutes: null  },  code: undefined,  cause: TopologyDescription {    type: 'ReplicaSetNoPrimary',    servers: Map(3) {      'ac-siarlti-shard-00-00.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-01.7us1awh.mongodb.net:27017' => [ServerDescription],      'ac-siarlti-shard-00-02.7us1awh.mongodb.net:27017' => [ServerDescription]    },    stale: false,    compatible: true,    heartbeatFrequencyMS: 10000,    localThresholdMS: 15,    setName: 'atlas-x5gh51-shard-0',    maxElectionId: null,    maxSetVersion: null,    commonWireVersion: 0,    logicalSessionTimeoutMinutes: null  }}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793058,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793058,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793061,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793061,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793162,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793162,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793364,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793364,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793666,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:13,1765440793666,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:14,1765440794068,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:14,1765440794068,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:14,1765440794569,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:14,1765440794569,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:15,1765440795171,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:15,1765440795171,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:15,1765440795873,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:15,1765440795873,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:16,1765440796675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:16,1765440796675,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:17,1765440797576,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:17,1765440797576,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798577,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,❌ Redis connection failed after 10 retries,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798577,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798578,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798578,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798578,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Failed to connect to Redis: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798578,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798579,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"Error: Error: Not Found - /favicon.png
+    at notFound (/var/task/src/middleware/notFound.js:5:19)
+    at Layer.handleRequest (/var/task/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/var/task/node_modules/router/index.js:342:13)
+    at /var/task/node_modules/router/index.js:297:9
+    at processParams (/var/task/node_modules/router/index.js:582:12)
+    at next (/var/task/node_modules/router/index.js:291:5)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:899:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:18,1765440798580,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:18 +0000] ""GET /favicon.png HTTP/1.1"" 500 717 ""-"" ""vercel-favicon/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:12,1765440792991,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,fvlpz-1765440792991-d29cf29d4a5a,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,5545,iad1,345,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67HAE3QF3YZKRH04MTRVVA,z0d0egeFLhWd,1
+2025-12-11 08:13:13,1765440793046,fefa-backend.vercel.app/favicon.ico,GET,,204,dxw5v-1765440792896-5b5bb98c0cb3,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:13 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""-"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:12,1765440792896,fefa-backend.vercel.app/favicon.ico,GET,,204,dxw5v-1765440792896-5b5bb98c0cb3,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,49,iad1,384,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67HADACRAFMSSKSTERQVTY,xt4ZtGa1M95y,1
+2025-12-11 08:13:12,1765440792722,fefa-backend.vercel.app/,GET,,200,dxw5v-1765440792329-b72a44ccc29d,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:12 +0000] ""GET / HTTP/1.1"" 200 368 ""https://vercel.com/"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:12,1765440792329,fefa-backend.vercel.app/,GET,,200,dxw5v-1765440792329-b72a44ccc29d,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend.vercel.app,fefa-backend.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,79,iad1,384,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67HA2WGFH7GW59MN7A43KD,xt4ZtGa1M95y,1
+2025-12-11 08:13:09,1765440789729,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,qhksr-1765440789623-ad12ffc89cb0,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:09 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""-"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:09,1765440789623,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,qhksr-1765440789623-ad12ffc89cb0,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,2,iad1,382,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H3YV7C4B5GSBNTE8JAS0,xt4ZtGa1M95y,2
+2025-12-11 08:13:09,1765440789437,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,99gx7-1765440788291-0359a085367f,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:09 +0000] ""GET / HTTP/1.1"" 200 368 ""https://fefa-backend-gh5d8eggj-fefas-projects.vercel.app/"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:08,1765440788291,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,99gx7-1765440788291-0359a085367f,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,2,iad1,382,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H3YV7C4B5GSBNTE8JAS0,xt4ZtGa1M95y,2
+2025-12-11 08:13:06,1765440786408,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (/var/task/node_modules/express-rate-limit/dist/index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at Object.keyGenerator (/var/task/node_modules/express-rate-limit/dist/index.cjs:740:20)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:801:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786409,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"ValidationError: The 'Forwarded' header (standardized X-Forwarded-For) is set but currently being ignored. Add a custom keyGenerator to use a value from this header. See https://express-rate-limit.github.io/ERR_ERL_FORWARDED_HEADER/ for more information.
+    at Object.forwardedHeader (/var/task/node_modules/express-rate-limit/dist/index.cjs:381:13)
+    at wrappedValidations.<computed> [as forwardedHeader] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at Object.keyGenerator (/var/task/node_modules/express-rate-limit/dist/index.cjs:741:20)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:801:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5 {
+  code: 'ERR_ERL_FORWARDED_HEADER',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_FORWARDED_HEADER/'
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786414,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786414,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786417,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786417,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786518,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786518,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786720,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786720,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787021,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787021,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787422,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787422,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787628,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,MongoDB connected successfully,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787628,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,✅ Connected to MongoDB,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787628,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"⚠️ Redis is disabled, using fallback mode",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787628,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"⚠️ Redis unavailable, using in-memory caching",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787681,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,Firebase Admin SDK initialized successfully,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787681,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,✅ Firebase initialized,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787681,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,✅ Cloudinary initialized,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787924,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:07,1765440787924,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:08,1765440788525,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:08,1765440788525,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:09,1765440789227,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:09,1765440789227,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:10,1765440790029,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:10,1765440790029,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:10,1765440790931,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:10,1765440790931,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791933,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,❌ Redis connection failed after 10 retries,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791933,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791933,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Redis Client Error: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791933,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791933,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"❌ Failed to connect to Redis: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379
+}",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791933,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,⚠️ Falling back to in-memory caching,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791935,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"Error: Error: Not Found - /favicon.png
+    at notFound (/var/task/src/middleware/notFound.js:5:19)
+    at Layer.handleRequest (/var/task/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/var/task/node_modules/router/index.js:342:13)
+    at /var/task/node_modules/router/index.js:297:9
+    at processParams (/var/task/node_modules/router/index.js:582:12)
+    at next (/var/task/node_modules/router/index.js:291:5)
+    at /var/task/node_modules/express-rate-limit/dist/index.cjs:899:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /var/task/node_modules/express-rate-limit/dist/index.cjs:782:5",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:11,1765440791935,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:11 +0000] ""GET /favicon.png HTTP/1.1"" 500 717 ""-"" ""vercel-favicon/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786361,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.png,GET,,500,9tl8s-1765440786361-1f9dad10de72,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,5531,iad1,384,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H3YV7C4B5GSBNTE8JAS0,xt4ZtGa1M95y,2
+2025-12-11 08:13:06,1765440786326,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,9tl8s-1765440786275-80e4c2aeaed2,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:06 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""-"" ""vercel-favicon/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786275,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,9tl8s-1765440786275-80e4c2aeaed2,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,7,iad1,379,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H3W74TGMZVJV82ZK0R1X,xt4ZtGa1M95y,1
+2025-12-11 08:13:06,1765440786158,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9tl8s-1765440786098-e1e676d7ce4f,vercel-favicon/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:06 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""vercel-favicon/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:06,1765440786098,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9tl8s-1765440786098-e1e676d7ce4f,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,15,iad1,379,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H3PQ4N2FNJE70S0HEKZ8,xt4ZtGa1M95y,1
+2025-12-11 08:13:04,1765440784857,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,rwv2f-1765440784799-0ea2eca47eb4,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""-"" ""vercel-screenshot/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784799,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,rwv2f-1765440784799-0ea2eca47eb4,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,9,iad1,341,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H2E3YMH2VHDD3K3QF0NB,z0d0egeFLhWd,1
+2025-12-11 08:13:04,1765440784851,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,ltnfd-1765440784690-18c65f42dd2a,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET /favicon.ico HTTP/1.1"" 204 - ""-"" ""vercel-screenshot/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784690,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/favicon.ico,GET,,204,ltnfd-1765440784690-18c65f42dd2a,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,21,iad1,379,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H2DWJNMH0C0W7Z46T05Q,xt4ZtGa1M95y,1
+2025-12-11 08:13:04,1765440784672,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,qt62x-1765440784620-902fc097924d,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""vercel-screenshot/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784620,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,qt62x-1765440784620-902fc097924d,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,6,iad1,379,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H28GNH9M62MBF4JH5X4V,xt4ZtGa1M95y,1
+2025-12-11 08:13:04,1765440784576,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,znlzg-1765440784422-01c1a75473e0,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""vercel-screenshot/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784422,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,znlzg-1765440784422-01c1a75473e0,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,14,iad1,340,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H257TP0CB3MSS0J7AF2N,z0d0egeFLhWd,1
+2025-12-11 08:13:04,1765440784467,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9ld22-1765440782596-d559ea4f883c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' },prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784467,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9ld22-1765440782596-d559ea4f883c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784467,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9ld22-1765440782596-d559ea4f883c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.(Use `node --trace-warnings ...` to show where the warning was created)",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784467,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9ld22-1765440782596-d559ea4f883c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784516,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9ld22-1765440782596-d559ea4f883c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""vercel-screenshot/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:02,1765440782596,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,9ld22-1765440782596-d559ea4f883c,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,1724,iad1,339,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H097W79Q5F03Q08P8D11,z0d0egeFLhWd,1
+2025-12-11 08:13:04,1765440784250,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,pzzxx-1765440782491-a5b1ea0775ed,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784250,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,pzzxx-1765440782491-a5b1ea0775ed,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true },prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784250,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,pzzxx-1765440782491-a5b1ea0775ed,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.(Use `node --trace-warnings ...` to show where the warning was created)",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784250,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,pzzxx-1765440782491-a5b1ea0775ed,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784331,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,pzzxx-1765440782491-a5b1ea0775ed,vercel-screenshot/1.0,info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""vercel-screenshot/1.0""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:02,1765440782491,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,pzzxx-1765440782491-a5b1ea0775ed,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,1554,iad1,338,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H08THKAQVCA54TEQFWM6,Fgtc5BSqdtVt,1
+2025-12-11 08:13:04,1765440784174,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,7vmhq-1765440782277-45cde8ccd651,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' },prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784174,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,7vmhq-1765440782277-45cde8ccd651,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject },prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784174,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,7vmhq-1765440782277-45cde8ccd651,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.(Use `node --trace-warnings ...` to show where the warning was created)",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784174,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,7vmhq-1765440782277-45cde8ccd651,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784268,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,7vmhq-1765440782277-45cde8ccd651,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:02,1765440782277,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,7vmhq-1765440782277-45cde8ccd651,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,1981,iad1,379,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H055VHS1M5KCYW146109,xt4ZtGa1M95y,1
+2025-12-11 08:13:04,1765440784402,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,v9mwr-1765440782271-908c7ab2f2f9,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784402,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,v9mwr-1765440782271-908c7ab2f2f9,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784402,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,v9mwr-1765440782271-908c7ab2f2f9,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.(Use `node --trace-warnings ...` to show where the warning was created)",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784402,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,v9mwr-1765440782271-908c7ab2f2f9,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:04,1765440784475,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,v9mwr-1765440782271-908c7ab2f2f9,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",info,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,,,,,"127.0.0.1 - - [11/Dec/2025:08:13:04 +0000] ""GET / HTTP/1.1"" 200 368 ""-"" ""Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36""",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 08:13:02,1765440782271,fefa-backend-gh5d8eggj-fefas-projects.vercel.app/,GET,,200,v9mwr-1765440782271-908c7ab2f2f9,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,fefa-backend-gh5d8eggj-fefas-projects.vercel.app,dpl_8gWQEhYw1UQh5agG3bbP1dCAWbEP,1766,iad1,340,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC67H057YVWQJ63ZT6C4FSJ3,lSzse0rJ9Zvy,1

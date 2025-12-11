@@ -53,21 +53,10 @@ const createRedisStore = () => {
   };
 };
 
-// Custom key generator that works with proxies (Vercel)
-const keyGenerator = (req: Request): string => {
-  // Try to get IP from various sources
-  const forwarded = req.headers['x-forwarded-for'];
-  const ip = forwarded 
-    ? (Array.isArray(forwarded) ? forwarded[0] : forwarded.split(',')[0].trim())
-    : req.ip || req.socket.remoteAddress || 'unknown';
-  return `ip:${ip}`;
-};
-
 // General API rate limiter
 export const generalRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  keyGenerator: keyGenerator,
   message: {
     success: false,
     message: 'Too many requests from this IP, please try again later.',
@@ -89,7 +78,6 @@ export const generalRateLimit = rateLimit({
 export const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 20, // Limit each IP to 20 auth requests per windowMs
-  keyGenerator: keyGenerator,
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.',
@@ -111,7 +99,6 @@ export const authRateLimit = rateLimit({
 export const bannerAnalyticsRateLimit = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 50, // Limit each IP to 50 analytics requests per windowMs
-  keyGenerator: keyGenerator,
   message: {
     success: false,
     message: 'Too many analytics requests, please try again later.',
@@ -139,8 +126,13 @@ export const adminRateLimit = rateLimit({
     if (userId) {
       return `user:${userId}`;
     }
-    // For anonymous users, use the shared keyGenerator
-    return keyGenerator(req);
+    // For anonymous users, use a safe IP-based key
+    // Extract IP from various headers (Vercel uses x-forwarded-for)
+    const forwarded = req.headers['x-forwarded-for'];
+    const ip = forwarded 
+      ? (Array.isArray(forwarded) ? forwarded[0] : forwarded.split(',')[0].trim())
+      : req.socket.remoteAddress || 'unknown';
+    return `ip:${ip}`;
   },
   message: {
     success: false,
@@ -163,7 +155,6 @@ export const adminRateLimit = rateLimit({
 export const bannerInteractionRateLimit = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 10, // Limit each IP to 10 interactions per minute
-  keyGenerator: keyGenerator,
   message: {
     success: false,
     message: 'Too many banner interactions, please slow down.',

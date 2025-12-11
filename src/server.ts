@@ -34,50 +34,41 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Trust proxy - REQUIRED for Vercel and other reverse proxies
-// This allows Express to properly read X-Forwarded-For headers
-app.set('trust proxy', true);
-
 // CORS configuration - MUST be before other middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://fefa-frontend.vercel.app',
-  'http://localhost:3000',
-  'http://localhost:3001'
+  'http://localhost:3000'
 ].filter(Boolean);
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (like mobile apps, curl requests, or same-origin requests)
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) {
       return callback(null, true);
     }
     
-    // Normalize origin (remove trailing slash if present)
-    const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
-    
-    // Check if origin (normalized or original) is in allowed list
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes(normalizedOrigin)) {
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     
     // Allow in development mode
-    if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+    if (process.env.NODE_ENV === 'development') {
       return callback(null, true);
     }
     
     // Log blocked origins for debugging
-    console.log(`[CORS] Blocked origin: ${origin}`);
-    console.log(`[CORS] Allowed origins:`, allowedOrigins);
+    console.log(`CORS blocked origin: ${origin}`);
+    console.log(`Allowed origins:`, allowedOrigins);
     callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
   exposedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
-  optionsSuccessStatus: 204,
-  maxAge: 86400 // 24 hours - cache preflight requests
+  optionsSuccessStatus: 204
 };
 
 // Apply CORS to all routes FIRST - handles OPTIONS preflight automatically
@@ -99,11 +90,6 @@ app.use(compression());
 
 // Logging middleware
 app.use(morgan('combined'));
-
-// Favicon handler - prevent 404/500 errors from browser favicon requests
-app.get('/favicon.ico', (req, res) => {
-  res.status(204).end();
-});
 
 // Root endpoint - MUST be before rate limiting to catch root requests
 app.get('/', (req, res) => {
