@@ -99,6 +99,11 @@ app.use(compression());
 // Logging middleware
 app.use(morgan('combined'));
 
+// Favicon handler - prevent 404/500 errors from browser favicon requests
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
+
 // Root endpoint - MUST be before rate limiting to catch root requests
 app.get('/', (req, res) => {
   res.status(200).json({

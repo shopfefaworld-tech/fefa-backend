@@ -75,35 +75,6 @@ const ensureInitialized = async (): Promise<void> => {
 // This handles ALL routes including root / and /api/*
 export default async (req: VercelRequest, res: VercelResponse) => {
   try {
-    // Set CORS headers early to ensure they're always present
-    const origin = req.headers.origin;
-    const allowedOrigins = [
-      process.env.FRONTEND_URL,
-      'https://fefa-frontend.vercel.app',
-      'http://localhost:3000',
-      'http://localhost:3001'
-    ].filter(Boolean);
-    
-    // Check if origin is allowed
-    if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development' || !process.env.NODE_ENV)) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-    } else if (!origin) {
-      // Allow requests with no origin
-      res.setHeader('Access-Control-Allow-Origin', '*');
-    }
-    
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With');
-    res.setHeader('Access-Control-Expose-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
-    
-    // Handle preflight OPTIONS request
-    if (req.method === 'OPTIONS') {
-      res.status(204).end();
-      return;
-    }
-    
     // Ensure services are initialized before handling request
     // Don't fail if initialization has errors - let Express handle the request
     try {
@@ -115,8 +86,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     
     // Log the request path for debugging
     console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
-    if (origin) {
-      console.log(`[Vercel] Origin: ${origin}`);
+    if (req.headers.origin) {
+      console.log(`[Vercel] Origin: ${req.headers.origin}`);
     }
     
     // Set timeout for the request
@@ -129,32 +100,23 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
     }, 25000); // 25 second timeout (Vercel limit is 30s)
     
-    // Pass request to Express app
-    // Express will handle routing including root /
-    app(req, res);
-    
     // Clear timeout when response is sent
     res.on('finish', () => {
       clearTimeout(timeout);
     });
     
+    res.on('close', () => {
+      clearTimeout(timeout);
+    });
+    
+    // Pass request to Express app
+    // Express will handle routing including root / and CORS
+    app(req, res);
+    
   } catch (error) {
     console.error('[Vercel] Serverless function error:', error);
     // Return error response instead of crashing
     if (!res.headersSent) {
-      // Ensure CORS headers are set even on error
-      const origin = req.headers.origin;
-      const allowedOrigins = [
-        process.env.FRONTEND_URL,
-        'https://fefa-frontend.vercel.app',
-        'http://localhost:3000'
-      ].filter(Boolean);
-      
-      if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development' || !process.env.NODE_ENV)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-      }
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      
       res.status(500).json({
         success: false,
         error: 'Internal server error',
