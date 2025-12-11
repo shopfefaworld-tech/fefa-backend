@@ -37,8 +37,23 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 
 // CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://fefa-frontend.vercel.app',
+  'http://localhost:3000'
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
@@ -85,7 +100,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Initialize services
-const startServer = async () => {
+const initializeServices = async () => {
   try {
     // Connect to MongoDB
     await connectDB();
@@ -110,34 +125,55 @@ const startServer = async () => {
     // Initialize Cloudinary
     await initializeCloudinary();
     console.log('✅ Cloudinary initialized');
-
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-      console.log(`📦 Redis caching enabled`);
-      console.log(`🛡️ Rate limiting enabled`);
-    });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
-    process.exit(1);
+    console.error('❌ Failed to initialize services:', error);
+    throw error;
   }
 };
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err: Error) => {
-  console.error('Unhandled Promise Rejection:', err);
-  process.exit(1);
-});
+// Check if running on Vercel
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
 
-// Handle uncaught exceptions
-process.on('uncaughtException', (err: Error) => {
-  console.error('Uncaught Exception:', err);
-  process.exit(1);
-});
+// Initialize services (for both Vercel and regular server)
+if (isVercel) {
+  // On Vercel, initialize services but don't start HTTP server
+  initializeServices().catch((error) => {
+    console.error('❌ Failed to initialize services on Vercel:', error);
+  });
+} else {
+  // Regular server mode - start HTTP server
+  const startServer = async () => {
+    try {
+      await initializeServices();
 
-// Start the server
-startServer();
+      // Start server
+      app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+        console.log(`📦 Redis caching enabled`);
+        console.log(`🛡️ Rate limiting enabled`);
+      });
+    } catch (error) {
+      console.error('❌ Failed to start server:', error);
+      process.exit(1);
+    }
+  };
+
+  // Handle unhandled promise rejections
+  process.on('unhandledRejection', (err: Error) => {
+    console.error('Unhandled Promise Rejection:', err);
+    process.exit(1);
+  });
+
+  // Handle uncaught exceptions
+  process.on('uncaughtException', (err: Error) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+  });
+
+  // Start the server
+  startServer();
+}
 
 export default app;
