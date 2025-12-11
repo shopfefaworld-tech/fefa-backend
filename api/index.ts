@@ -87,23 +87,46 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Log the request path for debugging
     console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
     
-    // Set timeout for the request
-    const timeout = setTimeout(() => {
-      if (!res.headersSent) {
-        res.status(504).json({
-          success: false,
-          error: 'Request timeout'
+    // Pass request to Express app directly
+    // Vercel's request/response objects are compatible with Express
+    // Wrap in Promise to handle async properly
+    return new Promise<void>((resolve, reject) => {
+      let finished = false;
+      
+      const finish = () => {
+        if (!finished) {
+          finished = true;
+          resolve();
+        }
+      };
+      
+      const error = (err: Error) => {
+        if (!finished) {
+          finished = true;
+          reject(err);
+        }
+      };
+      
+      // Listen for response completion
+      res.once('finish', finish);
+      res.once('close', finish);
+      res.once('error', error);
+      
+      // Call Express app handler
+      // Express 5.x supports calling app as a function or using handle()
+      try {
+        (app as any).handle(req as any, res as any, (err?: any) => {
+          if (err && !finished) {
+            finished = true;
+            reject(err);
+          }
         });
+      } catch (err) {
+        if (!finished) {
+          finished = true;
+          reject(err as Error);
+        }
       }
-    }, 25000); // 25 second timeout (Vercel limit is 30s)
-    
-    // Pass request to Express app
-    // Express will handle routing including root /
-    app(req, res);
-    
-    // Clear timeout when response is sent
-    res.on('finish', () => {
-      clearTimeout(timeout);
     });
     
   } catch (error) {
@@ -119,6 +142,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         })
       });
     }
+    return;
   }
 };
 

@@ -20,6 +20,7 @@
   "description": "Fefa Jewelry E-commerce Backend API",
   "dependencies": {
     "@types/multer": "^2.0.0",
+    "@vercel/node": "^5.5.15",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
     "compression": "^1.8.1",
@@ -35,8 +36,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
-    "redis": "^4.6.12",
-    "@vercel/node": "^5.5.15"
+    "redis": "^4.6.12"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
