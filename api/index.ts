@@ -27,7 +27,12 @@ const ensureInitialized = async (): Promise<void> => {
     try {
       // Connect to MongoDB (mongoose handles connection reuse)
       if (mongoose.connection.readyState === 0) {
-        await connectDB();
+        try {
+          await connectDB();
+        } catch (error) {
+          console.error('❌ MongoDB connection failed:', error);
+          // Continue - MongoDB will retry on next request
+        }
       }
 
       // Initialize Redis (with fallback)
@@ -38,16 +43,28 @@ const ensureInitialized = async (): Promise<void> => {
       }
 
       // Initialize Firebase (has internal check for already initialized)
-      await initializeFirebase();
+      try {
+        await initializeFirebase();
+      } catch (error) {
+        console.error('❌ Firebase initialization failed:', error);
+        // Continue - Firebase might not be critical for all endpoints
+      }
 
       // Initialize Cloudinary (has internal check for already initialized)
-      initializeCloudinary();
+      try {
+        initializeCloudinary();
+      } catch (error) {
+        console.error('❌ Cloudinary initialization failed:', error);
+        // Continue - Cloudinary might not be critical for all endpoints
+      }
 
       isInitialized = true;
       console.log('✅ Services initialized for Vercel serverless function');
     } catch (error) {
       console.error('❌ Failed to initialize services:', error);
-      // Don't throw - let the request proceed (some services might still work)
+      // Mark as initialized anyway to prevent infinite retry loops
+      // Some services might still work
+      isInitialized = true;
     }
   })();
 
@@ -57,14 +74,24 @@ const ensureInitialized = async (): Promise<void> => {
 // Vercel serverless function handler
 // This handles ALL routes including root / and /api/*
 export default async (req: VercelRequest, res: VercelResponse) => {
-  // Ensure services are initialized before handling request
-  await ensureInitialized();
-  
-  // Log the request path for debugging
-  console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
-  
-  // Pass request to Express app
-  // Express will handle routing including root /
-  return app(req, res);
+  try {
+    // Ensure services are initialized before handling request
+    await ensureInitialized();
+    
+    // Log the request path for debugging
+    console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
+    
+    // Pass request to Express app
+    // Express will handle routing including root /
+    return app(req, res);
+  } catch (error) {
+    console.error('[Vercel] Serverless function error:', error);
+    // Return error response instead of crashing
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 };
 

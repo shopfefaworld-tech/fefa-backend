@@ -34,7 +34,12 @@ export const connectDB = async (): Promise<void> => {
 
   } catch (error) {
     console.error('MongoDB connection failed:', error);
-    process.exit(1);
+    // Don't exit process in serverless - let it continue and retry on next request
+    if (process.env.VERCEL) {
+      throw error; // Re-throw for serverless to handle gracefully
+    } else {
+      process.exit(1); // Only exit in regular server mode
+    }
   }
 };
 
