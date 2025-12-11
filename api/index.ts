@@ -55,11 +55,16 @@ const ensureInitialized = async (): Promise<void> => {
 };
 
 // Vercel serverless function handler
+// This handles ALL routes including root / and /api/*
 export default async (req: VercelRequest, res: VercelResponse) => {
   // Ensure services are initialized before handling request
   await ensureInitialized();
   
+  // Log the request path for debugging
+  console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
+  
   // Pass request to Express app
+  // Express will handle routing including root /
   return app(req, res);
 };
 

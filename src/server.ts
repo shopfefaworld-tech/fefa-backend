@@ -69,10 +69,7 @@ app.use(compression());
 // Logging middleware
 app.use(morgan('combined'));
 
-// Apply general rate limiting to all routes
-app.use(generalRateLimit);
-
-// Root endpoint
+// Root endpoint - MUST be before rate limiting to catch root requests
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
@@ -93,6 +90,9 @@ app.get('/', (req, res) => {
     documentation: 'Visit /api/health for API status'
   });
 });
+
+// Apply general rate limiting to all routes
+app.use(generalRateLimit);
 
 // API root endpoint
 app.get('/api', (req, res) => {
