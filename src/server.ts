@@ -33,30 +33,58 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware
-app.use(helmet());
-
-// CORS configuration
+// CORS configuration - MUST be before other middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://fefa-frontend.vercel.app',
   'http://localhost:3000'
 ].filter(Boolean);
 
-app.use(cors({
-  origin: (origin, callback) => {
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
+      console.log(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
+  exposedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
+
+// Handle OPTIONS requests FIRST - before any other middleware
+app.options('*', (req, res) => {
+  const origin = req.headers.origin;
+  
+  if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400'); // 24 hours
+    res.status(204).send();
+    return;
+  }
+  
+  res.status(204).send();
+});
+
+// Apply CORS to all routes
+app.use(cors(corsOptions));
+
+// Security middleware (configured to not interfere with CORS)
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false // Disable CSP to avoid CORS issues
 }));
 
 // Body parsing middleware
@@ -91,8 +119,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// Apply general rate limiting to all routes
-app.use(generalRateLimit);
+// Apply general rate limiting to all routes (except OPTIONS for CORS preflight)
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next(); // Skip rate limiting for OPTIONS requests
+  }
+  return generalRateLimit(req, res, next);
+});
 
 // API root endpoint
 app.get('/api', (req, res) => {
