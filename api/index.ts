@@ -74,6 +74,9 @@ const ensureInitialized = async (): Promise<void> => {
 // Vercel serverless function handler
 // This handles ALL routes including root / and /api/*
 export default async (req: VercelRequest, res: VercelResponse) => {
+  // Log immediately when function is invoked
+  console.log(`[Vercel] Function invoked: ${req.method} ${req.url || 'unknown'}`);
+  
   try {
     // Ensure services are initialized before handling request
     // Don't fail if initialization has errors - let Express handle the request
@@ -87,16 +90,22 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Log the request path for debugging
     const originalUrl = req.url || '/';
     console.log(`[Vercel] Handling request: ${req.method} ${originalUrl}`);
+    console.log(`[Vercel] Request URL: ${req.url}, Query: ${JSON.stringify(req.query)}`);
     
     // Vercel routes /api/* requests to api/index.ts
     // The req.url should already contain the full path (e.g., /api/users)
-    // But ensure originalUrl is set for Express routing
+    // Ensure originalUrl is set for Express routing (Express uses this for route matching)
     if (!(req as any).originalUrl) {
       (req as any).originalUrl = originalUrl;
+    }
+    // Also ensure req.url is set correctly
+    if (!(req as any).url) {
+      (req as any).url = originalUrl;
     }
     
     // Log Express app state for debugging
     console.log(`[Vercel] Express app type: ${typeof app}, is function: ${typeof app === 'function'}`);
+    console.log(`[Vercel] Final URL: ${(req as any).url}, Original URL: ${(req as any).originalUrl}`);
     
     // Verify app is callable
     if (typeof app !== 'function') {
