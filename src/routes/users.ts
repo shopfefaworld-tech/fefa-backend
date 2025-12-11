@@ -5,16 +5,6 @@ import { verifyToken, requireAdmin } from '../middleware/auth';
 
 const router = Router();
 
-// Test route - no auth required
-router.get('/test', (req, res) => {
-  res.json({ 
-    success: true, 
-    message: 'Users router is working!',
-    url: req.url,
-    originalUrl: req.originalUrl
-  });
-});
-
 // @route   GET /api/users/profile
 // @desc    Get user profile
 // @access  Private
