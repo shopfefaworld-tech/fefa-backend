@@ -6,6 +6,16 @@ import { initializeCloudinary } from '../src/config/cloudinary';
 import { redisConfig } from '../src/config/redis';
 import mongoose from 'mongoose';
 
+// Handle unhandled promise rejections at the process level
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[Vercel] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// Handle uncaught exceptions at the process level
+process.on('uncaughtException', (error) => {
+  console.error('[Vercel] Uncaught Exception:', error);
+});
+
 // Track initialization state
 let isInitialized = false;
 let initializationPromise: Promise<void> | null = null;
@@ -74,6 +84,7 @@ const ensureInitialized = async (): Promise<void> => {
 // Vercel serverless function handler
 // This handles ALL routes including root / and /api/*
 export default async (req: VercelRequest, res: VercelResponse) => {
+  // Wrap everything in a try-catch to handle any synchronous errors
   try {
     // Ensure services are initialized before handling request
     // Don't fail if initialization has errors - let Express handle the request
@@ -109,9 +120,33 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       clearTimeout(timeout);
     });
     
-    // Pass request to Express app
-    // Express will handle routing including root / and CORS
-    app(req, res);
+    // Handle unhandled errors
+    res.on('error', (err) => {
+      console.error('[Vercel] Response error:', err);
+      clearTimeout(timeout);
+    });
+    
+    // Wrap Express app call to catch any synchronous errors
+    try {
+      // Pass request to Express app
+      // Express will handle routing including root / and CORS
+      // Express error handler middleware will catch async errors
+      app(req, res);
+    } catch (expressError) {
+      // Catch any synchronous errors from Express
+      console.error('[Vercel] Synchronous Express error:', expressError);
+      clearTimeout(timeout);
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: 'Internal server error',
+          message: expressError instanceof Error ? expressError.message : 'Unknown error',
+          ...(process.env.NODE_ENV === 'development' && { 
+            stack: expressError instanceof Error ? expressError.stack : undefined 
+          })
+        });
+      }
+    }
     
   } catch (error) {
     console.error('[Vercel] Serverless function error:', error);
