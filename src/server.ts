@@ -62,20 +62,25 @@ const corsOptions = {
 };
 
 // Handle OPTIONS requests FIRST - before any other middleware
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  
-  if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', '86400'); // 24 hours
+// Use middleware instead of app.options('*') since Express doesn't support '*' pattern
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    const origin = req.headers.origin;
+    
+    if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Access-Control-Max-Age', '86400'); // 24 hours
+      res.status(204).send();
+      return;
+    }
+    
     res.status(204).send();
     return;
   }
-  
-  res.status(204).send();
+  next();
 });
 
 // Apply CORS to all routes

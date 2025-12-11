@@ -121,13 +121,18 @@ export const adminRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // Limit each authenticated user to 200 admin requests per windowMs
   keyGenerator: (req: Request): string => {
-    // Use user ID for authenticated users, IP for anonymous
+    // Use user ID for authenticated users
     const userId = (req as any).user?.id;
     if (userId) {
       return `user:${userId}`;
     }
-    // Use default IP key generator for IPv6 compatibility
-    return req.ip || 'unknown';
+    // For anonymous users, use a safe IP-based key
+    // Extract IP from various headers (Vercel uses x-forwarded-for)
+    const forwarded = req.headers['x-forwarded-for'];
+    const ip = forwarded 
+      ? (Array.isArray(forwarded) ? forwarded[0] : forwarded.split(',')[0].trim())
+      : req.socket.remoteAddress || 'unknown';
+    return `ip:${ip}`;
   },
   message: {
     success: false,

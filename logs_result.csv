@@ -1,0 +1,767 @@
+TimeUTC,timestampInMs,requestPath,requestMethod,requestQueryString,responseStatusCode,requestId,requestUserAgent,level,environment,branch,vercelCache,type,function,host,deploymentDomain,deploymentId,durationMs,region,maxMemoryUsed,memorySize,message,projectId,traceId,sessionId,invocationId,instanceId,concurrency
+2025-12-11 07:37:35,1765438655002,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,czwvx-1765438653497-571de9e54c17,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:33,1765438653497,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,czwvx-1765438653497-571de9e54c17,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1451,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65G133T7QK231FCDR8EGRW,,-1
+2025-12-11 07:37:31,1765438651385,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,qsvqz-1765438649924-85db5a175566,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:29,1765438649924,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,qsvqz-1765438649924-85db5a175566,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1405,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FXKDDERCWGMVH2Z101XZ,,-1
+2025-12-11 07:37:28,1765438648824,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,cgpsm-1765438647357-780419d24ef6,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:27,1765438647357,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.png,GET,,500,cgpsm-1765438647357-780419d24ef6,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1414,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FV326SYVHASTM1FGDHDB,,-1
+2025-12-11 07:37:27,1765438647322,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,dscdr-1765438645833-61740055c59e,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:25,1765438645833,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,dscdr-1765438645833-61740055c59e,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1437,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FSKD9JGM9HZME745MW0H,,-1
+2025-12-11 07:37:24,1765438644973,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,72nx8-1765438643414-4a1e90229433,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:23,1765438643414,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,72nx8-1765438643414-4a1e90229433,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1440,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FQ9TZ645CYKHXADEV9JK,,-1
+2025-12-11 07:37:23,1765438643774,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,jjn67-1765438642260-ac1dd2fec44f,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:22,1765438642260,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,jjn67-1765438642260-ac1dd2fec44f,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1450,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FP41X3XBMXJQ3AW3P7BK,,-1
+2025-12-11 07:37:23,1765438643186,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cfbv7-1765438641378-384763e9d8e6,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:21,1765438641378,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cfbv7-1765438641378-384763e9d8e6,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1438,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FNJ4EN74WF6BZ1CYEFSS,,-1
+2025-12-11 07:37:21,1765438641126,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,hdhdl-1765438639577-522827f0528b,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:19,1765438639577,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,hdhdl-1765438639577-522827f0528b,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1496,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FKFZ7CBR3RN6RQQKZCTN,,-1
+2025-12-11 07:37:19,1765438639463,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,xb8f4-1765438637882-fb2d30de8e3f,vercel-favicon/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:17,1765438637882,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,xb8f4-1765438637882-fb2d30de8e3f,vercel-favicon/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1528,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FHTZ4D9N6MAM3WE0C57Y,,-1
+2025-12-11 07:37:17,1765438637590,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,4nnp8-1765438636105-35e08d1dcfc8,vercel-screenshot/1.0,error,production,main,MISS,serverless,/favicon.ico,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:16,1765438636105,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,500,4nnp8-1765438636105-35e08d1dcfc8,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1435,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FG3EPPGR67T77GHSM82A,,-1
+2025-12-11 07:37:17,1765438637354,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,,rc7wh-1765438635871-d693b42dbf27,vercel-screenshot/1.0,error,production,main,,serverless,,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:15,1765438635871,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/favicon.ico,GET,,,rc7wh-1765438635871-d693b42dbf27,vercel-screenshot/1.0,,production,main,,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1436,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FFW3S5ETVEX1Q53ZRFJA,,-1
+2025-12-11 07:37:16,1765438636806,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,l4jg9-1765438635090-bc1f17ca15ff,vercel-favicon/1.0,error,production,main,,serverless,,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:15,1765438635090,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,l4jg9-1765438635090-bc1f17ca15ff,vercel-favicon/1.0,,production,main,,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1667,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FF3NJ10X0SBVW9307J9B,,-1
+2025-12-11 07:37:16,1765438636048,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,sqwtx-1765438634501-737c9be0c19e,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:14,1765438634501,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,sqwtx-1765438634501-737c9be0c19e,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1490,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FEHBWM6Z9GFBWGJCT3NG,,-1
+2025-12-11 07:37:15,1765438635807,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,kf5kf-1765438634228-f12bbe4da713,vercel-screenshot/1.0,error,production,main,,serverless,,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:14,1765438634228,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,,kf5kf-1765438634228-f12bbe4da713,vercel-screenshot/1.0,,production,main,,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1433,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FEBKY3KM604W8KWRB88W,,-1
+2025-12-11 07:37:15,1765438635486,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,t72s4-1765438632543-01236c9bdb8d,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"gexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:12,1765438632543,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,t72s4-1765438632543-01236c9bdb8d,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1196,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FCQ24GR1HY8S4W38XHRY,,-1
+2025-12-11 07:37:15,1765438635209,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cr7q2-1765438632038-33461344118f,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"ath-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:12,1765438632038,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,cr7q2-1765438632038-33461344118f,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1379,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FC4980KDFP3YA0PRBGSG,,-1
+2025-12-11 07:37:14,1765438634397,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,fszl9-1765438631043-e6c266683699,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:11,1765438631043,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,fszl9-1765438631043-e6c266683699,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1488,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB561V6B3HB1TQMWB4QF,,-1
+2025-12-11 07:37:14,1765438634125,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,vkdbc-1765438631022-38b47ce90bfc,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"ist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:11,1765438631022,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,vkdbc-1765438631022-38b47ce90bfc,vercel-screenshot/1.0,,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1310,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB7DHHR4HWWT38F29CC6,,-1
+2025-12-11 07:37:14,1765438634192,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,g5dw8-1765438630699-53a028cdae05,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:10,1765438630699,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,g5dw8-1765438630699-53a028cdae05,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1463,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB07Y8ABGF8WCNA9ND85,,-1
+2025-12-11 07:37:14,1765438634244,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,9xjsq-1765438630671-7e7ae1767aab,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",error,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,,,,,"ist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/var/task/node_modules/express-rate-limit/dist/index.cjs:595:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (/var/task/node_modules/express-rate-limit/dist/index.cjs:638:22)
+    at parseOptions (/var/task/node_modules/express-rate-limit/dist/index.cjs:707:16)
+    at rateLimit (/var/task/node_modules/express-rate-limit/dist/index.cjs:788:18)
+    at Object.<anonymous> (/var/task/src/middleware/rateLimiter.js:112:59)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4) [MONGOOSE] Warning: Duplicate schema index on {""user"":1} found. This is often due to declaring an index using both ""index: true"" and ""schema.index()"". Please remove the duplicate index definition.
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/var/task/node_modules/path-to-regexp/dist/index.js:96:19)
+    at parse (/var/task/node_modules/path-to-regexp/dist/index.js:113:68)
+    at pathToRegexp (/var/task/node_modules/path-to-regexp/dist/index.js:267:58)
+    at Object.match (/var/task/node_modules/path-to-regexp/dist/index.js:237:30)
+    at matcher (/var/task/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/var/task/node_modules/router/lib/layer.js:93:62)
+    at router.route (/var/task/node_modules/router/index.js:428:17)
+    at app.route (/var/task/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as options] (/var/task/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/var/task/src/server.js:56:5) {
+  originalPath: '*'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,,,
+2025-12-11 07:37:10,1765438630671,fefa-backend-k7rr9k96f-fefas-projects.vercel.app/,GET,,500,9xjsq-1765438630671-7e7ae1767aab,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",,production,main,MISS,serverless,/,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,fefa-backend-k7rr9k96f-fefas-projects.vercel.app,dpl_EvoWYkDY4DXZPkg7cRPyyBSagZBr,1457,iad1,-1,2048,,prj_v0LSSTn9h0d3KtqmKoFHCXIhqfwp,,,01KC65FB07Y8ABGF8WCHMAG53X,,-1
