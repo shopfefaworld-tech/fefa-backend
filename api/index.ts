@@ -85,12 +85,18 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     }
     
     // Log the request path for debugging
-    console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
+    const originalUrl = req.url || '/';
+    console.log(`[Vercel] Handling request: ${req.method} ${originalUrl}`);
     
-    // Ensure originalUrl is set (Express uses this for routing)
+    // Vercel routes /api/* requests to api/index.ts
+    // The req.url should already contain the full path (e.g., /api/users)
+    // But ensure originalUrl is set for Express routing
     if (!(req as any).originalUrl) {
-      (req as any).originalUrl = req.url;
+      (req as any).originalUrl = originalUrl;
     }
+    
+    // Log Express app state for debugging
+    console.log(`[Vercel] Express app type: ${typeof app}, is function: ${typeof app === 'function'}`);
     
     // Verify app is callable
     if (typeof app !== 'function') {
@@ -164,10 +170,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       // This is the standard way to use Express with serverless functions
       try {
         // Express app can be called directly as (req, res, next)
+        // The next callback is called when no route matches (404) or on error
         app(req as any, res as any, (err?: any) => {
+          cleanup();
           if (err) {
             console.error('[Vercel] Express middleware error:', err);
-            cleanup();
+            console.error('[Vercel] Error stack:', err.stack);
             // Express error handler should deal with this
             // If response already sent, just resolve
             if (res.headersSent) {
@@ -179,6 +187,23 @@ export default async (req: VercelRequest, res: VercelResponse) => {
               // Error handler should send response, but if not, reject
               finished = true;
               reject(err);
+            }
+          } else {
+            // No error but no route matched - this shouldn't happen if routes are registered
+            // But if it does, Express should have sent a 404 response
+            console.log('[Vercel] No error, but route may not have matched');
+            if (!finished && res.headersSent) {
+              finished = true;
+              resolve();
+            } else if (!finished) {
+              // Wait a bit to see if response comes
+              setTimeout(() => {
+                if (!finished) {
+                  console.log('[Vercel] No response sent, resolving anyway');
+                  finished = true;
+                  resolve();
+                }
+              }, 100);
             }
           }
         });
