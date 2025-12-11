@@ -87,8 +87,26 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Log the request path for debugging
     console.log(`[Vercel] Handling request: ${req.method} ${req.url}`);
     
+    // Ensure originalUrl is set (Express uses this for routing)
+    if (!(req as any).originalUrl) {
+      (req as any).originalUrl = req.url;
+    }
+    
+    // Verify app is callable
+    if (typeof app !== 'function') {
+      console.error('[Vercel] App is not a function:', typeof app);
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: 'Server configuration error',
+          message: 'Express app is not properly initialized'
+        });
+      }
+      return;
+    }
+    
     // Pass request to Express app directly
-    // Vercel's request/response objects are compatible with Express
+    // Express apps can be called as request handlers
     // Wrap in Promise to handle async properly
     return new Promise<void>((resolve, reject) => {
       let finished = false;
@@ -103,28 +121,77 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       const error = (err: Error) => {
         if (!finished) {
           finished = true;
+          console.error('[Vercel] Response error:', err);
           reject(err);
         }
       };
       
-      // Listen for response completion
-      res.once('finish', finish);
-      res.once('close', finish);
-      res.once('error', error);
+      // Set a timeout to ensure we don't hang forever
+      const timeout = setTimeout(() => {
+        if (!finished && !res.headersSent) {
+          finished = true;
+          console.error('[Vercel] Request timeout');
+          res.status(504).json({
+            success: false,
+            error: 'Request timeout'
+          });
+          resolve();
+        }
+      }, 25000); // 25 seconds
       
-      // Call Express app handler
-      // Express 5.x supports calling app as a function or using handle()
+      // Listen for response completion
+      const cleanup = () => {
+        clearTimeout(timeout);
+        res.removeListener('finish', finish);
+        res.removeListener('close', finish);
+        res.removeListener('error', error);
+      };
+      
+      res.once('finish', () => {
+        cleanup();
+        finish();
+      });
+      res.once('close', () => {
+        cleanup();
+        finish();
+      });
+      res.once('error', (err) => {
+        cleanup();
+        error(err);
+      });
+      
+      // Call Express app as a request handler function
+      // This is the standard way to use Express with serverless functions
       try {
-        (app as any).handle(req as any, res as any, (err?: any) => {
-          if (err && !finished) {
-            finished = true;
-            reject(err);
+        // Express app can be called directly as (req, res, next)
+        app(req as any, res as any, (err?: any) => {
+          if (err) {
+            console.error('[Vercel] Express middleware error:', err);
+            cleanup();
+            // Express error handler should deal with this
+            // If response already sent, just resolve
+            if (res.headersSent) {
+              if (!finished) {
+                finished = true;
+                resolve();
+              }
+            } else if (!finished) {
+              // Error handler should send response, but if not, reject
+              finished = true;
+              reject(err);
+            }
           }
         });
       } catch (err) {
+        console.error('[Vercel] Express call exception:', err);
+        cleanup();
         if (!finished) {
           finished = true;
-          reject(err as Error);
+          if (!res.headersSent) {
+            reject(err as Error);
+          } else {
+            resolve();
+          }
         }
       }
     });
