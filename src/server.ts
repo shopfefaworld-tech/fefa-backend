@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import { connectDB } from './config/database';
 import { initializeFirebase } from './config/firebase';
 import { initializeCloudinary } from './config/cloudinary';
+import { initializeRazorpay } from './config/razorpay';
 import { redisConfig } from './config/redis';
 
 // Import routes
@@ -18,6 +19,7 @@ import productRoutes from './routes/products';
 import userRoutes from './routes/users';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/orders';
+import paymentRoutes from './routes/payments';
 import categoryRoutes from './routes/categories';
 import bannerRoutes from './routes/banners';
 import wishlistRoutes from './routes/wishlist';
@@ -195,6 +197,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/wishlist', wishlistRoutes);
@@ -232,6 +235,14 @@ const initializeServices = async () => {
     // Initialize Cloudinary
     await initializeCloudinary();
     console.log('✅ Cloudinary initialized');
+
+    // Initialize Razorpay
+    try {
+      initializeRazorpay();
+      console.log('✅ Razorpay initialized');
+    } catch (error) {
+      console.log('⚠️ Razorpay unavailable:', (error as Error).message);
+    }
   } catch (error) {
     console.error('❌ Failed to initialize services:', error);
     throw error;
