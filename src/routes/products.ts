@@ -155,12 +155,26 @@ router.post('/',
         }
       }
 
+      // Handle tags - can be string (comma-separated), JSON string (array), or already an array
       if (typeof productData.tags === 'string') {
         try {
-          productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
+          // Try to parse as JSON first (in case it's a stringified array from frontend)
+          const parsed = JSON.parse(productData.tags);
+          if (Array.isArray(parsed)) {
+            productData.tags = parsed.filter(Boolean);
+          } else {
+            // If not an array, treat as comma-separated string
+            productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
+          }
         } catch (e) {
-          productData.tags = [];
+          // If JSON parse fails, treat as comma-separated string
+          productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
         }
+      } else if (Array.isArray(productData.tags)) {
+        // Already an array, just filter
+        productData.tags = productData.tags.filter(Boolean);
+      } else {
+        productData.tags = [];
       }
 
       // Parse inventory if it's a string
@@ -610,210 +624,6 @@ router.get('/search', async (req: Request, res: Response) => {
     });
   }
 });
-
-// @route   POST /api/products
-// @desc    Create product with image uploads
-// @access  Private/Admin
-router.post('/', 
-  verifyToken, 
-  requireAdmin, 
-  uploadMultiple, 
-  handleUploadError,
-  async (req: Request, res: Response) => {
-    try {
-      const productData = req.body;
-      
-      // Validate required fields
-      const requiredFields = ['name', 'slug', 'description', 'sku', 'price', 'category'];
-      for (const field of requiredFields) {
-        if (!productData[field]) {
-          return res.status(400).json({
-            success: false,
-            message: `${field} is required`
-          });
-        }
-      }
-
-      // Check if product with same slug or SKU already exists
-      const existingProduct = await Product.findOne({
-        $or: [
-          { slug: productData.slug },
-          { sku: productData.sku }
-        ]
-      });
-
-      if (existingProduct) {
-        return res.status(400).json({
-          success: false,
-          message: 'Product with this slug or SKU already exists'
-        });
-      }
-
-      // Validate category exists
-      const category = await Category.findById(productData.category);
-      if (!category) {
-        return res.status(400).json({
-          success: false,
-          message: 'Category not found'
-        });
-      }
-
-      // Handle image uploads
-      let uploadedImages: any[] = [];
-      if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-        try {
-          // Upload each image to Cloudinary
-          for (let i = 0; i < req.files.length; i++) {
-            const file = req.files[i];
-            const uploadResult = await uploadImage(file.buffer, {
-              folder: 'fefa-jewelry/products',
-              public_id: `${productData.slug}-${i + 1}`,
-            });
-            
-            uploadedImages.push({
-              url: uploadResult.secure_url,
-              publicId: uploadResult.public_id,
-              alt: productData.name || `Product image ${i + 1}`,
-              isPrimary: i === 0, // First image is primary
-              sortOrder: i + 1
-            });
-          }
-        } catch (uploadError) {
-          console.error('Image upload error:', uploadError);
-          return res.status(500).json({
-            success: false,
-            message: 'Failed to upload images',
-            error: uploadError instanceof Error ? uploadError.message : 'Unknown error'
-          });
-        }
-      }
-
-      // Add images to product data
-      if (uploadedImages.length > 0) {
-        productData.images = uploadedImages;
-      }
-
-      // Parse JSON fields if they're strings
-      if (typeof productData.variants === 'string') {
-        try {
-          productData.variants = JSON.parse(productData.variants);
-        } catch (e) {
-          productData.variants = [];
-        }
-      }
-      
-      if (typeof productData.specifications === 'string') {
-        try {
-          productData.specifications = JSON.parse(productData.specifications);
-        } catch (e) {
-          productData.specifications = [];
-        }
-      }
-
-      if (typeof productData.tags === 'string') {
-        try {
-          productData.tags = JSON.parse(productData.tags);
-        } catch (e) {
-          productData.tags = [];
-        }
-      }
-
-      // Parse inventory if it's a string
-      if (typeof productData.inventory === 'string') {
-        try {
-          productData.inventory = JSON.parse(productData.inventory);
-        } catch (e) {
-          productData.inventory = {
-            trackQuantity: true,
-            quantity: parseInt(productData.quantity) || 0,
-            lowStockThreshold: 5,
-            allowBackorder: false
-          };
-        }
-      }
-
-      // Handle nested inventory fields from FormData (e.g., 'inventory.quantity')
-      if (productData['inventory.quantity'] !== undefined) {
-        productData.inventory = {
-          trackQuantity: true,
-          quantity: parseInt(productData['inventory.quantity']) || 0,
-          lowStockThreshold: 5,
-          allowBackorder: false
-        };
-        delete productData['inventory.quantity'];
-      }
-
-      // Parse numeric fields from FormData (they come as strings)
-      if (productData.price !== undefined) {
-        productData.price = parseFloat(productData.price) || 0;
-      }
-      if (productData.comparePrice !== undefined && productData.comparePrice !== '') {
-        productData.comparePrice = parseFloat(productData.comparePrice) || 0;
-      }
-      if (productData.costPrice !== undefined && productData.costPrice !== '') {
-        productData.costPrice = parseFloat(productData.costPrice) || 0;
-      }
-      if (productData.weight !== undefined && productData.weight !== '') {
-        productData.weight = parseFloat(productData.weight) || 0;
-      }
-
-      // Parse dimensions if it's a string (JSON) or if individual fields exist
-      if (typeof productData.dimensions === 'string') {
-        try {
-          productData.dimensions = JSON.parse(productData.dimensions);
-        } catch (e) {
-          productData.dimensions = undefined;
-        }
-      } else if (productData.length !== undefined || productData.width !== undefined || productData.height !== undefined) {
-        productData.dimensions = {
-          length: productData.length ? parseFloat(productData.length) || 0 : 0,
-          width: productData.width ? parseFloat(productData.width) || 0 : 0,
-          height: productData.height ? parseFloat(productData.height) || 0 : 0,
-          unit: productData.dimensionUnit || 'cm'
-        };
-        delete productData.length;
-        delete productData.width;
-        delete productData.height;
-        delete productData.dimensionUnit;
-      }
-
-      // Parse boolean fields from FormData (they come as strings)
-      if (productData.isActive !== undefined) {
-        productData.isActive = productData.isActive === 'true' || productData.isActive === true;
-      } else {
-        productData.isActive = true; // Default to true if not provided
-      }
-      
-      if (productData.isFeatured !== undefined) {
-        productData.isFeatured = productData.isFeatured === 'true' || productData.isFeatured === true;
-      } else {
-        productData.isFeatured = false;
-      }
-      
-      if (productData.isDigital !== undefined) {
-        productData.isDigital = productData.isDigital === 'true' || productData.isDigital === true;
-      } else {
-        productData.isDigital = false;
-      }
-
-      const product = new Product(productData);
-      await product.save();
-
-      return res.status(201).json({
-        success: true,
-        data: product,
-        message: 'Product created successfully'
-      });
-    } catch (error) {
-      console.error('Error creating product:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Error creating product',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-  }
-);
 
 // @route   POST /api/products/:id/images
 // @desc    Add images to existing product
