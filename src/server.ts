@@ -93,6 +93,55 @@ const corsOptions = {
 // Apply CORS to all routes FIRST - handles OPTIONS preflight automatically
 app.use(cors(corsOptions));
 
+// Additional middleware to ensure CORS headers are ALWAYS set on responses
+// This is a safety net in case Express CORS middleware doesn't catch everything
+app.use((req, res, next) => {
+  // Store original end function
+  const originalEnd = res.end.bind(res);
+  
+  // Override end to ensure CORS headers are set before sending response
+  (res as any).end = function(chunk?: any, encoding?: any, cb?: any) {
+    // Only set CORS headers if they're not already set
+    if (!res.getHeader('Access-Control-Allow-Origin')) {
+      const origin = req.headers.origin;
+      const allowedOrigins = [
+        process.env.FRONTEND_URL,
+        'https://fefa-frontend.vercel.app',
+        'http://localhost:3000',
+        'http://localhost:3001'
+      ].filter(Boolean);
+      
+      if (origin) {
+        const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+        if (allowedOrigins.includes(origin) || 
+            allowedOrigins.includes(normalizedOrigin) || 
+            process.env.NODE_ENV === 'development' ||
+            !process.env.NODE_ENV) {
+          res.setHeader('Access-Control-Allow-Origin', origin);
+          res.setHeader('Access-Control-Allow-Credentials', 'true');
+          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+          res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+        }
+      } else if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+      }
+    }
+    
+    // Call original end function with all possible signatures
+    if (typeof chunk === 'function') {
+      return originalEnd(chunk);
+    } else if (typeof encoding === 'function') {
+      return originalEnd(chunk, encoding);
+    } else if (cb) {
+      return originalEnd(chunk, encoding, cb);
+    } else {
+      return originalEnd(chunk, encoding);
+    }
+  };
+  
+  next();
+});
+
 // Security middleware (configured to not interfere with CORS)
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -109,6 +158,14 @@ app.use(compression());
 
 // Logging middleware
 app.use(morgan('combined'));
+
+// Custom request logging middleware to track all requests
+app.use((req, res, next) => {
+  console.log(`[EXPRESS] ${req.method} ${req.originalUrl || req.url}`);
+  console.log(`[EXPRESS] Origin: ${req.headers.origin || 'none'}`);
+  console.log(`[EXPRESS] Content-Type: ${req.headers['content-type'] || 'none'}`);
+  next();
+});
 
 // Favicon handler - prevent 404/500 errors from browser favicon requests
 app.get('/favicon.ico', (req, res) => {

@@ -65,6 +65,14 @@ router.post('/',
   uploadMultiple, 
   handleUploadError,
   async (req: Request, res: Response) => {
+    // Log that POST /api/products was reached
+    console.log(`[PRODUCTS] POST /api/products reached`);
+    console.log(`[PRODUCTS] Origin: ${req.headers.origin || 'none'}`);
+    console.log(`[PRODUCTS] Content-Type: ${req.headers['content-type'] || 'none'}`);
+    console.log(`[PRODUCTS] Has files: ${!!(req as any).files}`);
+    console.log(`[PRODUCTS] Files count: ${(req as any).files ? (req as any).files.length : 0}`);
+    console.log(`[PRODUCTS] Body keys: ${req.body ? Object.keys(req.body).join(', ') : 'none'}`);
+    
     try {
       const productData = req.body;
       
