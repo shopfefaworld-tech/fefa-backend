@@ -52,7 +52,7 @@ export const errorHandler = (
     error = { message, statusCode: 401 } as AppError;
   }
 
-  // Ensure CORS headers are set on error responses
+  // Ensure CORS headers are set on error responses (critical for CORS to work)
   const origin = req.headers.origin;
   const allowedOrigins = [
     process.env.FRONTEND_URL,
@@ -61,9 +61,21 @@ export const errorHandler = (
     'http://localhost:3001'
   ].filter(Boolean);
   
-  if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  // Always set CORS headers if origin is present and allowed, or in development
+  if (origin) {
+    const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+    if (allowedOrigins.includes(origin) || 
+        allowedOrigins.includes(normalizedOrigin) || 
+        process.env.NODE_ENV === 'development' ||
+        !process.env.NODE_ENV) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+    }
+  } else if (!origin && (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV)) {
+    // Allow requests with no origin in development
+    res.setHeader('Access-Control-Allow-Origin', '*');
   }
 
   res.status(error.statusCode || 500).json({
