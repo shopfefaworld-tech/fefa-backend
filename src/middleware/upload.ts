@@ -32,6 +32,20 @@ export const uploadMultiple = upload.array('images', 10);
 
 // Error handling middleware for multer
 export const handleUploadError = (error: any, req: Request, res: any, next: any) => {
+  // Ensure CORS headers are set on error responses
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://fefa-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ].filter(Boolean);
+  
+  if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({

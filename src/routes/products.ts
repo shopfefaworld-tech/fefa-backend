@@ -8,6 +8,11 @@ import { uploadImage, deleteImage } from '../config/cloudinary';
 
 const router = Router();
 
+// Handle OPTIONS preflight requests for CORS
+router.options('*', (req: Request, res: Response) => {
+  res.status(204).end();
+});
+
 // @route   GET /api/products
 // @desc    Get all products with filtering, sorting, and pagination
 // @access  Public/Admin

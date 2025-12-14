@@ -52,6 +52,20 @@ export const errorHandler = (
     error = { message, statusCode: 401 } as AppError;
   }
 
+  // Ensure CORS headers are set on error responses
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://fefa-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ].filter(Boolean);
+  
+  if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+
   res.status(error.statusCode || 500).json({
     success: false,
     error: error.message || 'Server Error',
