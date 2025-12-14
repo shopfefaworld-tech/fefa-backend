@@ -77,6 +77,35 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   // Log immediately when function is invoked
   console.log(`[Vercel] Function invoked: ${req.method} ${req.url || 'unknown'}`);
   
+  // Handle OPTIONS preflight requests immediately with CORS headers
+  // This must happen BEFORE any other processing
+  if (req.method === 'OPTIONS') {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      'https://fefa-frontend.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ].filter(Boolean);
+    
+    if (origin) {
+      const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+      if (allowedOrigins.includes(origin) || 
+          allowedOrigins.includes(normalizedOrigin) || 
+          process.env.NODE_ENV === 'development' ||
+          !process.env.NODE_ENV) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+        res.setHeader('Access-Control-Max-Age', '86400');
+        return res.status(204).end();
+      }
+    }
+    // If origin not allowed, still return 204 but without CORS headers (browser will block)
+    return res.status(204).end();
+  }
+  
   try {
     // Ensure services are initialized before handling request
     // Don't fail if initialization has errors - let Express handle the request
