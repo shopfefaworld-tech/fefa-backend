@@ -74,8 +74,14 @@ const ensureInitialized = async (): Promise<void> => {
 // Vercel serverless function handler
 // This handles ALL routes including root / and /api/*
 export default async (req: VercelRequest, res: VercelResponse) => {
-  // Log immediately when function is invoked
-  console.log(`[Vercel] Function invoked: ${req.method} ${req.url || 'unknown'}`);
+  // Log immediately when function is invoked - CRITICAL for debugging
+  console.log(`[Vercel] ========== REQUEST RECEIVED ==========`);
+  console.log(`[Vercel] Method: ${req.method}`);
+  console.log(`[Vercel] URL: ${req.url || 'unknown'}`);
+  console.log(`[Vercel] Origin: ${req.headers.origin || 'none'}`);
+  console.log(`[Vercel] Content-Type: ${req.headers['content-type'] || 'none'}`);
+  console.log(`[Vercel] Authorization: ${req.headers.authorization ? 'present' : 'missing'}`);
+  console.log(`[Vercel] =======================================`);
   
   // Handle OPTIONS preflight requests immediately with CORS headers
   // This must happen BEFORE any other processing
@@ -116,6 +122,38 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     }
     // If origin not allowed, still return 204 but without CORS headers (browser will block)
     return res.status(204).end();
+  }
+  
+  // Set CORS headers for ALL requests (not just OPTIONS)
+  // This ensures CORS headers are present on actual POST/GET/etc responses
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://fefa-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ].filter(Boolean);
+  
+  if (origin) {
+    const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      allowedOrigins.includes(normalizedOrigin) || 
+                      process.env.NODE_ENV === 'development' ||
+                      !process.env.NODE_ENV;
+    
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+      res.setHeader('Access-Control-Max-Age', '86400');
+      console.log(`[CORS] Set CORS headers for ${req.method} request from origin: ${origin}`);
+    } else {
+      console.log(`[CORS] Origin not allowed: ${origin}`);
+    }
+  } else if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+    // Allow requests with no origin in development
+    res.setHeader('Access-Control-Allow-Origin', '*');
   }
   
   try {
@@ -300,6 +338,33 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     
   } catch (error) {
     console.error('[Vercel] Serverless function error:', error);
+    
+    // Ensure CORS headers are set on error responses
+    const errorOrigin = req.headers.origin;
+    const errorAllowedOrigins = [
+      process.env.FRONTEND_URL,
+      'https://fefa-frontend.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ].filter(Boolean);
+    
+    if (errorOrigin) {
+      const normalizedErrorOrigin = errorOrigin.endsWith('/') ? errorOrigin.slice(0, -1) : errorOrigin;
+      const isErrorAllowed = errorAllowedOrigins.includes(errorOrigin) || 
+                            errorAllowedOrigins.includes(normalizedErrorOrigin) || 
+                            process.env.NODE_ENV === 'development' ||
+                            !process.env.NODE_ENV;
+      
+      if (isErrorAllowed) {
+        res.setHeader('Access-Control-Allow-Origin', errorOrigin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+      }
+    } else if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    
     // Return error response instead of crashing
     if (!res.headersSent) {
       res.status(500).json({
