@@ -138,7 +138,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (!requestUrl.startsWith('/api')) {
       // Check if this looks like an API route that should have /api prefix
       const apiRoutePatterns = ['/auth', '/users', '/products', '/cart', '/orders', 
-                                '/categories', '/banners', '/wishlist', '/reviews', '/health'];
+                                '/categories', '/banners', '/wishlist', '/reviews', '/health', '/test'];
       const isApiRoute = apiRoutePatterns.some(pattern => 
         requestUrl === pattern || requestUrl.startsWith(pattern + '/')
       );

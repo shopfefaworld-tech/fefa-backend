@@ -8,7 +8,27 @@ import { uploadImage, deleteImage } from '../config/cloudinary';
 
 const router = Router();
 
-// Test endpoint for products POST with CORS (no auth required)
+// Test endpoint for products - GET and POST (no auth required)
+// IMPORTANT: Must come BEFORE GET /:id to avoid route conflicts
+router.get('/test', async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: '✅ Test is successful! Products GET test endpoint is working correctly.',
+      test: 'products-get',
+      method: req.method,
+      origin: req.headers.origin,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: '❌ Test failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 router.post('/test', async (req: Request, res: Response) => {
   try {
     res.status(200).json({
@@ -29,6 +49,10 @@ router.post('/test', async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
+});
+
+router.options('/test', (req: Request, res: Response) => {
+  res.status(204).end();
 });
 
 // @route   POST /api/products
