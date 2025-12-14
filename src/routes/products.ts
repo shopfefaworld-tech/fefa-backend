@@ -8,6 +8,27 @@ import { uploadImage, deleteImage } from '../config/cloudinary';
 
 const router = Router();
 
+// Test endpoint for products POST with CORS (no auth required)
+router.post('/test', async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: 'Products POST test endpoint works!',
+      method: req.method,
+      origin: req.headers.origin,
+      contentType: req.headers['content-type'],
+      hasBody: !!req.body,
+      hasFiles: !!(req as any).files,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 // @route   GET /api/products
 // @desc    Get all products with filtering, sorting, and pagination
 // @access  Public/Admin

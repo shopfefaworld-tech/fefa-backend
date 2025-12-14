@@ -88,19 +88,31 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       'http://localhost:3001'
     ].filter(Boolean);
     
+    console.log(`[CORS] OPTIONS request from origin: ${origin}`);
+    console.log(`[CORS] Allowed origins:`, allowedOrigins);
+    
     if (origin) {
       const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
-      if (allowedOrigins.includes(origin) || 
-          allowedOrigins.includes(normalizedOrigin) || 
-          process.env.NODE_ENV === 'development' ||
-          !process.env.NODE_ENV) {
+      const isAllowed = allowedOrigins.includes(origin) || 
+                        allowedOrigins.includes(normalizedOrigin) || 
+                        process.env.NODE_ENV === 'development' ||
+                        !process.env.NODE_ENV;
+      
+      console.log(`[CORS] Origin check - Original: ${origin}, Normalized: ${normalizedOrigin}, Allowed: ${isAllowed}`);
+      
+      if (isAllowed) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
         res.setHeader('Access-Control-Max-Age', '86400');
+        console.log(`[CORS] OPTIONS request allowed, headers set`);
         return res.status(204).end();
+      } else {
+        console.log(`[CORS] OPTIONS request BLOCKED - origin not in allowed list`);
       }
+    } else {
+      console.log(`[CORS] OPTIONS request with no origin header`);
     }
     // If origin not allowed, still return 204 but without CORS headers (browser will block)
     return res.status(204).end();

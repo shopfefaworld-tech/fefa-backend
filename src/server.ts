@@ -199,6 +199,58 @@ app.get('/api/test', (req, res) => {
   });
 });
 
+// CORS test endpoint - GET
+app.get('/api/test/cors', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'CORS test successful',
+    method: req.method,
+    origin: req.headers.origin,
+    headers: {
+      origin: req.headers.origin,
+      'access-control-allow-origin': res.getHeader('Access-Control-Allow-Origin'),
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint - POST (no auth required)
+app.post('/api/test/cors', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'CORS POST test successful',
+    method: req.method,
+    origin: req.headers.origin,
+    contentType: req.headers['content-type'],
+    bodyReceived: !!req.body,
+    bodyKeys: req.body ? Object.keys(req.body) : [],
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint - OPTIONS (explicit handler)
+app.options('/api/test/cors', (req, res) => {
+  res.status(204).end();
+});
+
+// Test endpoint for products POST (no auth, no upload)
+app.post('/api/test/products', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Products POST test successful (no auth)',
+    method: req.method,
+    origin: req.headers.origin,
+    contentType: req.headers['content-type'],
+    hasBody: !!req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// OPTIONS handler for test products endpoint
+app.options('/api/test/products', (req, res) => {
+  res.status(204).end();
+});
+
 // API routes
 app.use('/api/auth', authRateLimit, authRoutes);
 app.use('/api/products', productRoutes);
