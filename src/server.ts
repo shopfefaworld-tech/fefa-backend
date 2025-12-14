@@ -137,6 +137,74 @@ app.get('/', (req, res) => {
   });
 });
 
+// Test endpoints - MUST be before rate limiting to ensure they work
+// Test route to verify routing works
+app.get('/api/test', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '✅ Test is successful! API routing is working correctly.',
+    test: 'api-routing',
+    url: req.url,
+    originalUrl: req.originalUrl,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint - GET
+app.get('/api/test/cors', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '✅ Test is successful! CORS GET is working correctly.',
+    test: 'cors-get',
+    method: req.method,
+    origin: req.headers.origin,
+    headers: {
+      origin: req.headers.origin,
+      'access-control-allow-origin': res.getHeader('Access-Control-Allow-Origin'),
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint - POST (no auth required)
+app.post('/api/test/cors', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '✅ Test is successful! CORS POST is working correctly.',
+    test: 'cors-post',
+    method: req.method,
+    origin: req.headers.origin,
+    contentType: req.headers['content-type'],
+    bodyReceived: !!req.body,
+    bodyKeys: req.body ? Object.keys(req.body) : [],
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint - OPTIONS (explicit handler)
+app.options('/api/test/cors', (req, res) => {
+  res.status(204).end();
+});
+
+// Test endpoint for products POST (no auth, no upload)
+app.post('/api/test/products', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '✅ Test is successful! Products POST test endpoint is working correctly.',
+    test: 'products-post-no-auth',
+    method: req.method,
+    origin: req.headers.origin,
+    contentType: req.headers['content-type'],
+    hasBody: !!req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// OPTIONS handler for test products endpoint
+app.options('/api/test/products', (req, res) => {
+  res.status(204).end();
+});
+
 // Apply general rate limiting to all routes (except OPTIONS for CORS preflight)
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
@@ -187,68 +255,6 @@ app.get('/api/health', (req, res) => {
     vercel: !!process.env.VERCEL,
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
-});
-
-// Test route to verify routing works
-app.get('/api/test', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Test route works!',
-    url: req.url,
-    originalUrl: req.originalUrl
-  });
-});
-
-// CORS test endpoint - GET
-app.get('/api/test/cors', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'CORS test successful',
-    method: req.method,
-    origin: req.headers.origin,
-    headers: {
-      origin: req.headers.origin,
-      'access-control-allow-origin': res.getHeader('Access-Control-Allow-Origin'),
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-// CORS test endpoint - POST (no auth required)
-app.post('/api/test/cors', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'CORS POST test successful',
-    method: req.method,
-    origin: req.headers.origin,
-    contentType: req.headers['content-type'],
-    bodyReceived: !!req.body,
-    bodyKeys: req.body ? Object.keys(req.body) : [],
-    timestamp: new Date().toISOString()
-  });
-});
-
-// CORS test endpoint - OPTIONS (explicit handler)
-app.options('/api/test/cors', (req, res) => {
-  res.status(204).end();
-});
-
-// Test endpoint for products POST (no auth, no upload)
-app.post('/api/test/products', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Products POST test successful (no auth)',
-    method: req.method,
-    origin: req.headers.origin,
-    contentType: req.headers['content-type'],
-    hasBody: !!req.body,
-    timestamp: new Date().toISOString()
-  });
-});
-
-// OPTIONS handler for test products endpoint
-app.options('/api/test/products', (req, res) => {
-  res.status(204).end();
 });
 
 // API routes

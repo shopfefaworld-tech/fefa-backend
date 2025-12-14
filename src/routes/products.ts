@@ -13,7 +13,8 @@ router.post('/test', async (req: Request, res: Response) => {
   try {
     res.status(200).json({
       success: true,
-      message: 'Products POST test endpoint works!',
+      message: '✅ Test is successful! Products POST endpoint is working correctly.',
+      test: 'products-post',
       method: req.method,
       origin: req.headers.origin,
       contentType: req.headers['content-type'],
@@ -24,6 +25,7 @@ router.post('/test', async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       success: false,
+      message: '❌ Test failed',
       error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
