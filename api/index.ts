@@ -126,6 +126,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   
   // Set CORS headers for ALL requests (not just OPTIONS)
   // This ensures CORS headers are present on actual POST/GET/etc responses
+  // CRITICAL: Must set headers BEFORE any processing to ensure they're on the response
   const origin = req.headers.origin;
   const allowedOrigins = [
     process.env.FRONTEND_URL,
@@ -142,12 +143,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
                       !process.env.NODE_ENV;
     
     if (isAllowed) {
+      // Set CORS headers immediately - these will be on ALL responses
       res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      // IMPORTANT: Allow multipart/form-data Content-Type for FormData uploads
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Type, Authorization');
       res.setHeader('Access-Control-Max-Age', '86400');
       console.log(`[CORS] Set CORS headers for ${req.method} request from origin: ${origin}`);
+      console.log(`[CORS] Content-Type: ${req.headers['content-type'] || 'none'}`);
     } else {
       console.log(`[CORS] Origin not allowed: ${origin}`);
     }

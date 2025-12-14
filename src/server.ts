@@ -84,6 +84,7 @@ const corsOptions = {
     'Origin',
     'X-HTTP-Method-Override'
   ],
+  // Expose headers that the client might need to read
   exposedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
