@@ -138,6 +138,8 @@ app.get('/', (req, res) => {
 });
 
 // Test endpoints - MUST be before rate limiting to ensure they work
+// These routes are defined directly on app (not in routers) to ensure they're matched first
+
 // Test route to verify routing works
 app.get('/api/test', (req, res) => {
   res.status(200).json({
@@ -186,8 +188,24 @@ app.options('/api/test/cors', (req, res) => {
   res.status(204).end();
 });
 
-// Test endpoint for products POST (no auth, no upload)
+// Test endpoint for products - GET and POST (no auth, no upload)
+// IMPORTANT: These must be defined before any app.use() routes
+app.get('/api/test/products', (req, res) => {
+  console.log('[TEST] GET /api/test/products called');
+  res.status(200).json({
+    success: true,
+    message: '✅ Test is successful! Products GET test endpoint is working correctly.',
+    test: 'products-get-no-auth',
+    method: req.method,
+    origin: req.headers.origin,
+    url: req.url,
+    originalUrl: req.originalUrl,
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.post('/api/test/products', (req, res) => {
+  console.log('[TEST] POST /api/test/products called');
   res.status(200).json({
     success: true,
     message: '✅ Test is successful! Products POST test endpoint is working correctly.',
@@ -196,12 +214,15 @@ app.post('/api/test/products', (req, res) => {
     origin: req.headers.origin,
     contentType: req.headers['content-type'],
     hasBody: !!req.body,
+    url: req.url,
+    originalUrl: req.originalUrl,
     timestamp: new Date().toISOString()
   });
 });
 
 // OPTIONS handler for test products endpoint
 app.options('/api/test/products', (req, res) => {
+  console.log('[TEST] OPTIONS /api/test/products called');
   res.status(204).end();
 });
 
