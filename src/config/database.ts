@@ -61,7 +61,9 @@ export const connectDB = async (): Promise<void> => {
     await mongoose.connect(mongoURI, options);
     
     // Ensure connection is fully established
-    if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
+    // Check the state after connection attempt
+    const currentState = mongoose.connection.readyState;
+    if (currentState !== mongoose.ConnectionStates.connected) {
       throw new Error('MongoDB connection not fully established');
     }
     

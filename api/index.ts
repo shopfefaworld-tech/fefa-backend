@@ -25,11 +25,14 @@ const ensureInitialized = async (): Promise<void> => {
   initializationPromise = (async () => {
     try {
       // Connect to MongoDB (mongoose handles connection reuse)
+      // Check current state before making decisions
+      const currentState = mongoose.connection.readyState;
+      
       // Check if disconnected or connecting - need to ensure connection is ready
-      if (mongoose.connection.readyState === mongoose.ConnectionStates.disconnected || 
-          mongoose.connection.readyState === mongoose.ConnectionStates.connecting) {
+      if (currentState === mongoose.ConnectionStates.disconnected || 
+          currentState === mongoose.ConnectionStates.connecting) {
         try {
-          if (mongoose.connection.readyState === mongoose.ConnectionStates.disconnected) {
+          if (currentState === mongoose.ConnectionStates.disconnected) {
             await connectDB();
           } else {
             // If connecting, wait for it to complete
@@ -50,8 +53,9 @@ const ensureInitialized = async (): Promise<void> => {
             });
           }
           
-          // Double-check connection is ready
-          if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
+          // Double-check connection is ready (re-read state after operations)
+          const finalState = mongoose.connection.readyState;
+          if (finalState !== mongoose.ConnectionStates.connected) {
             throw new Error('MongoDB connection not ready after initialization');
           }
         } catch (error) {
