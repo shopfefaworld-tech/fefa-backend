@@ -1,6 +1,68 @@
 import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 
+// In-memory store for rate limiting
+const memoryStore = new Map<string, { count: number; resetTime: number }>();
+
+// Create in-memory store for rate limiting
+const createMemoryStore = (windowMs: number) => {
+  return {
+    async increment(key: string) {
+      try {
+        const now = Date.now();
+        const item = memoryStore.get(key);
+        
+        if (item && item.resetTime > now) {
+          // Still within window, increment count
+          item.count += 1;
+          return { totalHits: item.count, resetTime: new Date(item.resetTime) };
+        } else {
+          // New window or expired, reset
+          const resetTime = now + windowMs;
+          memoryStore.set(key, { count: 1, resetTime });
+          // Clean up expired entries periodically
+          cleanupMemoryStore(now);
+          return { totalHits: 1, resetTime: new Date(resetTime) };
+        }
+      } catch (error) {
+        console.error('Memory rate limit error:', error);
+        return { totalHits: 1, resetTime: new Date(Date.now() + windowMs) };
+      }
+    },
+    
+    async decrement(key: string) {
+      try {
+        const item = memoryStore.get(key);
+        if (item && item.count > 0) {
+          item.count -= 1;
+        }
+      } catch (error) {
+        console.error('Memory rate limit decrement error:', error);
+      }
+    },
+    
+    async resetKey(key: string) {
+      try {
+        memoryStore.delete(key);
+      } catch (error) {
+        console.error('Memory rate limit reset error:', error);
+      }
+    }
+  };
+};
+
+// Clean up expired entries from memory store
+const cleanupMemoryStore = (now: number) => {
+  // Only clean up occasionally to avoid performance issues
+  if (Math.random() < 0.1) { // 10% chance to clean up
+    for (const [key, item] of memoryStore.entries()) {
+      if (item.resetTime <= now) {
+        memoryStore.delete(key);
+      }
+    }
+  }
+};
+
 // Custom key generator that works with Vercel's proxy
 const getClientIp = (req: Request): string => {
   // When trust proxy is enabled, req.ip will use X-Forwarded-For automatically
@@ -25,7 +87,7 @@ export const generalRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Using default in-memory store (no Redis)
+  store: createMemoryStore(15 * 60 * 1000),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -47,7 +109,7 @@ export const authRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Using default in-memory store (no Redis)
+  store: createMemoryStore(15 * 60 * 1000),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -69,7 +131,7 @@ export const bannerAnalyticsRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Using default in-memory store (no Redis)
+  store: createMemoryStore(5 * 60 * 1000),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -99,7 +161,7 @@ export const adminRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Using default in-memory store (no Redis)
+  store: createMemoryStore(15 * 60 * 1000),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -121,7 +183,7 @@ export const bannerInteractionRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Using default in-memory store (no Redis)
+  store: createMemoryStore(60 * 1000),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,

@@ -98,7 +98,7 @@ export class BannerCacheManager {
     // Clean up expired cache entries every hour
     setInterval(async () => {
       try {
-        // In-memory cache automatically handles TTL, but we can add custom cleanup logic here
+        // In-memory cache cleanup is handled automatically by the cache service
       } catch (error) {
         console.error('❌ Cache cleanup error:', error);
       }

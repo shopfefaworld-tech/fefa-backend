@@ -37,7 +37,6 @@ class CacheService {
    */
   async get(key: string): Promise<any | null> {
     try {
-      // Use in-memory cache
       const memoryItem = this.memoryCache.get(key);
       if (memoryItem && memoryItem.expires > Date.now()) {
         return memoryItem.data;
@@ -59,8 +58,6 @@ class CacheService {
   async set(key: string, data: any, ttl?: number): Promise<boolean> {
     try {
       const expireTime = ttl || this.defaultTTL;
-      
-      // Use in-memory cache
       const expires = Date.now() + (expireTime * 1000);
       this.memoryCache.set(key, { data, expires });
       
@@ -79,7 +76,6 @@ class CacheService {
    */
   async del(key: string): Promise<boolean> {
     try {
-      // Remove from memory cache
       this.memoryCache.delete(key);
       return true;
     } catch (error) {
@@ -94,10 +90,11 @@ class CacheService {
   async delPattern(pattern: string): Promise<number> {
     try {
       let deletedCount = 0;
+      const patternStr = pattern.replace('*', '');
 
       // Clean memory cache
       for (const key of this.memoryCache.keys()) {
-        if (key.includes(pattern.replace('*', ''))) {
+        if (key.includes(patternStr)) {
           this.memoryCache.delete(key);
           deletedCount++;
         }

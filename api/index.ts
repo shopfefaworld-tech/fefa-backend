@@ -25,34 +25,12 @@ const ensureInitialized = async (): Promise<void> => {
   initializationPromise = (async () => {
     try {
       // Connect to MongoDB (mongoose handles connection reuse)
-      // Check if already connected (readyState: 0=disconnected, 1=connected, 2=connecting, 3=disconnecting)
-      const readyState = mongoose.connection.readyState;
-      if (readyState === 0 || readyState === 3) {
+      if (mongoose.connection.readyState === 0) {
         try {
           await connectDB();
-          // Wait for connection to be fully established
-          // readyState 1 means connected
-          let attempts = 0;
-          while (mongoose.connection.readyState !== 1 && attempts < 50) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-          }
-          if (mongoose.connection.readyState !== 1) {
-            throw new Error('MongoDB connection timeout');
-          }
         } catch (error) {
           console.error('❌ MongoDB connection failed:', error);
-          throw error; // Re-throw to prevent proceeding without DB
-        }
-      } else if (readyState === 2) {
-        // Connection is in progress, wait for it
-        let attempts = 0;
-        while (mongoose.connection.readyState === 2 && attempts < 50) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          attempts++;
-        }
-        if (mongoose.connection.readyState !== 1) {
-          throw new Error('MongoDB connection timeout');
+          // Continue - MongoDB will retry on next request
         }
       }
 
@@ -180,44 +158,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   
   try {
     // Ensure services are initialized before handling request
-    // CRITICAL: Wait for MongoDB connection to be ready before proceeding
+    // Don't fail if initialization has errors - let Express handle the request
     try {
       await ensureInitialized();
-      
-      // Double-check MongoDB connection is ready before proceeding
-      // This is critical because bufferCommands is false
-      const dbReadyState = mongoose.connection.readyState;
-      if (dbReadyState !== 1) {
-        console.log(`[Vercel] MongoDB not ready (state: ${dbReadyState}), waiting...`);
-        let attempts = 0;
-        while (mongoose.connection.readyState !== 1 && attempts < 50) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          attempts++;
-        }
-        
-        const finalState = mongoose.connection.readyState;
-        if (finalState !== 1) {
-          console.error(`[Vercel] MongoDB connection not ready after waiting (final state: ${finalState})`);
-          if (!res.headersSent) {
-            return res.status(503).json({
-              success: false,
-              error: 'Service temporarily unavailable',
-              message: 'Database connection is not ready. Please try again in a moment.'
-            });
-          }
-          return;
-        }
-      }
     } catch (initError) {
-      console.error('[Vercel] Initialization error:', initError);
-      if (!res.headersSent) {
-        return res.status(503).json({
-          success: false,
-          error: 'Service initialization failed',
-          message: 'Unable to initialize required services. Please try again.'
-        });
-      }
-      return;
+      console.error('[Vercel] Initialization warning:', initError);
+      // Continue anyway - some endpoints might work without all services
     }
     
     // Log the request path for debugging
