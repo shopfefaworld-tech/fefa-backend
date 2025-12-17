@@ -25,10 +25,11 @@ const ensureInitialized = async (): Promise<void> => {
   initializationPromise = (async () => {
     try {
       // Connect to MongoDB (mongoose handles connection reuse)
-      // Check if disconnected (0) or connecting (2) - need to ensure connection is ready
-      if (mongoose.connection.readyState === 0 || mongoose.connection.readyState === 2) {
+      // Check if disconnected or connecting - need to ensure connection is ready
+      if (mongoose.connection.readyState === mongoose.ConnectionStates.disconnected || 
+          mongoose.connection.readyState === mongoose.ConnectionStates.connecting) {
         try {
-          if (mongoose.connection.readyState === 0) {
+          if (mongoose.connection.readyState === mongoose.ConnectionStates.disconnected) {
             await connectDB();
           } else {
             // If connecting, wait for it to complete
@@ -49,8 +50,8 @@ const ensureInitialized = async (): Promise<void> => {
             });
           }
           
-          // Double-check connection is ready (readyState === 1)
-          if (mongoose.connection.readyState !== 1) {
+          // Double-check connection is ready
+          if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
             throw new Error('MongoDB connection not ready after initialization');
           }
         } catch (error) {
@@ -188,13 +189,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       
       // Ensure MongoDB connection is ready before proceeding
       // This is critical when bufferCommands is false
-      if (mongoose.connection.readyState !== 1) {
+      if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
         try {
           await waitForConnection();
         } catch (waitError) {
           console.error('[Vercel] MongoDB connection not ready:', waitError);
           // If connection is disconnected, try to reconnect
-          if (mongoose.connection.readyState === 0) {
+          if (mongoose.connection.readyState === mongoose.ConnectionStates.disconnected) {
             try {
               await connectDB();
             } catch (reconnectError) {

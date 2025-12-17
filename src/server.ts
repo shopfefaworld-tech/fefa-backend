@@ -320,7 +320,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     vercel: !!process.env.VERCEL,
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    mongodb: mongoose.connection.readyState === mongoose.ConnectionStates.connected ? 'connected' : 'disconnected'
   });
 });
 
@@ -331,7 +331,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     vercel: !!process.env.VERCEL,
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    mongodb: mongoose.connection.readyState === mongoose.ConnectionStates.connected ? 'connected' : 'disconnected'
   });
 });
 

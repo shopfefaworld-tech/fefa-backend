@@ -6,12 +6,12 @@ import mongoose from 'mongoose';
  */
 export const waitForConnection = async (): Promise<void> => {
   // If already connected, return immediately
-  if (mongoose.connection.readyState === 1) {
+  if (mongoose.connection.readyState === mongoose.ConnectionStates.connected) {
     return;
   }
 
   // If connecting, wait for it to complete
-  if (mongoose.connection.readyState === 2) {
+  if (mongoose.connection.readyState === mongoose.ConnectionStates.connecting) {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('MongoDB connection timeout'));
@@ -30,7 +30,7 @@ export const waitForConnection = async (): Promise<void> => {
   }
 
   // If disconnected, need to connect first
-  if (mongoose.connection.readyState === 0) {
+  if (mongoose.connection.readyState === mongoose.ConnectionStates.disconnected) {
     throw new Error('MongoDB not connected. Call connectDB() first.');
   }
 };
@@ -38,7 +38,7 @@ export const waitForConnection = async (): Promise<void> => {
 export const connectDB = async (): Promise<void> => {
   try {
     // Check if already connected
-    if (mongoose.connection.readyState === 1) {
+    if (mongoose.connection.readyState === mongoose.ConnectionStates.connected) {
       console.log('MongoDB already connected');
       return;
     }
@@ -61,8 +61,7 @@ export const connectDB = async (): Promise<void> => {
     await mongoose.connect(mongoURI, options);
     
     // Ensure connection is fully established
-    // readyState 1 = connected
-    if (mongoose.connection.readyState !== 1) {
+    if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
       throw new Error('MongoDB connection not fully established');
     }
     
