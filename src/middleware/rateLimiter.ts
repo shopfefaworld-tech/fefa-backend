@@ -1,57 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
-import { redisConfig } from '../config/redis';
-
-// Create Redis store for rate limiting
-const createRedisStore = () => {
-  return {
-    async increment(key: string) {
-      try {
-        const client = await redisConfig.connect();
-        if (!client) {
-          // Fallback to in-memory counting
-          return { totalHits: 1, resetTime: new Date(Date.now() + 900000) };
-        }
-        
-        const current = await client.get(key);
-        const count = current ? parseInt(current) + 1 : 1;
-        
-        // Set expiration to windowMs
-        await client.setEx(key, 900, count.toString()); // 15 minutes
-        return { totalHits: count, resetTime: new Date(Date.now() + 900000) };
-      } catch (error) {
-        console.error('Redis rate limit error:', error);
-        return { totalHits: 1, resetTime: new Date(Date.now() + 900000) };
-      }
-    },
-    
-    async decrement(key: string) {
-      try {
-        const client = await redisConfig.connect();
-        if (!client) return;
-        
-        const current = await client.get(key);
-        if (current) {
-          const count = Math.max(0, parseInt(current) - 1);
-          await client.setEx(key, 900, count.toString());
-        }
-      } catch (error) {
-        console.error('Redis rate limit decrement error:', error);
-      }
-    },
-    
-    async resetKey(key: string) {
-      try {
-        const client = await redisConfig.connect();
-        if (!client) return;
-        
-        await client.del(key);
-      } catch (error) {
-        console.error('Redis rate limit reset error:', error);
-      }
-    }
-  };
-};
 
 // Custom key generator that works with Vercel's proxy
 const getClientIp = (req: Request): string => {
@@ -77,7 +25,7 @@ export const generalRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createRedisStore(),
+  // Using default in-memory store (no Redis)
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -99,7 +47,7 @@ export const authRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createRedisStore(),
+  // Using default in-memory store (no Redis)
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -121,7 +69,7 @@ export const bannerAnalyticsRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createRedisStore(),
+  // Using default in-memory store (no Redis)
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -151,7 +99,7 @@ export const adminRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createRedisStore(),
+  // Using default in-memory store (no Redis)
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -173,7 +121,7 @@ export const bannerInteractionRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createRedisStore(),
+  // Using default in-memory store (no Redis)
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,

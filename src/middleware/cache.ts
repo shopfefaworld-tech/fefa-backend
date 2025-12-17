@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { redisConfig } from '../config/redis';
 
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
@@ -34,22 +33,11 @@ class CacheService {
   }
 
   /**
-   * Get data from cache (Redis or memory fallback)
+   * Get data from cache (in-memory only)
    */
   async get(key: string): Promise<any | null> {
     try {
-      // Try Redis first if available
-      if (redisConfig.isRedisEnabled()) {
-        const client = await redisConfig.connect();
-        if (client) {
-          const cached = await client.get(key);
-          if (cached) {
-            return JSON.parse(cached);
-          }
-        }
-      }
-
-      // Fallback to memory cache
+      // Use in-memory cache
       const memoryItem = this.memoryCache.get(key);
       if (memoryItem && memoryItem.expires > Date.now()) {
         return memoryItem.data;
@@ -66,22 +54,13 @@ class CacheService {
   }
 
   /**
-   * Set data in cache (Redis or memory fallback)
+   * Set data in cache (in-memory only)
    */
   async set(key: string, data: any, ttl?: number): Promise<boolean> {
     try {
       const expireTime = ttl || this.defaultTTL;
       
-      // Try Redis first if available
-      if (redisConfig.isRedisEnabled()) {
-        const client = await redisConfig.connect();
-        if (client) {
-          await client.setEx(key, expireTime, JSON.stringify(data));
-          return true;
-        }
-      }
-
-      // Fallback to memory cache
+      // Use in-memory cache
       const expires = Date.now() + (expireTime * 1000);
       this.memoryCache.set(key, { data, expires });
       
@@ -100,15 +79,7 @@ class CacheService {
    */
   async del(key: string): Promise<boolean> {
     try {
-      // Try Redis first if available
-      if (redisConfig.isRedisEnabled()) {
-        const client = await redisConfig.connect();
-        if (client) {
-          await client.del(key);
-        }
-      }
-
-      // Also remove from memory cache
+      // Remove from memory cache
       this.memoryCache.delete(key);
       return true;
     } catch (error) {
@@ -124,18 +95,7 @@ class CacheService {
     try {
       let deletedCount = 0;
 
-      // Try Redis first if available
-      if (redisConfig.isRedisEnabled()) {
-        const client = await redisConfig.connect();
-        if (client) {
-          const keys = await client.keys(pattern);
-          if (keys.length > 0) {
-            deletedCount = await client.del(keys);
-          }
-        }
-      }
-
-      // Also clean memory cache
+      // Clean memory cache
       for (const key of this.memoryCache.keys()) {
         if (key.includes(pattern.replace('*', ''))) {
           this.memoryCache.delete(key);
