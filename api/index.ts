@@ -245,7 +245,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Pass request to Express app directly
     // Express apps can be called as request handlers
     // Wrap in Promise to handle async properly
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve) => {
       let finished = false;
       
       const finish = () => {
@@ -255,23 +255,22 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         }
       };
       
-      const error = (err: Error) => {
-        if (!finished) {
-          finished = true;
-          console.error('[Vercel] Response error:', err);
-          reject(err);
-        }
-      };
-      
       // Set a timeout to ensure we don't hang forever
       const timeout = setTimeout(() => {
         if (!finished && !res.headersSent) {
           finished = true;
           console.error('[Vercel] Request timeout');
-          res.status(504).json({
-            success: false,
-            error: 'Request timeout'
-          });
+          try {
+            res.status(504).json({
+              success: false,
+              error: 'Request timeout'
+            });
+          } catch (timeoutError) {
+            console.error('[Vercel] Error sending timeout response:', timeoutError);
+          }
+          resolve();
+        } else if (!finished) {
+          finished = true;
           resolve();
         }
       }, 25000); // 25 seconds
@@ -279,9 +278,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       // Listen for response completion
       const cleanup = () => {
         clearTimeout(timeout);
-        res.removeListener('finish', finish);
-        res.removeListener('close', finish);
-        res.removeListener('error', error);
+        try {
+          res.removeListener('finish', finish);
+          res.removeListener('close', finish);
+          res.removeListener('error', finish);
+        } catch (cleanupError) {
+          // Ignore cleanup errors
+        }
       };
       
       res.once('finish', () => {
@@ -292,9 +295,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         cleanup();
         finish();
       });
-      res.once('error', (err) => {
+      res.once('error', () => {
         cleanup();
-        error(err);
+        finish(); // Don't reject, just finish
       });
       
       // Call Express app as a request handler function
@@ -306,91 +309,119 @@ export default async (req: VercelRequest, res: VercelResponse) => {
           cleanup();
           if (err) {
             console.error('[Vercel] Express middleware error:', err);
-            console.error('[Vercel] Error stack:', err.stack);
+            console.error('[Vercel] Error stack:', err?.stack);
             // Express error handler should deal with this
-            // If response already sent, just resolve
-            if (res.headersSent) {
-              if (!finished) {
-                finished = true;
-                resolve();
+            // Always resolve to prevent unhandled rejections
+            if (!res.headersSent && !finished) {
+              try {
+                res.status(500).json({
+                  success: false,
+                  error: 'Internal server error',
+                  message: err?.message || 'Unknown error'
+                });
+              } catch (responseError) {
+                console.error('[Vercel] Error sending error response:', responseError);
               }
-            } else if (!finished) {
-              // Error handler should send response, but if not, reject
-              finished = true;
-              reject(err);
             }
+            finish();
           } else {
             // No error but no route matched - this shouldn't happen if routes are registered
             // But if it does, Express should have sent a 404 response
-            console.log('[Vercel] No error, but route may not have matched');
-            if (!finished && res.headersSent) {
-              finished = true;
-              resolve();
-            } else if (!finished) {
+            if (!finished && !res.headersSent) {
               // Wait a bit to see if response comes
               setTimeout(() => {
-                if (!finished) {
-                  console.log('[Vercel] No response sent, resolving anyway');
-                  finished = true;
-                  resolve();
+                if (!finished && !res.headersSent) {
+                  console.log('[Vercel] No response sent, sending 404');
+                  try {
+                    res.status(404).json({
+                      success: false,
+                      message: 'Route not found'
+                    });
+                  } catch (responseError) {
+                    console.error('[Vercel] Error sending 404 response:', responseError);
+                  }
                 }
+                finish();
               }, 100);
+            } else {
+              finish();
             }
           }
         });
       } catch (err) {
         console.error('[Vercel] Express call exception:', err);
         cleanup();
-        if (!finished) {
-          finished = true;
-          if (!res.headersSent) {
-            reject(err as Error);
-          } else {
-            resolve();
+        if (!finished && !res.headersSent) {
+          try {
+            res.status(500).json({
+              success: false,
+              error: 'Internal server error',
+              message: err instanceof Error ? err.message : 'Unknown error'
+            });
+          } catch (responseError) {
+            console.error('[Vercel] Error sending exception response:', responseError);
           }
         }
+        finish();
       }
     });
     
   } catch (error) {
     console.error('[Vercel] Serverless function error:', error);
+    console.error('[Vercel] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     
     // Ensure CORS headers are set on error responses
-    const errorOrigin = req.headers.origin;
-    const errorAllowedOrigins = [
-      process.env.FRONTEND_URL,
-      'https://fefa-frontend.vercel.app',
-      'http://localhost:3000',
-      'http://localhost:3001'
-    ].filter(Boolean);
-    
-    if (errorOrigin) {
-      const normalizedErrorOrigin = errorOrigin.endsWith('/') ? errorOrigin.slice(0, -1) : errorOrigin;
-      const isErrorAllowed = errorAllowedOrigins.includes(errorOrigin) || 
-                            errorAllowedOrigins.includes(normalizedErrorOrigin) || 
-                            process.env.NODE_ENV === 'development' ||
-                            !process.env.NODE_ENV;
+    try {
+      const errorOrigin = req.headers.origin;
+      const errorAllowedOrigins = [
+        process.env.FRONTEND_URL,
+        'https://fefa-frontend.vercel.app',
+        'http://localhost:3000',
+        'http://localhost:3001'
+      ].filter(Boolean);
       
-      if (isErrorAllowed) {
-        res.setHeader('Access-Control-Allow-Origin', errorOrigin);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+      if (errorOrigin && !res.headersSent) {
+        const normalizedErrorOrigin = errorOrigin.endsWith('/') ? errorOrigin.slice(0, -1) : errorOrigin;
+        const isErrorAllowed = errorAllowedOrigins.includes(errorOrigin) || 
+                              errorAllowedOrigins.includes(normalizedErrorOrigin) || 
+                              process.env.NODE_ENV === 'development' ||
+                              !process.env.NODE_ENV;
+        
+        if (isErrorAllowed) {
+          res.setHeader('Access-Control-Allow-Origin', errorOrigin);
+          res.setHeader('Access-Control-Allow-Credentials', 'true');
+          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+          res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+        }
+      } else if ((process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) && !res.headersSent) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
       }
-    } else if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-      res.setHeader('Access-Control-Allow-Origin', '*');
+    } catch (corsError) {
+      console.error('[Vercel] Error setting CORS headers:', corsError);
     }
     
     // Return error response instead of crashing
     if (!res.headersSent) {
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        ...(process.env.NODE_ENV === 'development' && { 
-          stack: error instanceof Error ? error.stack : undefined 
-        })
-      });
+      try {
+        res.status(500).json({
+          success: false,
+          error: 'Internal server error',
+          message: error instanceof Error ? error.message : 'Unknown error',
+          ...(process.env.NODE_ENV === 'development' && { 
+            stack: error instanceof Error ? error.stack : undefined 
+          })
+        });
+      } catch (responseError) {
+        console.error('[Vercel] Error sending error response:', responseError);
+        // If we can't send JSON, try to end the response
+        if (!res.headersSent) {
+          try {
+            res.status(500).end('Internal Server Error');
+          } catch (finalError) {
+            console.error('[Vercel] Failed to send any response:', finalError);
+          }
+        }
+      }
     }
     return;
   }
