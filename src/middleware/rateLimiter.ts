@@ -1,38 +1,54 @@
 import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
+import { redisConfig } from '../config/redis';
 
-// In-memory store for rate limiting (simplified, no Redis needed)
-const memoryStore = new Map<string, { count: number; resetTime: number }>();
-
-const createMemoryStore = () => {
+// Create Redis store for rate limiting
+const createRedisStore = () => {
   return {
     async increment(key: string) {
-      const now = Date.now();
-      const windowMs = 900000; // 15 minutes
-      const item = memoryStore.get(key);
-      
-      if (!item || item.resetTime < now) {
-        // New or expired entry
-        memoryStore.set(key, { count: 1, resetTime: now + windowMs });
-        return { totalHits: 1, resetTime: new Date(now + windowMs) };
+      try {
+        const client = await redisConfig.connect();
+        if (!client) {
+          // Fallback to in-memory counting
+          return { totalHits: 1, resetTime: new Date(Date.now() + 900000) };
+        }
+        
+        const current = await client.get(key);
+        const count = current ? parseInt(current) + 1 : 1;
+        
+        // Set expiration to windowMs
+        await client.setEx(key, 900, count.toString()); // 15 minutes
+        return { totalHits: count, resetTime: new Date(Date.now() + 900000) };
+      } catch (error) {
+        console.error('Redis rate limit error:', error);
+        return { totalHits: 1, resetTime: new Date(Date.now() + 900000) };
       }
-      
-      // Increment existing entry
-      item.count++;
-      memoryStore.set(key, item);
-      return { totalHits: item.count, resetTime: new Date(item.resetTime) };
     },
     
     async decrement(key: string) {
-      const item = memoryStore.get(key);
-      if (item && item.count > 0) {
-        item.count--;
-        memoryStore.set(key, item);
+      try {
+        const client = await redisConfig.connect();
+        if (!client) return;
+        
+        const current = await client.get(key);
+        if (current) {
+          const count = Math.max(0, parseInt(current) - 1);
+          await client.setEx(key, 900, count.toString());
+        }
+      } catch (error) {
+        console.error('Redis rate limit decrement error:', error);
       }
     },
     
     async resetKey(key: string) {
-      memoryStore.delete(key);
+      try {
+        const client = await redisConfig.connect();
+        if (!client) return;
+        
+        await client.del(key);
+      } catch (error) {
+        console.error('Redis rate limit reset error:', error);
+      }
     }
   };
 };
@@ -61,7 +77,7 @@ export const generalRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createMemoryStore(),
+  store: createRedisStore(),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -83,7 +99,7 @@ export const authRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createMemoryStore(),
+  store: createRedisStore(),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -105,7 +121,7 @@ export const bannerAnalyticsRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createMemoryStore(),
+  store: createRedisStore(),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -135,7 +151,7 @@ export const adminRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createMemoryStore(),
+  store: createRedisStore(),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,
@@ -157,7 +173,7 @@ export const bannerInteractionRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  store: createMemoryStore(),
+  store: createRedisStore(),
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,

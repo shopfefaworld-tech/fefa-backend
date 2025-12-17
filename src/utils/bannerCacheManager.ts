@@ -98,7 +98,7 @@ export class BannerCacheManager {
     // Clean up expired cache entries every hour
     setInterval(async () => {
       try {
-        // Memory cache cleanup (expired items are automatically removed)
+        // Redis automatically handles TTL, but we can add custom cleanup logic here
       } catch (error) {
         console.error('❌ Cache cleanup error:', error);
       }

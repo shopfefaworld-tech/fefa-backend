@@ -36,7 +36,8 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
-    "razorpay": "^2.9.6"
+    "razorpay": "^2.9.6",
+    "redis": "^4.6.12"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

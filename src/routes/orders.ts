@@ -88,31 +88,29 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
       return next(createError('Cart is empty', 400));
     }
 
-    // Prepare order items - optimized: batch product queries to avoid N+1 problem
-    const productIds = cart.items.map((item: any) => item.product);
-    const products = await Product.find({ _id: { $in: productIds } });
-    const productMap = new Map(products.map((p: any) => [p._id.toString(), p]));
-    
-    const orderItems = cart.items.map((item: any) => {
-      const product = productMap.get(item.product.toString());
-      if (!product) {
-        throw new Error(`Product ${item.product} not found`);
-      }
+    // Prepare order items
+    const orderItems = await Promise.all(
+      cart.items.map(async (item: any) => {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          throw new Error(`Product ${item.product} not found`);
+        }
 
-      // Get product image
-      const primaryImage = product.images.find((img: any) => img.isPrimary) || product.images[0];
+        // Get product image
+        const primaryImage = product.images.find((img: any) => img.isPrimary) || product.images[0];
 
-      return {
-        product: item.product,
-        variant: item.variant,
-        name: product.name,
-        sku: product.sku,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.total,
-        image: primaryImage?.url,
-      };
-    });
+        return {
+          product: item.product,
+          variant: item.variant,
+          name: product.name,
+          sku: product.sku,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.total,
+          image: primaryImage?.url,
+        };
+      })
+    );
 
     // Calculate pricing
     const subtotal = cart.subtotal || orderItems.reduce((sum, item) => sum + item.total, 0);

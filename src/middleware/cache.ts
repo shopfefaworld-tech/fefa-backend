@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { redisConfig } from '../config/redis';
 
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
@@ -33,10 +34,22 @@ class CacheService {
   }
 
   /**
-   * Get data from memory cache
+   * Get data from cache (Redis or memory fallback)
    */
   async get(key: string): Promise<any | null> {
     try {
+      // Try Redis first if available
+      if (redisConfig.isRedisEnabled()) {
+        const client = await redisConfig.connect();
+        if (client) {
+          const cached = await client.get(key);
+          if (cached) {
+            return JSON.parse(cached);
+          }
+        }
+      }
+
+      // Fallback to memory cache
       const memoryItem = this.memoryCache.get(key);
       if (memoryItem && memoryItem.expires > Date.now()) {
         return memoryItem.data;
@@ -47,16 +60,28 @@ class CacheService {
 
       return null;
     } catch (error) {
+      console.error('Cache get error:', error);
       return null;
     }
   }
 
   /**
-   * Set data in memory cache
+   * Set data in cache (Redis or memory fallback)
    */
   async set(key: string, data: any, ttl?: number): Promise<boolean> {
     try {
       const expireTime = ttl || this.defaultTTL;
+      
+      // Try Redis first if available
+      if (redisConfig.isRedisEnabled()) {
+        const client = await redisConfig.connect();
+        if (client) {
+          await client.setEx(key, expireTime, JSON.stringify(data));
+          return true;
+        }
+      }
+
+      // Fallback to memory cache
       const expires = Date.now() + (expireTime * 1000);
       this.memoryCache.set(key, { data, expires });
       
@@ -65,6 +90,7 @@ class CacheService {
       
       return true;
     } catch (error) {
+      console.error('Cache set error:', error);
       return false;
     }
   }
@@ -74,9 +100,19 @@ class CacheService {
    */
   async del(key: string): Promise<boolean> {
     try {
+      // Try Redis first if available
+      if (redisConfig.isRedisEnabled()) {
+        const client = await redisConfig.connect();
+        if (client) {
+          await client.del(key);
+        }
+      }
+
+      // Also remove from memory cache
       this.memoryCache.delete(key);
       return true;
     } catch (error) {
+      console.error('Cache delete error:', error);
       return false;
     }
   }
@@ -87,11 +123,21 @@ class CacheService {
   async delPattern(pattern: string): Promise<number> {
     try {
       let deletedCount = 0;
-      const patternStr = pattern.replace('*', '');
 
-      // Clean memory cache
+      // Try Redis first if available
+      if (redisConfig.isRedisEnabled()) {
+        const client = await redisConfig.connect();
+        if (client) {
+          const keys = await client.keys(pattern);
+          if (keys.length > 0) {
+            deletedCount = await client.del(keys);
+          }
+        }
+      }
+
+      // Also clean memory cache
       for (const key of this.memoryCache.keys()) {
-        if (key.includes(patternStr)) {
+        if (key.includes(pattern.replace('*', ''))) {
           this.memoryCache.delete(key);
           deletedCount++;
         }
@@ -99,6 +145,7 @@ class CacheService {
 
       return deletedCount;
     } catch (error) {
+      console.error('Cache pattern delete error:', error);
       return 0;
     }
   }

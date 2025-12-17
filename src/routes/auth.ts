@@ -5,17 +5,8 @@ import { User, IUser } from '../models';
 import { verifyToken, verifyFirebaseToken, AuthRequest } from '../middleware/auth';
 import { createError } from '../middleware/errorHandler';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
-import { connectDB } from '../config/database';
 
 const router = Router();
-
-// Helper function to ensure database connection
-const ensureDBConnection = async (): Promise<void> => {
-  if (mongoose.connection.readyState === 0) {
-    await connectDB();
-  }
-};
 
 // Validation schemas
 const registerSchema = Joi.object({
@@ -113,7 +104,6 @@ const updateProfileSchema = Joi.object({
 // @access  Public
 router.post('/register-email', async (req: Request, res: Response, next) => {
   try {
-    await ensureDBConnection();
     const { error, value } = emailPasswordRegisterSchema.validate(req.body);
     if (error) {
       throw createError(error.details[0].message, 400);
@@ -183,11 +173,6 @@ router.post('/register-email', async (req: Request, res: Response, next) => {
 // @access  Public
 router.post('/login', async (req: Request, res: Response, next) => {
   try {
-    // Ensure database connection
-    if (mongoose.connection.readyState === 0) {
-      await connectDB();
-    }
-
     const { error, value } = loginSchema.validate(req.body);
     if (error) {
       throw createError(error.details[0].message, 400);
@@ -258,7 +243,6 @@ router.post('/login', async (req: Request, res: Response, next) => {
 // @access  Public
 router.post('/google', async (req: Request, res: Response, next) => {
   try {
-    await ensureDBConnection();
     const { error, value } = googleTokenSchema.validate(req.body);
     if (error) {
       throw createError(error.details[0].message, 400);
@@ -341,7 +325,6 @@ router.post('/google', async (req: Request, res: Response, next) => {
 // @access  Public
 router.post('/forgot-password', async (req: Request, res: Response, next) => {
   try {
-    await ensureDBConnection();
     const { error, value } = forgotPasswordSchema.validate(req.body);
     if (error) {
       throw createError(error.details[0].message, 400);
@@ -388,7 +371,6 @@ router.post('/forgot-password', async (req: Request, res: Response, next) => {
 // @access  Public
 router.post('/reset-password', async (req: Request, res: Response, next) => {
   try {
-    await ensureDBConnection();
     const { error, value } = resetPasswordSchema.validate(req.body);
     if (error) {
       throw createError(error.details[0].message, 400);
@@ -438,7 +420,6 @@ router.post('/reset-password', async (req: Request, res: Response, next) => {
 // @access  Public
 router.post('/register', async (req: Request, res: Response, next) => {
   try {
-    await ensureDBConnection();
     const { error, value } = registerSchema.validate(req.body);
     if (error) {
       throw createError(error.details[0].message, 400);

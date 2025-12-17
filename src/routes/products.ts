@@ -65,6 +65,14 @@ router.post('/',
   uploadMultiple, 
   handleUploadError,
   async (req: Request, res: Response) => {
+    // Log that POST /api/products was reached
+    console.log(`[PRODUCTS] POST /api/products reached`);
+    console.log(`[PRODUCTS] Origin: ${req.headers.origin || 'none'}`);
+    console.log(`[PRODUCTS] Content-Type: ${req.headers['content-type'] || 'none'}`);
+    console.log(`[PRODUCTS] Has files: ${!!(req as any).files}`);
+    console.log(`[PRODUCTS] Files count: ${(req as any).files ? (req as any).files.length : 0}`);
+    console.log(`[PRODUCTS] Body keys: ${req.body ? Object.keys(req.body).join(', ') : 'none'}`);
+    
     try {
       const productData = req.body;
       
@@ -155,18 +163,24 @@ router.post('/',
         }
       }
 
-      // Handle tags - optimized parsing logic
-      if (Array.isArray(productData.tags)) {
-        productData.tags = productData.tags.filter(Boolean);
-      } else if (typeof productData.tags === 'string') {
+      // Handle tags - can be string (comma-separated), JSON string (array), or already an array
+      if (typeof productData.tags === 'string') {
         try {
+          // Try to parse as JSON first (in case it's a stringified array from frontend)
           const parsed = JSON.parse(productData.tags);
-          productData.tags = Array.isArray(parsed) 
-            ? parsed.filter(Boolean)
-            : productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
-        } catch {
+          if (Array.isArray(parsed)) {
+            productData.tags = parsed.filter(Boolean);
+          } else {
+            // If not an array, treat as comma-separated string
+            productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
+          }
+        } catch (e) {
+          // If JSON parse fails, treat as comma-separated string
           productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
         }
+      } else if (Array.isArray(productData.tags)) {
+        // Already an array, just filter
+        productData.tags = productData.tags.filter(Boolean);
       } else {
         productData.tags = [];
       }

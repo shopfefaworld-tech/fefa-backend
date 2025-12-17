@@ -3,6 +3,7 @@ import app from '../src/server';
 import { connectDB } from '../src/config/database';
 import { initializeFirebase } from '../src/config/firebase';
 import { initializeCloudinary } from '../src/config/cloudinary';
+import { redisConfig } from '../src/config/redis';
 import mongoose from 'mongoose';
 
 // Track initialization state
@@ -34,7 +35,12 @@ const ensureInitialized = async (): Promise<void> => {
         }
       }
 
-      // Using in-memory caching (Redis removed)
+      // Initialize Redis (with fallback)
+      try {
+        await redisConfig.connect();
+      } catch (error) {
+        console.log('⚠️ Redis unavailable, using in-memory caching');
+      }
 
       // Initialize Firebase (has internal check for already initialized)
       try {
