@@ -91,7 +91,7 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
     // Prepare order items - optimized: batch product queries to avoid N+1 problem
     const productIds = cart.items.map((item: any) => item.product);
     const products = await Product.find({ _id: { $in: productIds } });
-    const productMap = new Map(products.map(p => [p._id.toString(), p]));
+    const productMap = new Map(products.map((p: any) => [p._id.toString(), p]));
     
     const orderItems = cart.items.map((item: any) => {
       const product = productMap.get(item.product.toString());
