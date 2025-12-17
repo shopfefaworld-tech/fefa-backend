@@ -3,6 +3,7 @@ import { getFirebaseAuth } from '../config/firebase';
 import { User } from '../models';
 import { createError } from './errorHandler';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 export interface AuthRequest extends Request {
   user?: any;
@@ -30,6 +31,12 @@ export const verifyToken = async (
 
     // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    
+    // Ensure database connection before querying
+    if (mongoose.connection.readyState === 0) {
+      const { connectDB } = await import('../config/database');
+      await connectDB();
+    }
     
     // Get user from database
     const user = await User.findById(decoded.userId);

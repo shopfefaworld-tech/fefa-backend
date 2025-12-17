@@ -320,7 +320,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     vercel: !!process.env.VERCEL,
-    mongodb: mongoose.connection.readyState === mongoose.ConnectionStates.connected ? 'connected' : 'disconnected'
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 
@@ -331,7 +331,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     vercel: !!process.env.VERCEL,
-    mongodb: mongoose.connection.readyState === mongoose.ConnectionStates.connected ? 'connected' : 'disconnected'
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 
@@ -401,7 +401,7 @@ if (isVercel) {
         console.log(`🚀 Server running on port ${PORT}`);
         console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-        console.log(`📦 In-memory caching enabled`);
+        console.log(`📦 Redis caching enabled`);
         console.log(`🛡️ Rate limiting enabled`);
       });
     } catch (error) {
