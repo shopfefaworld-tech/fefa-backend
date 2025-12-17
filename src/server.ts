@@ -27,7 +27,7 @@ import reviewRoutes from './routes/reviews';
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
 import { notFound } from './middleware/notFound';
-import { generalRateLimit, authRateLimit } from './middleware/rateLimiter';
+import { generalRateLimit, authRateLimit, adminRateLimit } from './middleware/rateLimiter';
 
 // Load environment variables
 dotenv.config();
@@ -308,9 +308,14 @@ app.options('/api/test/products', (req, res) => {
 });
 
 // Apply general rate limiting to all routes (except OPTIONS for CORS preflight)
+// Also skip for product routes as they use adminRateLimit
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next(); // Skip rate limiting for OPTIONS requests
+  }
+  // Skip general rate limit for product routes (they use adminRateLimit)
+  if (req.path.startsWith('/api/products')) {
+    return next();
   }
   return generalRateLimit(req, res, next);
 });
@@ -361,7 +366,8 @@ app.get('/api/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRateLimit, authRoutes);
-app.use('/api/products', productRoutes);
+// Products route - use admin rate limit (higher limit for admin operations)
+app.use('/api/products', adminRateLimit, productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);

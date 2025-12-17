@@ -141,11 +141,15 @@ export const bannerAnalyticsRateLimit = rateLimit({
   }
 });
 
-// Admin operations rate limiter
+// Admin operations rate limiter (higher limits for admin operations)
 export const adminRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // Limit each authenticated user to 200 admin requests per windowMs
+  max: 500, // Increased limit for admin operations (was 200)
   keyGenerator: (req: Request): string => {
+    // Skip rate limiting for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      return `options:${Date.now()}`; // Unique key for OPTIONS to bypass limit
+    }
     // Use user ID for authenticated users
     const userId = (req as any).user?.id;
     if (userId) {
@@ -162,6 +166,10 @@ export const adminRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   store: createMemoryStore(15 * 60 * 1000),
+  skip: (req: Request) => {
+    // Skip rate limiting for OPTIONS preflight requests
+    return req.method === 'OPTIONS';
+  },
   handler: (req: Request, res: Response) => {
     res.status(429).json({
       success: false,

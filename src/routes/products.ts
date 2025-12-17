@@ -8,6 +8,26 @@ import { uploadImage, deleteImage } from '../config/cloudinary';
 
 const router = Router();
 
+// Explicit OPTIONS handler for all product routes to handle CORS preflight
+router.options('*', (req: Request, res: Response) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://fefa-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ].filter(Boolean);
+  
+  if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+  res.status(204).end();
+});
+
 // Test endpoint for products - GET and POST (no auth required)
 // IMPORTANT: Must come BEFORE GET /:id to avoid route conflicts
 router.get('/test', async (req: Request, res: Response) => {
