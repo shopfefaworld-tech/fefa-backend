@@ -49,7 +49,7 @@ const WishlistSchema = new Schema<IWishlist>({
 });
 
 // Indexes
-WishlistSchema.index({ user: 1 });
+// Note: user field already has unique: true which creates an index, so we don't need to create it again
 WishlistSchema.index({ 'items.product': 1 });
 WishlistSchema.index({ 'items.addedAt': -1 });
 
