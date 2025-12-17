@@ -294,13 +294,15 @@ const ProductSchema = new Schema<IProduct>({
   timestamps: true,
 });
 
-// Indexes
-ProductSchema.index({ category: 1 });
-ProductSchema.index({ isActive: 1, isFeatured: 1 });
-ProductSchema.index({ price: 1 });
-ProductSchema.index({ 'ratings.average': -1 });
-ProductSchema.index({ createdAt: -1 });
-ProductSchema.index({ name: 'text', description: 'text', tags: 'text' });
+// Indexes - optimized for common queries
+ProductSchema.index({ category: 1, isActive: 1 }); // Compound index for category filtering
+ProductSchema.index({ isActive: 1, isFeatured: 1, createdAt: -1 }); // Compound for featured products
+ProductSchema.index({ price: 1, isActive: 1 }); // Compound for price filtering
+ProductSchema.index({ 'ratings.average': -1, isActive: 1 }); // Compound for ratings
+ProductSchema.index({ createdAt: -1, isActive: 1 }); // Compound for sorting
+ProductSchema.index({ name: 'text', description: 'text', tags: 'text' }); // Text search
+ProductSchema.index({ slug: 1 }); // For slug lookups
+ProductSchema.index({ sku: 1 }); // For SKU lookups
 
 // Virtual for primary image
 ProductSchema.virtual('primaryImage').get(function() {
