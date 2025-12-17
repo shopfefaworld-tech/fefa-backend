@@ -4,9 +4,13 @@ import { getFirebaseAuth } from '../config/firebase';
 import { User, IUser } from '../models';
 import { verifyToken, verifyFirebaseToken, AuthRequest } from '../middleware/auth';
 import { createError } from '../middleware/errorHandler';
+import { ensureDB } from '../middleware/ensureDB';
 import jwt from 'jsonwebtoken';
 
 const router = Router();
+
+// Apply ensureDB middleware to all auth routes that need database access
+router.use(ensureDB);
 
 // Validation schemas
 const registerSchema = Joi.object({

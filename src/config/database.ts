@@ -21,7 +21,9 @@ export const connectDB = async (): Promise<void> => {
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
       connectTimeoutMS: 10000, // Connection timeout of 10 seconds
-      bufferCommands: false, // Disable mongoose buffering
+      // Enable buffering in serverless environments to prevent "Cannot call before connection" errors
+      // In serverless, connection might not be ready when queries are made
+      bufferCommands: process.env.VERCEL === '1' || process.env.VERCEL_ENV ? true : false,
       retryWrites: true,
       retryReads: true,
     };
