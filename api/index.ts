@@ -25,11 +25,18 @@ const ensureInitialized = async (): Promise<void> => {
   initializationPromise = (async () => {
     try {
       // Connect to MongoDB (mongoose handles connection reuse)
+      // Add timeout to prevent hanging
       if (mongoose.connection.readyState === 0) {
         try {
-          await connectDB();
+          // Race connection against timeout to prevent hanging
+          await Promise.race([
+            connectDB(),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('MongoDB connection timeout')), 8000)
+            )
+          ]);
         } catch (error) {
-          console.error('❌ MongoDB connection failed:', error);
+          console.error('❌ MongoDB connection failed:', error instanceof Error ? error.message : error);
           // Continue - MongoDB will retry on next request
         }
       }
@@ -159,8 +166,17 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     // Ensure services are initialized before handling request
     // Don't fail if initialization has errors - let Express handle the request
+    // Add timeout to prevent hanging
     try {
-      await ensureInitialized();
+      await Promise.race([
+        ensureInitialized(),
+        new Promise((resolve) => 
+          setTimeout(() => {
+            console.log('[Vercel] Initialization timeout, continuing anyway');
+            resolve(undefined);
+          }, 10000) // 10 second timeout
+        )
+      ]);
     } catch (initError) {
       console.error('[Vercel] Initialization warning:', initError);
       // Continue anyway - some endpoints might work without all services

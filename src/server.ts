@@ -101,7 +101,21 @@ app.use((req, res, next) => {
   
   // Override end to ensure CORS headers are set before sending response
   (res as any).end = function(chunk?: any, encoding?: any, cb?: any) {
-    // Only set CORS headers if they're not already set
+    // Check if headers are already sent - if so, don't try to set them
+    if (res.headersSent) {
+      // Headers already sent, just call original end
+      if (typeof chunk === 'function') {
+        return originalEnd(chunk);
+      } else if (typeof encoding === 'function') {
+        return originalEnd(chunk, encoding);
+      } else if (cb) {
+        return originalEnd(chunk, encoding, cb);
+      } else {
+        return originalEnd(chunk, encoding);
+      }
+    }
+    
+    // Only set CORS headers if they're not already set and headers haven't been sent
     if (!res.getHeader('Access-Control-Allow-Origin')) {
       const origin = req.headers.origin;
       const allowedOrigins = [
@@ -117,13 +131,23 @@ app.use((req, res, next) => {
             allowedOrigins.includes(normalizedOrigin) || 
             process.env.NODE_ENV === 'development' ||
             !process.env.NODE_ENV) {
-          res.setHeader('Access-Control-Allow-Origin', origin);
-          res.setHeader('Access-Control-Allow-Credentials', 'true');
-          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-          res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+          try {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+            res.setHeader('Access-Control-Allow-Credentials', 'true');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With, Accept, Origin');
+          } catch (error) {
+            // Headers might have been sent between check and set, ignore error
+            console.error('CORS header set error (ignored):', error);
+          }
         }
       } else if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        try {
+          res.setHeader('Access-Control-Allow-Origin', '*');
+        } catch (error) {
+          // Headers might have been sent between check and set, ignore error
+          console.error('CORS header set error (ignored):', error);
+        }
       }
     }
     

@@ -20,7 +20,10 @@ export const connectDB = async (): Promise<void> => {
       maxPoolSize: 10, // Maintain up to 10 socket connections
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      connectTimeoutMS: 10000, // Connection timeout of 10 seconds
       bufferCommands: false, // Disable mongoose buffering
+      retryWrites: true,
+      retryReads: true,
     };
 
     await mongoose.connect(mongoURI, options);
