@@ -155,24 +155,18 @@ router.post('/',
         }
       }
 
-      // Handle tags - can be string (comma-separated), JSON string (array), or already an array
-      if (typeof productData.tags === 'string') {
+      // Handle tags - optimized parsing logic
+      if (Array.isArray(productData.tags)) {
+        productData.tags = productData.tags.filter(Boolean);
+      } else if (typeof productData.tags === 'string') {
         try {
-          // Try to parse as JSON first (in case it's a stringified array from frontend)
           const parsed = JSON.parse(productData.tags);
-          if (Array.isArray(parsed)) {
-            productData.tags = parsed.filter(Boolean);
-          } else {
-            // If not an array, treat as comma-separated string
-            productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
-          }
-        } catch (e) {
-          // If JSON parse fails, treat as comma-separated string
+          productData.tags = Array.isArray(parsed) 
+            ? parsed.filter(Boolean)
+            : productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
+        } catch {
           productData.tags = productData.tags.split(',').map((tag: string) => tag.trim()).filter(Boolean);
         }
-      } else if (Array.isArray(productData.tags)) {
-        // Already an array, just filter
-        productData.tags = productData.tags.filter(Boolean);
       } else {
         productData.tags = [];
       }

@@ -11,7 +11,6 @@ import { connectDB } from './config/database';
 import { initializeFirebase } from './config/firebase';
 import { initializeCloudinary } from './config/cloudinary';
 import { initializeRazorpay } from './config/razorpay';
-import { redisConfig } from './config/redis';
 
 // Import routes
 import authRoutes from './routes/auth';
@@ -361,18 +360,6 @@ const initializeServices = async () => {
     await connectDB();
     console.log('✅ Connected to MongoDB');
 
-    // Initialize Redis (with fallback)
-    try {
-      await redisConfig.connect();
-      if (redisConfig.isRedisConnected()) {
-        console.log('✅ Redis connected');
-      } else {
-        console.log('⚠️ Redis unavailable, using in-memory caching');
-      }
-    } catch (error) {
-      console.log('⚠️ Redis unavailable, using in-memory caching');
-    }
-
     // Initialize Firebase
     await initializeFirebase();
     console.log('✅ Firebase initialized');
@@ -414,7 +401,7 @@ if (isVercel) {
         console.log(`🚀 Server running on port ${PORT}`);
         console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-        console.log(`📦 Redis caching enabled`);
+        console.log(`📦 In-memory caching enabled`);
         console.log(`🛡️ Rate limiting enabled`);
       });
     } catch (error) {
