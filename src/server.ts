@@ -177,18 +177,8 @@ app.use(helmet({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Compression middleware - optimized for better performance
-app.use(compression({
-  level: 6, // Compression level (1-9, 6 is a good balance)
-  filter: (req, res) => {
-    // Don't compress if client doesn't support it
-    if (req.headers['x-no-compression']) {
-      return false;
-    }
-    // Use compression for all other requests
-    return compression.filter(req, res);
-  }
-}));
+// Compression middleware
+app.use(compression());
 
 // Logging middleware
 app.use(morgan('combined'));

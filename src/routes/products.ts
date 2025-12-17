@@ -5,7 +5,6 @@ import { errorHandler } from '../middleware/errorHandler';
 import { verifyToken, requireAdmin } from '../middleware/auth';
 import { uploadMultiple, handleUploadError } from '../middleware/upload';
 import { uploadImage, deleteImage } from '../config/cloudinary';
-import { cacheService } from '../middleware/cache';
 
 const router = Router();
 
@@ -316,7 +315,7 @@ router.post('/',
 // @route   GET /api/products
 // @desc    Get all products with filtering, sorting, and pagination
 // @access  Public/Admin
-router.get('/', cacheService.cacheMiddleware({ ttl: 300 }), async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const {
       page = 1,
@@ -363,23 +362,14 @@ router.get('/', cacheService.cacheMiddleware({ ttl: 300 }), async (req: Request,
     }
     
     if (category) {
-      // Cache category lookup for better performance
-      const cacheKey = `category:${category}`;
-      let categoryDoc = await cacheService.get(cacheKey);
+      // Find category by slug or name
+      const categoryDoc = await Category.findOne({
+        $or: [
+          { slug: category },
+          { name: { $regex: category, $options: 'i' } }
+        ]
+      });
       
-      if (!categoryDoc) {
-        categoryDoc = await Category.findOne({
-          $or: [
-            { slug: category },
-            { name: { $regex: category, $options: 'i' } }
-          ]
-        }).select('_id').lean();
-        
-        if (categoryDoc) {
-          // Cache for 1 hour
-          await cacheService.set(cacheKey, categoryDoc, 3600);
-        }
-      }
       
       if (categoryDoc) {
         filter.category = categoryDoc._id;
@@ -423,21 +413,16 @@ router.get('/', cacheService.cacheMiddleware({ ttl: 300 }), async (req: Request,
     // Calculate pagination
     const skip = (Number(page) - 1) * Number(limit);
 
-    // Select only needed fields for better performance
-    const selectFields = 'name slug description shortDescription price comparePrice images category subcategory tags isActive isFeatured ratings createdAt';
-    
-    // Execute queries in parallel for better performance
-    const [products, total] = await Promise.all([
-      Product.find(filter)
-        .select(selectFields)
-        .populate('category', 'name slug')
-        .populate('subcategory', 'name slug')
-        .sort(sort)
-        .skip(skip)
-        .limit(Number(limit))
-        .lean(),
-      Product.countDocuments(filter)
-    ]);
+    // Execute query
+    const products = await Product.find(filter)
+      .populate('category', 'name slug')
+      .populate('subcategory', 'name slug')
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
+
+    const total = await Product.countDocuments(filter);
 
     return res.json({
       success: true,
@@ -463,7 +448,7 @@ router.get('/', cacheService.cacheMiddleware({ ttl: 300 }), async (req: Request,
 // @route   GET /api/products/:id
 // @desc    Get single product by ID or slug
 // @access  Public
-router.get('/:id', cacheService.cacheMiddleware({ ttl: 600 }), async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     
@@ -509,7 +494,7 @@ router.get('/:id', cacheService.cacheMiddleware({ ttl: 600 }), async (req: Reque
 // @route   GET /api/products/category/:category
 // @desc    Get products by category
 // @access  Public
-router.get('/category/:category', cacheService.cacheMiddleware({ ttl: 300 }), async (req: Request, res: Response) => {
+router.get('/category/:category', async (req: Request, res: Response) => {
   try {
     const { category } = req.params;
     const {
@@ -541,26 +526,22 @@ router.get('/category/:category', cacheService.cacheMiddleware({ ttl: 300 }), as
     // Calculate pagination
     const skip = (Number(page) - 1) * Number(limit);
 
-    const filter = {
+    // Execute query
+    const products = await Product.find({
       category: categoryDoc._id,
       isActive: true
-    };
+    })
+      .populate('category', 'name slug')
+      .populate('subcategory', 'name slug')
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
 
-    // Select only needed fields for better performance
-    const selectFields = 'name slug description shortDescription price comparePrice images category subcategory tags isActive isFeatured ratings createdAt';
-    
-    // Execute queries in parallel for better performance
-    const [products, total] = await Promise.all([
-      Product.find(filter)
-        .select(selectFields)
-        .populate('category', 'name slug')
-        .populate('subcategory', 'name slug')
-        .sort(sort)
-        .skip(skip)
-        .limit(Number(limit))
-        .lean(),
-      Product.countDocuments(filter)
-    ]);
+    const total = await Product.countDocuments({
+      category: categoryDoc._id,
+      isActive: true
+    });
 
     return res.json({
       success: true,
