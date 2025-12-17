@@ -1,5 +1,40 @@
 import mongoose from 'mongoose';
 
+/**
+ * Wait for MongoDB connection to be ready
+ * This is important when bufferCommands is false
+ */
+export const waitForConnection = async (): Promise<void> => {
+  // If already connected, return immediately
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+
+  // If connecting, wait for it to complete
+  if (mongoose.connection.readyState === 2) {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('MongoDB connection timeout'));
+      }, 10000); // 10 second timeout
+
+      mongoose.connection.once('connected', () => {
+        clearTimeout(timeout);
+        resolve();
+      });
+
+      mongoose.connection.once('error', (err) => {
+        clearTimeout(timeout);
+        reject(err);
+      });
+    });
+  }
+
+  // If disconnected, need to connect first
+  if (mongoose.connection.readyState === 0) {
+    throw new Error('MongoDB not connected. Call connectDB() first.');
+  }
+};
+
 export const connectDB = async (): Promise<void> => {
   try {
     // Check if already connected
@@ -24,6 +59,12 @@ export const connectDB = async (): Promise<void> => {
     };
 
     await mongoose.connect(mongoURI, options);
+    
+    // Ensure connection is fully established
+    // readyState 1 = connected
+    if (mongoose.connection.readyState !== 1) {
+      throw new Error('MongoDB connection not fully established');
+    }
     
     console.log('MongoDB connected successfully');
     

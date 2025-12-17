@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import app from '../src/server';
-import { connectDB } from '../src/config/database';
+import { connectDB, waitForConnection } from '../src/config/database';
 import { initializeFirebase } from '../src/config/firebase';
 import { initializeCloudinary } from '../src/config/cloudinary';
 import mongoose from 'mongoose';
@@ -25,9 +25,34 @@ const ensureInitialized = async (): Promise<void> => {
   initializationPromise = (async () => {
     try {
       // Connect to MongoDB (mongoose handles connection reuse)
-      if (mongoose.connection.readyState === 0) {
+      // Check if disconnected (0) or connecting (2) - need to ensure connection is ready
+      if (mongoose.connection.readyState === 0 || mongoose.connection.readyState === 2) {
         try {
-          await connectDB();
+          if (mongoose.connection.readyState === 0) {
+            await connectDB();
+          } else {
+            // If connecting, wait for it to complete
+            await new Promise<void>((resolve, reject) => {
+              const timeout = setTimeout(() => {
+                reject(new Error('MongoDB connection timeout'));
+              }, 10000);
+
+              mongoose.connection.once('connected', () => {
+                clearTimeout(timeout);
+                resolve();
+              });
+
+              mongoose.connection.once('error', (err) => {
+                clearTimeout(timeout);
+                reject(err);
+              });
+            });
+          }
+          
+          // Double-check connection is ready (readyState === 1)
+          if (mongoose.connection.readyState !== 1) {
+            throw new Error('MongoDB connection not ready after initialization');
+          }
         } catch (error) {
           console.error('❌ MongoDB connection failed:', error);
           // Continue - MongoDB will retry on next request
@@ -160,6 +185,24 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Don't fail if initialization has errors - let Express handle the request
     try {
       await ensureInitialized();
+      
+      // Ensure MongoDB connection is ready before proceeding
+      // This is critical when bufferCommands is false
+      if (mongoose.connection.readyState !== 1) {
+        try {
+          await waitForConnection();
+        } catch (waitError) {
+          console.error('[Vercel] MongoDB connection not ready:', waitError);
+          // If connection is disconnected, try to reconnect
+          if (mongoose.connection.readyState === 0) {
+            try {
+              await connectDB();
+            } catch (reconnectError) {
+              console.error('[Vercel] MongoDB reconnection failed:', reconnectError);
+            }
+          }
+        }
+      }
     } catch (initError) {
       console.error('[Vercel] Initialization warning:', initError);
       // Continue anyway - some endpoints might work without all services
