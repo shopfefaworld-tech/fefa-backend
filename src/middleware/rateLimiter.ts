@@ -98,9 +98,11 @@ export const generalRateLimit = rateLimit({
 });
 
 // Auth endpoints rate limiter (more restrictive)
+// In development, use higher limits; in production, use stricter limits
+const isDevelopment = process.env.NODE_ENV !== 'production';
 export const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 20 auth requests per windowMs
+  max: isDevelopment ? 100 : 20, // Higher limit in development (100), stricter in production (20)
   keyGenerator: (req: Request) => getClientIp(req),
   message: {
     success: false,
