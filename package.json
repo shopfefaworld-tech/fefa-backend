@@ -20,6 +20,7 @@
   "description": "Fefa Jewelry E-commerce Backend API",
   "dependencies": {
     "@types/multer": "^2.0.0",
+    "@types/nodemailer": "^7.0.4",
     "@vercel/node": "^5.5.15",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
@@ -36,6 +37,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.12",
     "razorpay": "^2.9.6",
     "redis": "^4.6.12"
   },

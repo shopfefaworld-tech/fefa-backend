@@ -1,11 +1,12 @@
 import { Router, Request, Response } from 'express';
 import Joi from 'joi';
 import { getFirebaseAuth } from '../config/firebase';
-import { User, IUser } from '../models';
+import { User, IUser, OTP, IOTP } from '../models';
 import { verifyToken, verifyFirebaseToken, AuthRequest } from '../middleware/auth';
 import { createError } from '../middleware/errorHandler';
 import { ensureDB } from '../middleware/ensureDB';
 import jwt from 'jsonwebtoken';
+import { sendEmailOTP } from '../config/email';
 
 const router = Router();
 
@@ -42,6 +43,21 @@ const googleTokenSchema = Joi.object({
   idToken: Joi.string().required(),
 });
 
+const otpVerifySchema = Joi.object({
+  idToken: Joi.string().required(),
+  phone: Joi.string().optional(),
+  email: Joi.string().email().optional(),
+});
+
+const sendEmailOTPSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+const verifyEmailOTPSchema = Joi.object({
+  email: Joi.string().email().required(),
+  otp: Joi.string().length(6).pattern(/^\d+$/).required(),
+});
+
 const forgotPasswordSchema = Joi.object({
   email: Joi.string().email().required(),
 });
@@ -57,8 +73,7 @@ router.get('/', (req: Request, res: Response) => {
     success: true,
     message: 'Authentication API',
     endpoints: {
-      register: 'POST /api/auth/register',
-      'register-email': 'POST /api/auth/register-email',
+      'verify-otp': 'POST /api/auth/verify-otp',
       login: 'POST /api/auth/login',
       google: 'POST /api/auth/google',
       'forgot-password': 'POST /api/auth/forgot-password',
@@ -185,48 +200,235 @@ router.post('/login', async (req: Request, res: Response, next) => {
     const { email, password } = value;
 
     // First check if user exists in our database
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) {
       throw createError('Invalid credentials', 401);
     }
 
-    // Verify credentials with Firebase (if Firebase user exists)
-    // Note: Firebase Admin SDK doesn't verify passwords directly
-    // In production, you'd use Firebase Auth REST API or client SDK
-    let firebaseUser = null;
-    try {
-      const auth = getFirebaseAuth();
-      firebaseUser = await auth.getUserByEmail(email);
-    } catch (firebaseError: any) {
-      // If Firebase user doesn't exist, that's okay - user might have registered via email/password
-      // Only log if it's not a "user not found" error
-      if (firebaseError.code !== 'auth/user-not-found') {
-        console.error('Firebase error during login:', firebaseError);
-      }
+    // Verify password using Firebase Auth REST API
+    // Firebase Admin SDK doesn't verify passwords directly, so we use the REST API
+    const firebaseApiKey = process.env.FIREBASE_WEB_API_KEY || process.env.FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    if (!firebaseApiKey) {
+      throw createError('Firebase API key not configured', 500);
     }
 
-    // Note: Password verification should be done via Firebase Auth REST API or client SDK
-    // For now, we'll proceed if user exists in DB
-    // In production, verify password using Firebase Auth REST API:
-    // https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword
+    try {
+      // Call Firebase Auth REST API to verify password
+      const response = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseApiKey}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email.toLowerCase().trim(),
+            password: password,
+            returnSecureToken: true,
+          }),
+        }
+      );
 
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+      const data = await response.json() as {
+        error?: {
+          message?: string;
+        };
+        localId?: string;
+        idToken?: string;
+        email?: string;
+      };
+
+      if (!response.ok) {
+        // Handle Firebase auth errors
+        if (data.error?.message?.includes('INVALID_PASSWORD') || 
+            data.error?.message?.includes('INVALID_EMAIL') ||
+            data.error?.message?.includes('EMAIL_NOT_FOUND')) {
+          throw createError('Invalid credentials', 401);
+        } else if (data.error?.message?.includes('TOO_MANY_ATTEMPTS')) {
+          throw createError('Too many failed login attempts. Please try again later.', 429);
+        } else {
+          throw createError(data.error?.message || 'Authentication failed', 401);
+        }
+      }
+
+      // Password verified successfully
+      // Update Firebase UID if missing or different
+      if (data.localId && (!user.firebaseUid || user.firebaseUid !== data.localId)) {
+        user.firebaseUid = data.localId;
+      }
+
+      // Update last login
+      user.lastLogin = new Date();
+      await user.save();
+
+      // Generate JWT tokens
+      const tokens = generateTokens((user._id as any).toString());
+
+      return res.json({
+        success: true,
+        message: 'Login successful',
+        data: {
+          user: {
+            id: user._id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || email,
+            phone: user.phone,
+            profileImage: user.profileImage,
+            role: user.role,
+            preferences: user.preferences,
+            lastLogin: user.lastLogin,
+          },
+          tokens
+        }
+      });
+    } catch (fetchError: any) {
+      // If Firebase REST API call fails, check if it's a credential error
+      if (fetchError.status === 401 || fetchError.message?.includes('Invalid credentials')) {
+        throw fetchError;
+      }
+      // For other errors, log and throw generic error
+      console.error('Firebase Auth REST API error:', fetchError);
+      throw createError('Authentication failed. Please try again.', 401);
+    }
+  } catch (error: any) {
+    if (error.status) {
+      next(error);
+      return;
+    }
+    next(error);
+    return;
+  }
+});
+
+// @route   POST /api/auth/verify-otp
+// @desc    Verify OTP and login/register user
+// @access  Public
+router.post('/verify-otp', async (req: Request, res: Response, next) => {
+  try {
+    const { error, value } = otpVerifySchema.validate(req.body);
+    if (error) {
+      throw createError(error.details[0].message, 400);
+    }
+
+    const { idToken, phone, email } = value;
+
+    // Verify Firebase ID token
+    const auth = getFirebaseAuth();
+    const decodedToken = await auth.verifyIdToken(idToken);
+    
+    const { uid, phone_number, email: firebaseEmail } = decodedToken;
+    
+    // Use phone or email from token if not provided
+    const userPhone = phone || phone_number;
+    const userEmail = email || firebaseEmail;
+
+    // Normalize phone number for comparison (remove spaces, ensure consistent format)
+    const normalizePhone = (phoneNum: string | undefined): string | undefined => {
+      if (!phoneNum) return undefined;
+      // Remove all non-digit characters except +
+      const cleaned = phoneNum.replace(/[^\d+]/g, '');
+      // If it doesn't start with +, try to normalize
+      if (!cleaned.startsWith('+')) {
+        // If it's 10 digits, assume Indian number and add +91
+        if (cleaned.length === 10) {
+          return `+91${cleaned}`;
+        }
+        // If it's 12 digits and starts with 91, add +
+        if (cleaned.length === 12 && cleaned.startsWith('91')) {
+          return `+${cleaned}`;
+        }
+      }
+      return cleaned;
+    };
+
+    const normalizedPhone = normalizePhone(userPhone);
+    const normalizedEmail = userEmail ? userEmail.toLowerCase().trim() : undefined;
+
+    console.log('Checking for existing user:', {
+      uid,
+      userPhone,
+      normalizedPhone,
+      userEmail,
+      normalizedEmail,
+    });
+
+    // Check if user exists in MongoDB by firebaseUid, email, or phone
+    // Try multiple phone formats for better matching
+    const phoneQueries = normalizedPhone ? [
+      { phone: normalizedPhone },
+      { phone: normalizedPhone.replace('+', '') }, // Without +
+      { phone: normalizedPhone.replace('+91', '') }, // Without country code
+      { phone: normalizedPhone.replace('+91', '0') }, // With 0 prefix
+      // Also try with spaces removed
+      { phone: normalizedPhone.replace(/\s/g, '') },
+    ] : [];
+
+    let user = await User.findOne({ 
+      $or: [
+        { firebaseUid: uid },
+        ...(normalizedEmail ? [{ email: normalizedEmail }] : []),
+        ...phoneQueries
+      ]
+    });
+
+    console.log('User lookup result:', user ? {
+      id: user._id,
+      email: user.email,
+      phone: user.phone,
+      firebaseUid: user.firebaseUid,
+    } : 'No user found');
+
+    if (user) {
+      // User exists - update Firebase UID if different, and update phone/email if missing
+      if (user.firebaseUid && user.firebaseUid !== uid) {
+        user.firebaseUid = uid;
+      } else if (!user.firebaseUid) {
+        // If user doesn't have firebaseUid (email-only user), update it
+        user.firebaseUid = uid;
+      }
+      // Update phone if missing or different (normalize before comparing)
+      if (normalizedPhone) {
+        const existingPhoneNormalized = user.phone ? normalizePhone(user.phone) : null;
+        if (!user.phone || existingPhoneNormalized !== normalizedPhone) {
+          user.phone = normalizedPhone;
+        }
+      }
+      // Update email if missing
+      if (normalizedEmail && !user.email) {
+        user.email = normalizedEmail;
+      }
+      user.lastLogin = new Date();
+      await user.save();
+    } else {
+      // New user - auto-create account
+      const nameParts = decodedToken.name ? decodedToken.name.split(' ') : ['', ''];
+      user = new User({
+        firebaseUid: uid,
+        email: normalizedEmail || undefined,
+        phone: normalizedPhone || undefined,
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
+        profileImage: decodedToken.picture,
+        lastLogin: new Date(),
+      });
+      await user.save();
+    }
 
     // Generate JWT tokens
     const tokens = generateTokens((user._id as any).toString());
 
     return res.json({
       success: true,
-      message: 'Login successful',
+      message: 'OTP verified successfully',
       data: {
         user: {
           id: user._id,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          fullName: `${user.firstName} ${user.lastName}`,
+          fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User',
           phone: user.phone,
           profileImage: user.profileImage,
           role: user.role,
@@ -236,8 +438,14 @@ router.post('/login', async (req: Request, res: Response, next) => {
         tokens
       }
     });
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    if (error.code === 'auth/id-token-expired') {
+      next(createError('OTP verification expired. Please try again.', 401));
+    } else if (error.code === 'auth/invalid-id-token') {
+      next(createError('Invalid OTP. Please try again.', 401));
+    } else {
+      next(error);
+    }
     return;
   }
 });
@@ -274,7 +482,11 @@ router.post('/google', async (req: Request, res: Response, next) => {
 
     if (user) {
       // If user exists but with different Firebase UID, update it
-      if (user.firebaseUid !== uid) {
+      if (user.firebaseUid && user.firebaseUid !== uid) {
+        user.firebaseUid = uid;
+        await user.save();
+      } else if (!user.firebaseUid) {
+        // If user doesn't have firebaseUid (email-only user), update it
         user.firebaseUid = uid;
         await user.save();
       }
@@ -391,7 +603,11 @@ router.post('/reset-password', async (req: Request, res: Response, next) => {
       throw createError('Invalid or expired reset token', 400);
     }
 
-    // Update password in Firebase
+    // Update password in Firebase (only if user has a Firebase UID)
+    if (!user.firebaseUid) {
+      throw createError('Password reset is only available for Firebase-authenticated users. Please use OTP login instead.', 400);
+    }
+
     const auth = getFirebaseAuth();
     await auth.updateUser(user.firebaseUid, {
       password: newPassword
@@ -697,6 +913,163 @@ router.delete('/addresses/:addressId', verifyToken, async (req: AuthRequest, res
     return res.json({
       success: true,
       message: 'Address deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+    return;
+  }
+});
+
+// @route   POST /api/auth/send-email-otp
+// @desc    Send OTP code to email
+// @access  Public
+router.post('/send-email-otp', async (req: Request, res: Response, next) => {
+  try {
+    const { error, value } = sendEmailOTPSchema.validate(req.body);
+    if (error) {
+      throw createError(error.details[0].message, 400);
+    }
+
+    const { email } = value;
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Store OTP in database (expires in 10 minutes)
+    const otpRecord = new OTP({
+      email,
+      otp,
+      type: 'email',
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      attempts: 0,
+      verified: false,
+    });
+
+    await otpRecord.save();
+
+    // Send email with OTP
+    try {
+      await sendEmailOTP(email, otp);
+    } catch (emailError: any) {
+      console.error('Email sending error:', emailError);
+      throw createError(
+        `Failed to send email: ${emailError.message || 'Please check your SMTP configuration in .env file'}`,
+        500
+      );
+    }
+
+    return res.json({
+      success: true,
+      message: 'OTP sent to your email. Please check your inbox.',
+      data: {
+        email,
+        expiresIn: 600, // 10 minutes in seconds
+      }
+    });
+  } catch (error: any) {
+    console.error('Send email OTP route error:', error);
+    next(error);
+    return;
+  }
+});
+
+// @route   POST /api/auth/verify-email-otp
+// @desc    Verify email OTP and login/register user
+// @access  Public
+router.post('/verify-email-otp', async (req: Request, res: Response, next) => {
+  try {
+    const { error, value } = verifyEmailOTPSchema.validate(req.body);
+    if (error) {
+      throw createError(error.details[0].message, 400);
+    }
+
+    const { email, otp } = value;
+
+    // Find OTP record
+    const otpRecord = await OTP.findOne({
+      email: email.toLowerCase(),
+      type: 'email',
+      verified: false,
+    }).sort({ createdAt: -1 });
+
+    if (!otpRecord) {
+      throw createError('OTP not found. Please request a new OTP.', 404);
+    }
+
+    // Check if OTP is expired
+    if (new Date() > otpRecord.expiresAt) {
+      throw createError('OTP has expired. Please request a new OTP.', 400);
+    }
+
+    // Check attempts (max 5 attempts)
+    if (otpRecord.attempts >= 5) {
+      throw createError('Too many failed attempts. Please request a new OTP.', 429);
+    }
+
+    // Verify OTP
+    if (otpRecord.otp !== otp) {
+      otpRecord.attempts += 1;
+      await otpRecord.save();
+      throw createError('Invalid OTP code. Please try again.', 400);
+    }
+
+    // Mark OTP as verified
+    otpRecord.verified = true;
+    await otpRecord.save();
+
+    // Normalize email for comparison
+    const normalizedEmail = email.toLowerCase().trim();
+
+    console.log('Checking for existing user by email:', normalizedEmail);
+
+    // Check if user exists by email
+    let user = await User.findOne({ email: normalizedEmail });
+
+    console.log('User lookup result:', user ? {
+      id: user._id,
+      email: user.email,
+      phone: user.phone,
+      firebaseUid: user.firebaseUid,
+    } : 'No user found - will create new user');
+
+    if (!user) {
+      // Create new user with email
+      // Generate a unique identifier for email-only users (no Firebase UID)
+      const emailUserId = `email-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      
+      user = new User({
+        firebaseUid: emailUserId, // Use generated ID for email-only users
+        email: email.toLowerCase(),
+        firstName: '',
+        lastName: '',
+        lastLogin: new Date(),
+      });
+      await user.save();
+    } else {
+      // Update last login
+      user.lastLogin = new Date();
+      await user.save();
+    }
+
+    // Generate JWT tokens
+    const tokens = generateTokens((user._id as any).toString());
+
+    return res.json({
+      success: true,
+      message: 'Email verified successfully',
+      data: {
+        user: {
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          fullName: `${user.firstName} ${user.lastName}`,
+          phone: user.phone,
+          profileImage: user.profileImage,
+          role: user.role,
+        },
+        tokens,
+      }
     });
   } catch (error) {
     next(error);

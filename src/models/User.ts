@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
-  firebaseUid: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  firebaseUid?: string; // Made optional to support email OTP users
+  email?: string;
+  firstName?: string;
+  lastName?: string;
   phone?: string;
   dateOfBirth?: Date;
   gender?: 'male' | 'female' | 'other';
@@ -102,25 +102,29 @@ const AddressSchema = new Schema<IAddress>({
 const UserSchema = new Schema<IUser>({
   firebaseUid: {
     type: String,
-    required: true,
+    required: false, // Made optional to support email OTP users
     unique: true,
+    sparse: true, // Allows multiple null/undefined values
   },
   email: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
+    sparse: true,
     lowercase: true,
     trim: true,
   },
   firstName: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
+    default: '',
   },
   lastName: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
+    default: '',
   },
   phone: {
     type: String,
@@ -170,6 +174,8 @@ const UserSchema = new Schema<IUser>({
 
 // Indexes
 UserSchema.index({ createdAt: -1 });
+UserSchema.index({ phone: 1 });
+UserSchema.index({ email: 1 });
 
 // Virtual for full name
 UserSchema.virtual('fullName').get(function() {

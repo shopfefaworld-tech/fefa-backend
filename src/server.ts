@@ -20,6 +20,7 @@ import cartRoutes from './routes/cart';
 import orderRoutes from './routes/orders';
 import paymentRoutes from './routes/payments';
 import categoryRoutes from './routes/categories';
+import collectionRoutes from './routes/collections';
 import bannerRoutes from './routes/banners';
 import wishlistRoutes from './routes/wishlist';
 import reviewRoutes from './routes/reviews';
@@ -210,6 +211,7 @@ app.get('/', (req, res) => {
       cart: '/api/cart',
       orders: '/api/orders',
       categories: '/api/categories',
+      collections: '/api/collections',
       banners: '/api/banners',
       wishlist: '/api/wishlist',
       reviews: '/api/reviews'
@@ -373,6 +375,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/collections', collectionRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
