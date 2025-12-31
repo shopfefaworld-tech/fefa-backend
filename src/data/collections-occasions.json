@@ -1,0 +1,12 @@
+[
+  { "name": "All Occasions", "value": "all" },
+  { "name": "Wedding", "value": "wedding" },
+  { "name": "Engagement", "value": "engagement" },
+  { "name": "Anniversary", "value": "anniversary" },
+  { "name": "Birthday", "value": "birthday" },
+  { "name": "Party", "value": "party" },
+  { "name": "Formal", "value": "formal" },
+  { "name": "Casual", "value": "casual" },
+  { "name": "Festival", "value": "festival" },
+  { "name": "Gift", "value": "gift" }
+]

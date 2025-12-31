@@ -13,6 +13,7 @@ export interface IProduct extends Document {
   category: mongoose.Types.ObjectId;
   subcategory?: mongoose.Types.ObjectId;
   tags: string[];
+  occasions?: string[];
   variants: IProductVariant[];
   specifications: IProductSpecification[];
   isActive: boolean;
@@ -209,6 +210,7 @@ const ProductSchema = new Schema<IProduct>({
     ref: 'Category',
   },
   tags: [String],
+  occasions: [String],
   variants: [ProductVariantSchema],
   specifications: [ProductSpecificationSchema],
   isActive: {

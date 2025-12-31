@@ -5,6 +5,8 @@ import { errorHandler } from '../middleware/errorHandler';
 import { verifyToken, requireAdmin } from '../middleware/auth';
 import { uploadMultiple, handleUploadError } from '../middleware/upload';
 import { uploadImage, deleteImage } from '../config/cloudinary';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const router = Router();
 
@@ -31,6 +33,33 @@ router.use((req: Request, res: Response, next: NextFunction): void => {
     return;
   }
   next();
+});
+
+// @route   GET /api/products/occasions
+// @desc    Get all available occasions/collections
+// @access  Public
+router.get('/occasions', async (req: Request, res: Response) => {
+  try {
+    // Read occasions from JSON file
+    const occasionsPath = path.join(__dirname, '../data/collections-occasions.json');
+    const occasionsData = JSON.parse(fs.readFileSync(occasionsPath, 'utf-8'));
+    
+    // Filter out "All Occasions" option for admin forms
+    const filteredOccasions = occasionsData.filter((occ: any) => occ.value !== 'all');
+    
+    return res.status(200).json({
+      success: true,
+      data: filteredOccasions,
+      count: filteredOccasions.length
+    });
+  } catch (error) {
+    console.error('Error fetching occasions:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching occasions',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 // Test endpoint for products - GET and POST (no auth required)
@@ -210,6 +239,31 @@ router.post('/',
         productData.tags = [];
       }
 
+      // Handle occasions - can be JSON string (array) or already an array
+      if (productData.occasions !== undefined) {
+        if (typeof productData.occasions === 'string') {
+          try {
+            // Try to parse as JSON (from FormData)
+            const parsed = JSON.parse(productData.occasions);
+            if (Array.isArray(parsed)) {
+              productData.occasions = parsed.filter(Boolean);
+            } else {
+              productData.occasions = [];
+            }
+          } catch (e) {
+            // If JSON parse fails, treat as empty array
+            productData.occasions = [];
+          }
+        } else if (Array.isArray(productData.occasions)) {
+          // Already an array, just filter
+          productData.occasions = productData.occasions.filter(Boolean);
+        } else {
+          productData.occasions = [];
+        }
+      } else {
+        productData.occasions = [];
+      }
+
       // Parse inventory if it's a string
       if (typeof productData.inventory === 'string') {
         try {
@@ -321,6 +375,8 @@ router.get('/', async (req: Request, res: Response) => {
       page = 1,
       limit = 20,
       category,
+      occasion,
+      occasions,
       minPrice,
       maxPrice,
       sortBy = 'createdAt',
@@ -373,6 +429,17 @@ router.get('/', async (req: Request, res: Response) => {
       
       if (categoryDoc) {
         filter.category = categoryDoc._id;
+      }
+    }
+    
+    // Handle occasion filtering (can be single occasion or comma-separated list)
+    if (occasion || occasions) {
+      const occasionList = occasion 
+        ? [occasion as string]
+        : (occasions as string)?.split(',').map((o: string) => o.trim()) || [];
+      
+      if (occasionList.length > 0) {
+        filter.occasions = { $in: occasionList };
       }
     }
     
@@ -865,9 +932,26 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
       delete updateData.images;
     }
 
+    // Handle occasions array - ensure it's properly set
+    if (updateData.occasions !== undefined) {
+      if (Array.isArray(updateData.occasions)) {
+        product.occasions = updateData.occasions;
+      } else if (typeof updateData.occasions === 'string') {
+        // Handle if it comes as JSON string
+        try {
+          product.occasions = JSON.parse(updateData.occasions);
+        } catch {
+          product.occasions = [];
+        }
+      } else {
+        product.occasions = [];
+      }
+      delete updateData.occasions;
+    }
+
     // Update other fields
     Object.keys(updateData).forEach(key => {
-      if (key !== 'inventory' && key !== 'dimensions' && key !== 'images' && key !== 'inventory.quantity') {
+      if (key !== 'inventory' && key !== 'dimensions' && key !== 'images' && key !== 'inventory.quantity' && key !== 'occasions') {
         (product as any)[key] = updateData[key];
       }
     });
