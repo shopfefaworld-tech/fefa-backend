@@ -93,7 +93,7 @@ const generateTokens = (userId: string) => {
   const accessToken = jwt.sign(
     { userId },
     process.env.JWT_SECRET || 'fallback-secret',
-    { expiresIn: '15m' }
+    { expiresIn: '24h' }
   );
   
   const refreshToken = jwt.sign(

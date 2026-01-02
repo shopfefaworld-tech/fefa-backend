@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import Product, { IProduct } from '../models/Product';
 import Category from '../models/Category';
+import Occasion from '../models/Occasion';
 import { errorHandler } from '../middleware/errorHandler';
 import { verifyToken, requireAdmin } from '../middleware/auth';
 import { uploadMultiple, handleUploadError } from '../middleware/upload';
@@ -9,6 +10,44 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const router = Router();
+
+// Helper function to sync occasions - ensures all occasion values exist in database
+async function syncOccasions(occasionValues: string[]): Promise<void> {
+  if (!occasionValues || occasionValues.length === 0) {
+    return;
+  }
+
+  for (const value of occasionValues) {
+    if (!value || value.trim() === '') continue;
+    
+    const trimmedValue = value.trim().toLowerCase();
+    
+    // Check if occasion exists
+    const existingOccasion = await Occasion.findOne({ value: trimmedValue });
+    
+    if (!existingOccasion) {
+      // Create occasion if it doesn't exist
+      // Generate name from value (capitalize first letter)
+      const name = trimmedValue
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+      
+      try {
+        await Occasion.create({
+          name,
+          value: trimmedValue,
+          isActive: true,
+          sortOrder: 0,
+        });
+        console.log(`Created new occasion: ${name} (${trimmedValue})`);
+      } catch (error) {
+        console.error(`Error creating occasion ${trimmedValue}:`, error);
+        // Continue even if creation fails
+      }
+    }
+  }
+}
 
 // CORS middleware for product routes - handles OPTIONS preflight
 router.use((req: Request, res: Response, next: NextFunction): void => {
@@ -36,21 +75,27 @@ router.use((req: Request, res: Response, next: NextFunction): void => {
 });
 
 // @route   GET /api/products/occasions
-// @desc    Get all available occasions/collections
+// @desc    Get all available occasions/collections (from database)
 // @access  Public
 router.get('/occasions', async (req: Request, res: Response) => {
   try {
-    // Read occasions from JSON file
-    const occasionsPath = path.join(__dirname, '../data/collections-occasions.json');
-    const occasionsData = JSON.parse(fs.readFileSync(occasionsPath, 'utf-8'));
+    // Get active occasions from database
+    const occasions = await Occasion.find({ isActive: true })
+      .sort({ sortOrder: 1, name: 1 })
+      .select('name value image')
+      .lean();
     
-    // Filter out "All Occasions" option for admin forms
-    const filteredOccasions = occasionsData.filter((occ: any) => occ.value !== 'all');
+    // Format to match expected structure
+    const formattedOccasions = occasions.map(occ => ({
+      name: occ.name,
+      value: occ.value,
+      image: occ.image || undefined
+    }));
     
     return res.status(200).json({
       success: true,
-      data: filteredOccasions,
-      count: filteredOccasions.length
+      data: formattedOccasions,
+      count: formattedOccasions.length
     });
   } catch (error) {
     console.error('Error fetching occasions:', error);
@@ -262,6 +307,11 @@ router.post('/',
         }
       } else {
         productData.occasions = [];
+      }
+
+      // Sync occasions - ensure all occasion values exist in database
+      if (productData.occasions && productData.occasions.length > 0) {
+        await syncOccasions(productData.occasions);
       }
 
       // Parse inventory if it's a string
@@ -935,17 +985,24 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
     // Handle occasions array - ensure it's properly set
     if (updateData.occasions !== undefined) {
       if (Array.isArray(updateData.occasions)) {
-        product.occasions = updateData.occasions;
+        product.occasions = updateData.occasions.filter(Boolean);
       } else if (typeof updateData.occasions === 'string') {
         // Handle if it comes as JSON string
         try {
-          product.occasions = JSON.parse(updateData.occasions);
+          const parsed = JSON.parse(updateData.occasions);
+          product.occasions = Array.isArray(parsed) ? parsed.filter(Boolean) : [];
         } catch {
           product.occasions = [];
         }
       } else {
         product.occasions = [];
       }
+      
+      // Sync occasions - ensure all occasion values exist in database
+      if (product.occasions && product.occasions.length > 0) {
+        await syncOccasions(product.occasions);
+      }
+      
       delete updateData.occasions;
     }
 
