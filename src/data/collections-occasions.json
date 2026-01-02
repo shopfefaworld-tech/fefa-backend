@@ -1,12 +1,12 @@
 [
   { "name": "All Occasions", "value": "all" },
-  { "name": "Wedding", "value": "wedding" },
-  { "name": "Engagement", "value": "engagement" },
-  { "name": "Anniversary", "value": "anniversary" },
-  { "name": "Birthday", "value": "birthday" },
-  { "name": "Party", "value": "party" },
-  { "name": "Formal", "value": "formal" },
-  { "name": "Casual", "value": "casual" },
-  { "name": "Festival", "value": "festival" },
-  { "name": "Gift", "value": "gift" }
+  { "name": "Wedding", "value": "wedding", "image": "/images/wedding.jpg" },
+  { "name": "Engagement", "value": "engagement", "image": "/images/engagement.jpg" },
+  { "name": "Anniversary", "value": "anniversary", "image": "/images/anniversary.jpg" },
+  { "name": "Birthday", "value": "birthday", "image": "/images/birthday.jpg" },
+  { "name": "Party", "value": "party", "image": "/images/party.jpg" },
+  { "name": "Formal", "value": "formal", "image": "/images/formal.jpg" },
+  { "name": "Casual", "value": "casual", "image": "/images/casual.jpg" },
+  { "name": "Festival", "value": "festival", "image": "/images/festival.jpg" },
+  { "name": "Gift", "value": "gift", "image": "/images/gift.jpg" }
 ]

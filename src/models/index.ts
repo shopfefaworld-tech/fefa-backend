@@ -1,6 +1,7 @@
 export { default as User, IUser, IAddress } from './User';
 export { default as Category, ICategory } from './Category';
 export { default as Collection, ICollection } from './Collection';
+export { default as Occasion, IOccasion } from './Occasion';
 export { default as Product, IProduct, IProductImage, IProductVariant, IProductSpecification } from './Product';
 export { default as Cart, ICart, ICartItem } from './Cart';
 export { default as Order, IOrder, IOrderItem, IOrderAddress, IOrderPayment, IOrderPricing, IOrderTracking, IOrderTimeline, OrderStatus } from './Order';
