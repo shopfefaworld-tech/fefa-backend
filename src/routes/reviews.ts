@@ -2,9 +2,95 @@ import { Router, Request, Response } from 'express';
 import Review, { IReview, IReviewModel } from '../models/Review';
 import Product from '../models/Product';
 import Order from '../models/Order';
-import { verifyToken, AuthRequest } from '../middleware/auth';
+import { verifyToken, AuthRequest, requireAdmin } from '../middleware/auth';
 
 const router = Router();
+
+// @route   GET /api/reviews
+// @desc    Get all reviews (admin only)
+// @access  Private/Admin
+router.get('/', verifyToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const { page = 1, limit = 10, status, rating, search } = req.query;
+    
+    const query: any = {};
+    
+    // Filter by approval status
+    if (status === 'pending') {
+      query.isApproved = false;
+    } else if (status === 'approved') {
+      query.isApproved = true;
+    }
+    
+    // Filter by rating
+    if (rating) {
+      query.rating = parseInt(rating as string);
+    }
+    
+    // Search by title or comment
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { comment: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    
+    const reviews = await Review.find(query)
+      .populate('user', 'firstName lastName email profileImage')
+      .populate('product', 'name slug images')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit as string))
+      .lean();
+    
+    const totalReviews = await Review.countDocuments(query);
+    const totalPages = Math.ceil(totalReviews / parseInt(limit as string));
+    
+    // Get pending reviews count
+    const pendingCount = await Review.countDocuments({ isApproved: false });
+    
+    res.json({
+      success: true,
+      data: reviews,
+      pagination: {
+        page: parseInt(page as string),
+        limit: parseInt(limit as string),
+        totalPages,
+        totalReviews,
+        hasMore: parseInt(page as string) < totalPages
+      },
+      pendingCount
+    });
+  } catch (error) {
+    console.error('Error fetching all reviews:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch reviews'
+    });
+  }
+});
+
+// @route   GET /api/reviews/pending/count
+// @desc    Get count of pending reviews
+// @access  Private/Admin
+router.get('/pending/count', verifyToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const count = await Review.countDocuments({ isApproved: false });
+    
+    res.json({
+      success: true,
+      data: { count }
+    });
+  } catch (error) {
+    console.error('Error fetching pending reviews count:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch pending reviews count'
+    });
+  }
+});
 
 // @route   GET /api/reviews/product/:productId
 // @desc    Get reviews for a specific product
@@ -108,7 +194,7 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response) => {
       comment,
       images,
       isVerified: !!orderId, // Verified if order exists
-      isApproved: true
+      isApproved: false // Reviews need admin approval
     };
 
     // Only include order if orderId is provided
@@ -178,15 +264,97 @@ router.put('/:reviewId', verifyToken, async (req: AuthRequest, res: Response) =>
   }
 });
 
+// @route   PATCH /api/reviews/:reviewId/approve
+// @desc    Approve a review (admin only)
+// @access  Private/Admin
+router.patch('/:reviewId/approve', verifyToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const { reviewId } = req.params;
+
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      res.status(404).json({
+        success: false,
+        message: 'Review not found'
+      });
+      return;
+    }
+
+    review.isApproved = true;
+    await review.save();
+    await review.populate('user', 'firstName lastName email profileImage');
+    await review.populate('product', 'name slug images');
+
+    res.json({
+      success: true,
+      data: review,
+      message: 'Review approved successfully'
+    });
+    return;
+  } catch (error) {
+    console.error('Error approving review:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to approve review'
+    });
+    return;
+  }
+});
+
+// @route   PATCH /api/reviews/:reviewId/reject
+// @desc    Reject a review (admin only)
+// @access  Private/Admin
+router.patch('/:reviewId/reject', verifyToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const { reviewId } = req.params;
+
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      res.status(404).json({
+        success: false,
+        message: 'Review not found'
+      });
+      return;
+    }
+
+    review.isApproved = false;
+    await review.save();
+    await review.populate('user', 'firstName lastName email profileImage');
+    await review.populate('product', 'name slug images');
+
+    res.json({
+      success: true,
+      data: review,
+      message: 'Review rejected successfully'
+    });
+    return;
+  } catch (error) {
+    console.error('Error rejecting review:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reject review'
+    });
+    return;
+  }
+});
+
 // @route   DELETE /api/reviews/:reviewId
-// @desc    Delete a review
+// @desc    Delete a review (user or admin)
 // @access  Private
 router.delete('/:reviewId', verifyToken, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?._id;
+    const userRole = req.user?.role;
+    const isAdmin = userRole === 'admin' || userRole === 'super_admin';
     const { reviewId } = req.params;
 
-    const review = await Review.findOne({ _id: reviewId, user: userId });
+    // Admin can delete any review, users can only delete their own
+    const query: any = { _id: reviewId };
+    if (!isAdmin) {
+      query.user = userId;
+    }
+
+    const review = await Review.findOne(query);
     if (!review) {
       res.status(404).json({
         success: false,

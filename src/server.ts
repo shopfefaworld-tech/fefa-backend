@@ -25,6 +25,8 @@ import occasionRoutes from './routes/occasions';
 import bannerRoutes from './routes/banners';
 import wishlistRoutes from './routes/wishlist';
 import reviewRoutes from './routes/reviews';
+import analyticsRoutes from './routes/analytics';
+import settingsRoutes from './routes/settings';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -381,6 +383,8 @@ app.use('/api/occasions', occasionRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404 handler
 app.use(notFound);
