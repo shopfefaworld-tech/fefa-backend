@@ -6,6 +6,7 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "build": "tsc",
+    "migrate": "node scripts/run-migrations.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -21,6 +22,7 @@
   "dependencies": {
     "@types/multer": "^2.0.0",
     "@types/nodemailer": "^7.0.4",
+    
     "@vercel/node": "^5.5.15",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",

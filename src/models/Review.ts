@@ -72,7 +72,7 @@ const ReviewSchema = new Schema<IReview>({
   },
   isApproved: {
     type: Boolean,
-    default: true,
+    default: false, // Changed to false - reviews now require admin approval
   },
   helpful: {
     count: {

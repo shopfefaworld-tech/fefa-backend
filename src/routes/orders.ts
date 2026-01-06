@@ -295,9 +295,13 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
 
     // Admin can update tracking info
     if (isAdmin && tracking) {
+      // Initialize tracking if it doesn't exist
+      if (!order.tracking) {
+        order.tracking = {};
+      }
       if (tracking.carrier) order.tracking.carrier = tracking.carrier;
       if (tracking.trackingNumber) order.tracking.trackingNumber = tracking.trackingNumber;
-      if (tracking.url) order.tracking.url = tracking.url;
+      if (tracking.trackingUrl) order.tracking.trackingUrl = tracking.trackingUrl;
     }
 
     await order.save();
