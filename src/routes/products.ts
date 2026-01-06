@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import Product, { IProduct } from '../models/Product';
 import Category from '../models/Category';
 import Occasion from '../models/Occasion';
+import Collection from '../models/Collection';
 import { errorHandler } from '../middleware/errorHandler';
 import { verifyToken, requireAdmin } from '../middleware/auth';
 import { uploadMultiple, handleUploadError } from '../middleware/upload';
@@ -75,7 +76,7 @@ router.use((req: Request, res: Response, next: NextFunction): void => {
 });
 
 // @route   GET /api/products/occasions
-// @desc    Get all available occasions/collections (from database)
+// @desc    Get all available occasions (from database)
 // @access  Public
 router.get('/occasions', async (req: Request, res: Response) => {
   try {
@@ -102,6 +103,93 @@ router.get('/occasions', async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: 'Error fetching occasions',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// @route   GET /api/products/collections
+// @desc    Get all available collections (optionally filtered by occasions)
+// @access  Public
+// IMPORTANT: This route must come BEFORE GET /:id to avoid route conflicts
+router.get('/collections', async (req: Request, res: Response) => {
+  try {
+    console.log('[PRODUCTS] GET /collections endpoint hit', {
+      occasions: req.query.occasions,
+      admin: req.query.admin,
+      url: req.url
+    });
+    const { occasions, admin } = req.query;
+    
+    // Build filter - by default show only active collections unless admin
+    const filter: any = {};
+    if (admin !== 'true') {
+      filter.isActive = true;
+    }
+    
+    // Get all active collections
+    const collections = await Collection.find(filter)
+      .sort({ sortOrder: 1, name: 1 })
+      .select('name slug image description isActive')
+      .lean();
+    
+    // If occasions are provided, we can filter collections based on products that have those occasions
+    // However, for admin users, always return all collections so they can select any collection
+    // when adding/editing products
+    let filteredCollections = collections;
+    
+    // Only filter by occasions if admin is false (public access)
+    // Admin users should see all collections regardless of occasions
+    if (occasions && admin !== 'true') {
+      const occasionList = Array.isArray(occasions) 
+        ? occasions 
+        : (occasions as string).split(',').map((o: string) => o.trim());
+      
+      // Find products that have these occasions and get their collections
+      const productsWithOccasions = await Product.find({
+        occasions: { $in: occasionList },
+        isActive: true
+      })
+        .select('collections')
+        .lean();
+      
+      // Get unique collection IDs from products
+      const collectionIds = new Set<string>();
+      productsWithOccasions.forEach((product: any) => {
+        if (product.collections && Array.isArray(product.collections)) {
+          product.collections.forEach((colId: any) => {
+            collectionIds.add(colId.toString());
+          });
+        }
+      });
+      
+      // Filter collections to only those that appear in products with selected occasions
+      // If no products found, return all collections (for new products)
+      if (collectionIds.size > 0) {
+        filteredCollections = collections.filter((col: any) => 
+          collectionIds.has(col._id.toString())
+        );
+      }
+      // If collectionIds.size === 0, keep all collections (filteredCollections = collections)
+    }
+    // If admin === 'true', always return all collections regardless of occasions
+    
+    console.log('[PRODUCTS] Collections endpoint returning:', {
+      totalCollections: collections.length,
+      filteredCollections: filteredCollections.length,
+      admin: admin
+    });
+    
+    return res.status(200).json({
+      success: true,
+      data: filteredCollections,
+      count: filteredCollections.length
+    });
+  } catch (error) {
+    console.error('[PRODUCTS] Error fetching collections:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching collections',
       error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
@@ -314,6 +402,70 @@ router.post('/',
         await syncOccasions(productData.occasions);
       }
 
+      // Handle collections - can be JSON string (array) or already an array
+      if (productData.collections !== undefined) {
+        if (typeof productData.collections === 'string') {
+          try {
+            // Try to parse as JSON (from FormData)
+            const parsed = JSON.parse(productData.collections);
+            if (Array.isArray(parsed)) {
+              // Convert collection IDs/slugs to ObjectIds
+              const collectionIds: any[] = [];
+              for (const col of parsed) {
+                if (!col) continue;
+                // Try to find by ID first, then by slug
+                let collection = null;
+                if (typeof col === 'string' && col.match(/^[0-9a-fA-F]{24}$/)) {
+                  collection = await Collection.findById(col);
+                } else {
+                  collection = await Collection.findOne({ 
+                    $or: [
+                      { slug: col },
+                      { _id: col }
+                    ]
+                  });
+                }
+                if (collection) {
+                  collectionIds.push(collection._id);
+                }
+              }
+              productData.collections = collectionIds;
+            } else {
+              productData.collections = [];
+            }
+          } catch (e) {
+            // If JSON parse fails, treat as empty array
+            productData.collections = [];
+          }
+        } else if (Array.isArray(productData.collections)) {
+          // Convert collection IDs/slugs to ObjectIds
+          const collectionIds: any[] = [];
+          for (const col of productData.collections) {
+            if (!col) continue;
+            // Try to find by ID first, then by slug
+            let collection = null;
+            if (typeof col === 'string' && col.match(/^[0-9a-fA-F]{24}$/)) {
+              collection = await Collection.findById(col);
+            } else {
+              collection = await Collection.findOne({ 
+                $or: [
+                  { slug: col },
+                  { _id: col }
+                ]
+              });
+            }
+            if (collection) {
+              collectionIds.push(collection._id);
+            }
+          }
+          productData.collections = collectionIds;
+        } else {
+          productData.collections = [];
+        }
+      } else {
+        productData.collections = [];
+      }
+
       // Parse inventory if it's a string
       if (typeof productData.inventory === 'string') {
         try {
@@ -396,9 +548,10 @@ router.post('/',
       const product = new Product(productData);
       await product.save();
 
-      // Populate category and subcategory for response
+      // Populate category, subcategory, and collections for response
       await product.populate('category', 'name slug');
       await product.populate('subcategory', 'name slug');
+      await product.populate('collections', 'name slug image');
 
       return res.status(201).json({
         success: true,
@@ -534,6 +687,7 @@ router.get('/', async (req: Request, res: Response) => {
     const products = await Product.find(filter)
       .populate('category', 'name slug')
       .populate('subcategory', 'name slug')
+      .populate('collections', 'name slug image')
       .sort(sort)
       .skip(skip)
       .limit(Number(limit))
@@ -576,6 +730,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       product = await Product.findById(id)
         .populate('category', 'name slug')
         .populate('subcategory', 'name slug')
+        .populate('collections', 'name slug image')
         .lean();
     }
 
@@ -584,6 +739,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       product = await Product.findOne({ slug: id })
         .populate('category', 'name slug')
         .populate('subcategory', 'name slug')
+        .populate('collections', 'name slug image')
         .lean();
     }
 
@@ -650,6 +806,7 @@ router.get('/category/:category', async (req: Request, res: Response) => {
     })
       .populate('category', 'name slug')
       .populate('subcategory', 'name slug')
+      .populate('collections', 'name slug image')
       .sort(sort)
       .skip(skip)
       .limit(Number(limit))
@@ -746,6 +903,7 @@ router.get('/search', async (req: Request, res: Response) => {
     const products = await Product.find(filter)
       .populate('category', 'name slug')
       .populate('subcategory', 'name slug')
+      .populate('collections', 'name slug image')
       .sort(sort)
       .skip(skip)
       .limit(Number(limit))
@@ -1006,9 +1164,70 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
       delete updateData.occasions;
     }
 
+    // Handle collections array - ensure it's properly set
+    if (updateData.collections !== undefined) {
+      if (Array.isArray(updateData.collections)) {
+        // Convert collection IDs/slugs to ObjectIds
+        const collectionIds: any[] = [];
+        for (const col of updateData.collections) {
+          if (!col) continue;
+          // Try to find by ID first, then by slug
+          let collection = null;
+          if (typeof col === 'string' && col.match(/^[0-9a-fA-F]{24}$/)) {
+            collection = await Collection.findById(col);
+          } else {
+            collection = await Collection.findOne({ 
+              $or: [
+                { slug: col },
+                { _id: col }
+              ]
+            });
+          }
+          if (collection) {
+            collectionIds.push(collection._id);
+          }
+        }
+        product.collections = collectionIds;
+      } else if (typeof updateData.collections === 'string') {
+        // Handle if it comes as JSON string
+        try {
+          const parsed = JSON.parse(updateData.collections);
+          if (Array.isArray(parsed)) {
+            const collectionIds: any[] = [];
+            for (const col of parsed) {
+              if (!col) continue;
+              let collection = null;
+              if (typeof col === 'string' && col.match(/^[0-9a-fA-F]{24}$/)) {
+                collection = await Collection.findById(col);
+              } else {
+                collection = await Collection.findOne({ 
+                  $or: [
+                    { slug: col },
+                    { _id: col }
+                  ]
+                });
+              }
+              if (collection) {
+                collectionIds.push(collection._id);
+              }
+            }
+            product.collections = collectionIds;
+          } else {
+            product.collections = [];
+          }
+        } catch {
+          product.collections = [];
+        }
+      } else {
+        product.collections = [];
+      }
+      
+      delete updateData.collections;
+    }
+
     // Update other fields
     Object.keys(updateData).forEach(key => {
-      if (key !== 'inventory' && key !== 'dimensions' && key !== 'images' && key !== 'inventory.quantity' && key !== 'occasions') {
+      if (key !== 'inventory' && key !== 'dimensions' && key !== 'images' && key !== 'inventory.quantity' && key !== 'occasions' && key !== 'collections') {
         (product as any)[key] = updateData[key];
       }
     });
@@ -1019,6 +1238,7 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
     // Populate and return
     await product.populate('category', 'name slug');
     await product.populate('subcategory', 'name slug');
+    await product.populate('collections', 'name slug image');
 
     return res.json({
       success: true,

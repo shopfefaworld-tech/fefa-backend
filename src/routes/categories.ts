@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import Category from '../models/Category';
+import Product from '../models/Product';
 import { verifyToken, requireAdmin } from '../middleware/auth';
 import { uploadSingle, handleUploadError } from '../middleware/upload';
 import { uploadImage, deleteImage } from '../config/cloudinary';
@@ -43,10 +44,25 @@ router.get('/', async (req: Request, res: Response) => {
       .sort(sort)
       .select('-__v');
 
+    // Get product counts for each category
+    const categoriesWithCounts = await Promise.all(
+      categories.map(async (category) => {
+        const productCount = await Product.countDocuments({
+          category: category._id,
+          isActive: true
+        });
+        
+        return {
+          ...category.toObject(),
+          productCount
+        };
+      })
+    );
+
     res.status(200).json({
       success: true,
-      count: categories.length,
-      data: categories
+      count: categoriesWithCounts.length,
+      data: categoriesWithCounts
     });
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -77,9 +93,20 @@ router.get('/:slug', async (req: Request, res: Response) => {
       });
     }
 
+    // Get product count for this category
+    const productCount = await Product.countDocuments({
+      category: category._id,
+      isActive: true
+    });
+
+    const categoryWithCount = {
+      ...category.toObject(),
+      productCount
+    };
+
     return res.status(200).json({
       success: true,
-      data: category
+      data: categoryWithCount
     });
   } catch (error) {
     console.error('Error fetching category:', error);
