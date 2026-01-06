@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import Banner from '../models/Banner';
 import { cacheService } from '../middleware/cache';
-import { 
-  generalRateLimit, 
-  bannerAnalyticsRateLimit, 
-  adminRateLimit,
-  bannerInteractionRateLimit 
-} from '../middleware/rateLimiter';
+// Rate limiting disabled per user request
+// import { 
+//   generalRateLimit, 
+//   bannerAnalyticsRateLimit, 
+//   adminRateLimit,
+//   bannerInteractionRateLimit 
+// } from '../middleware/rateLimiter';
 import { uploadSingle, handleUploadError } from '../middleware/upload';
 import { uploadImage, deleteImage } from '../config/cloudinary';
 
@@ -16,7 +17,6 @@ const router = Router();
 // @desc    Get all banners
 // @access  Public
 router.get('/', 
-  generalRateLimit,
   cacheService.cacheMiddleware({ ttl: 300 }), // Cache for 5 minutes
   async (req: Request, res: Response) => {
     try {
@@ -44,7 +44,6 @@ router.get('/',
 // @desc    Get active banners (with date filtering)
 // @access  Public
 router.get('/active', 
-  generalRateLimit,
   cacheService.cacheMiddleware({ ttl: 180 }), // Cache for 3 minutes (shorter due to date filtering)
   async (req: Request, res: Response) => {
     try {
@@ -70,7 +69,6 @@ router.get('/active',
 // @desc    Get single banner by ID
 // @access  Public
 router.get('/:id', 
-  generalRateLimit,
   cacheService.cacheMiddleware({ ttl: 600 }), // Cache for 10 minutes
   async (req: Request, res: Response) => {
     try {
@@ -104,7 +102,6 @@ router.get('/:id',
 // @desc    Create new banner with image upload
 // @access  Private/Admin
 router.post('/', 
-  adminRateLimit,
   uploadSingle,
   handleUploadError,
   cacheService.invalidateCacheMiddleware(),
@@ -161,7 +158,6 @@ router.post('/',
 // @desc    Update banner with optional image upload
 // @access  Private/Admin
 router.put('/:id', 
-  adminRateLimit,
   uploadSingle,
   handleUploadError,
   cacheService.invalidateCacheMiddleware(),
@@ -223,7 +219,6 @@ router.put('/:id',
 // @desc    Delete banner and its image from Cloudinary
 // @access  Private/Admin
 router.delete('/:id', 
-  adminRateLimit,
   cacheService.invalidateCacheMiddleware(),
   async (req: Request, res: Response) => {
     try {
@@ -293,7 +288,6 @@ router.delete('/:id',
 // @desc    Track banner click
 // @access  Public
 router.post('/:id/click', 
-  bannerInteractionRateLimit,
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -345,7 +339,6 @@ router.post('/:id/click',
 // @desc    Track banner impression
 // @access  Public
 router.post('/:id/impression', 
-  bannerInteractionRateLimit,
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
