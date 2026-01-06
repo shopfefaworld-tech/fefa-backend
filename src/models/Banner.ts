@@ -6,6 +6,7 @@ export interface IBanner extends Document {
   image: string;
   buttonText?: string;
   buttonLink?: string;
+  position?: string;
   isActive: boolean;
   sortOrder: number;
   startDate?: Date;
@@ -45,6 +46,12 @@ const BannerSchema = new Schema<IBanner>({
   buttonLink: {
     type: String,
     trim: true,
+  },
+  position: {
+    type: String,
+    trim: true,
+    enum: ['hero', 'featured', 'sidebar', 'footer'],
+    default: 'hero',
   },
   isActive: {
     type: Boolean,

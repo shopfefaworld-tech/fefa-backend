@@ -14,6 +14,7 @@ export interface IProduct extends Document {
   subcategory?: mongoose.Types.ObjectId;
   tags: string[];
   occasions?: string[];
+  collections?: mongoose.Types.ObjectId[];
   variants: IProductVariant[];
   specifications: IProductSpecification[];
   isActive: boolean;
@@ -211,6 +212,10 @@ const ProductSchema = new Schema<IProduct>({
   },
   tags: [String],
   occasions: [String],
+  collections: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Collection',
+  }],
   variants: [ProductVariantSchema],
   specifications: [ProductSpecificationSchema],
   isActive: {
@@ -303,6 +308,7 @@ ProductSchema.index({ price: 1 });
 ProductSchema.index({ 'ratings.average': -1 });
 ProductSchema.index({ createdAt: -1 });
 ProductSchema.index({ name: 'text', description: 'text', tags: 'text' });
+ProductSchema.index({ collections: 1 });
 
 // Virtual for primary image
 ProductSchema.virtual('primaryImage').get(function() {
