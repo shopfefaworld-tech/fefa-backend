@@ -25,11 +25,14 @@ import occasionRoutes from './routes/occasions';
 import bannerRoutes from './routes/banners';
 import wishlistRoutes from './routes/wishlist';
 import reviewRoutes from './routes/reviews';
+import analyticsRoutes from './routes/analytics';
+import settingsRoutes from './routes/settings';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
 import { notFound } from './middleware/notFound';
-import { generalRateLimit, authRateLimit, adminRateLimit } from './middleware/rateLimiter';
+// Rate limiting disabled per user request
+// import { generalRateLimit, authRateLimit, adminRateLimit } from './middleware/rateLimiter';
 
 // Load environment variables
 dotenv.config();
@@ -310,18 +313,8 @@ app.options('/api/test/products', (req, res) => {
   res.status(204).end();
 });
 
-// Apply general rate limiting to all routes (except OPTIONS for CORS preflight)
-// Also skip for product routes as they use adminRateLimit
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    return next(); // Skip rate limiting for OPTIONS requests
-  }
-  // Skip general rate limit for product routes (they use adminRateLimit)
-  if (req.path.startsWith('/api/products')) {
-    return next();
-  }
-  return generalRateLimit(req, res, next);
-});
+// Rate limiting disabled per user request
+// General rate limiting middleware removed
 
 // API root endpoint
 app.get('/api', (req, res) => {
@@ -368,9 +361,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // API routes
-app.use('/api/auth', authRateLimit, authRoutes);
-// Products route - use admin rate limit (higher limit for admin operations)
-app.use('/api/products', adminRateLimit, productRoutes);
+app.use('/api/auth', authRoutes);
+// Products route - rate limiting disabled
+app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
@@ -381,6 +374,8 @@ app.use('/api/occasions', occasionRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404 handler
 app.use(notFound);
@@ -440,7 +435,7 @@ if (isVercel) {
         console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`🔗 Health check: http://localhost:${PORT}/health`);
         console.log(`📦 In-memory caching enabled`);
-        console.log(`🛡️ Rate limiting enabled`);
+        console.log(`🛡️ Rate limiting disabled`);
       });
     } catch (error) {
       console.error('❌ Failed to start server:', error);
