@@ -50,6 +50,13 @@ export interface ISettings extends Document {
   googleAnalyticsId?: string;
   facebookPixelId?: string;
   
+  // Top Banner Settings
+  topBannerText?: string;
+  topBannerLink?: string;
+  topBannerActive: boolean;
+  topBannerBackgroundColor?: string;
+  topBannerTextColor?: string;
+  
   updatedAt: Date;
   createdAt: Date;
 }
@@ -177,7 +184,29 @@ const SettingsSchema: Schema = new Schema({
     default: false
   },
   googleAnalyticsId: String,
-  facebookPixelId: String
+  facebookPixelId: String,
+  
+  // Top Banner Settings
+  topBannerText: {
+    type: String,
+    default: ''
+  },
+  topBannerLink: {
+    type: String,
+    default: ''
+  },
+  topBannerActive: {
+    type: Boolean,
+    default: false
+  },
+  topBannerBackgroundColor: {
+    type: String,
+    default: '#DBC078'
+  },
+  topBannerTextColor: {
+    type: String,
+    default: '#470031'
+  }
 }, {
   timestamps: true
 });

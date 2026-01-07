@@ -1,24 +1,24 @@
 [
   {
     "id": 1,
-    "title": "Elegance in Every Detail",
-    "subtitle": "Discover our handcrafted jewelry collection",
+    "title": "",
+    "subtitle": "",
     "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100814/fefa-jewelry/banners/banner/carosel-image1.jpg",
     "buttonText": "Shop Now",
     "buttonLink": "/collections"
   },
   {
     "id": 2,
-    "title": "Premium Quality",
-    "subtitle": "Crafted with the finest materials",
+    "title": "",
+    "subtitle": "",
     "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100816/fefa-jewelry/banners/banner/carosel-image2.jpg",
     "buttonText": "Explore Collection",
     "buttonLink": "/collections"
   },
   {
     "id": 3,
-    "title": "Timeless Beauty",
-    "subtitle": "Jewelry that tells your story",
+    "title": "",
+    "subtitle": "",
     "image": "https://res.cloudinary.com/dwf4yn4ag/image/upload/v1758100818/fefa-jewelry/banners/banner/carosel-image3.jpg",
     "buttonText": "View Products",
     "buttonLink": "/collections"

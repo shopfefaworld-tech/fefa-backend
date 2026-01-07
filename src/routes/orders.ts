@@ -140,52 +140,125 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
   try {
     await connectDB();
     const userId = req.user?._id;
-    const { shippingAddress, billingAddress, paymentMethod } = req.body;
+    const { shippingAddress, billingAddress, paymentMethod, items: frontendItems } = req.body;
+
+    console.log('[Order Creation] Starting order creation for user:', userId);
+    console.log('[Order Creation] Request body:', JSON.stringify({ shippingAddress, billingAddress, paymentMethod, frontendItemsCount: frontendItems?.length }));
 
     // Validate required fields
     if (!shippingAddress) {
+      console.log('[Order Creation] Error: Missing shipping address');
       return next(createError('Shipping address is required', 400));
     }
 
     if (!paymentMethod) {
+      console.log('[Order Creation] Error: Missing payment method');
       return next(createError('Payment method is required', 400));
     }
 
-    // Get user's cart
-    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    // Get user's cart from MongoDB
+    let cart = await Cart.findOne({ user: userId }).populate('items.product');
+    console.log('[Order Creation] MongoDB cart found:', !!cart, 'Items count:', cart?.items?.length || 0);
 
-    if (!cart || cart.items.length === 0) {
-      return next(createError('Cart is empty', 400));
+    // Check if we have items (from MongoDB cart or frontend fallback)
+    let orderItems: any[] = [];
+    let subtotal = 0;
+
+    if (cart && cart.items && cart.items.length > 0) {
+      // Use MongoDB cart
+      console.log('[Order Creation] Using MongoDB cart with', cart.items.length, 'items');
+      
+      // Prepare order items from MongoDB cart
+      const itemPromises = cart.items.map(async (item: any) => {
+        try {
+          // The product might already be populated
+          const productId = item.product?._id || item.product;
+          let product = item.product?._id ? item.product : await Product.findById(productId);
+          
+          if (!product) {
+            console.log('[Order Creation] Warning: Product not found, ID:', productId);
+            // Skip this item instead of throwing - it might have been deleted
+            return null;
+          }
+
+          // Get product image
+          const primaryImage = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
+
+          return {
+            product: productId,
+            variant: item.variant,
+            name: product.name,
+            sku: product.sku || '',
+            quantity: item.quantity,
+            price: item.price,
+            total: item.total,
+            image: primaryImage?.url || '',
+          };
+        } catch (err) {
+          console.log('[Order Creation] Error processing cart item:', err);
+          return null;
+        }
+      });
+
+      const results = await Promise.all(itemPromises);
+      orderItems = results.filter(item => item !== null);
+      
+      if (orderItems.length === 0) {
+        console.log('[Order Creation] Error: All products in cart were invalid');
+        return next(createError('All products in cart are no longer available. Please update your cart.', 400));
+      }
+
+      subtotal = cart.subtotal || orderItems.reduce((sum, item) => sum + item.total, 0);
+    } else if (frontendItems && frontendItems.length > 0) {
+      // Fallback: Use items passed from frontend
+      console.log('[Order Creation] Using frontend fallback with', frontendItems.length, 'items');
+      
+      const itemPromises = frontendItems.map(async (item: any) => {
+        try {
+          const product = await Product.findById(item.productId);
+          
+          if (!product) {
+            console.log('[Order Creation] Warning: Frontend product not found, ID:', item.productId);
+            return null;
+          }
+
+          const primaryImage = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
+
+          return {
+            product: item.productId,
+            variant: item.variantId,
+            name: product.name,
+            sku: product.sku || '',
+            quantity: item.quantity,
+            price: item.price || product.price,
+            total: (item.price || product.price) * item.quantity,
+            image: primaryImage?.url || '',
+          };
+        } catch (err) {
+          console.log('[Order Creation] Error processing frontend item:', err);
+          return null;
+        }
+      });
+
+      const results = await Promise.all(itemPromises);
+      orderItems = results.filter(item => item !== null);
+      
+      if (orderItems.length === 0) {
+        console.log('[Order Creation] Error: No valid products found from frontend items');
+        return next(createError('No valid products found. Please refresh your cart.', 400));
+      }
+
+      subtotal = orderItems.reduce((sum, item) => sum + item.total, 0);
+    } else {
+      console.log('[Order Creation] Error: Cart is empty - no MongoDB cart and no frontend items');
+      return next(createError('Cart is empty. Please add items to your cart before checkout.', 400));
     }
 
-    // Prepare order items
-    const orderItems = await Promise.all(
-      cart.items.map(async (item: any) => {
-        const product = await Product.findById(item.product);
-        if (!product) {
-          throw new Error(`Product ${item.product} not found`);
-        }
-
-        // Get product image
-        const primaryImage = product.images.find((img: any) => img.isPrimary) || product.images[0];
-
-        return {
-          product: item.product,
-          variant: item.variant,
-          name: product.name,
-          sku: product.sku,
-          quantity: item.quantity,
-          price: item.price,
-          total: item.total,
-          image: primaryImage?.url,
-        };
-      })
-    );
+    console.log('[Order Creation] Processing', orderItems.length, 'items with subtotal:', subtotal);
 
     // Calculate pricing
-    const subtotal = cart.subtotal || orderItems.reduce((sum, item) => sum + item.total, 0);
-    const tax = cart.tax || 0;
-    const shipping = cart.shipping || (subtotal > 5000 ? 0 : 99);
+    const tax = cart?.tax || 0;
+    const shipping = cart?.shipping || (subtotal >= 1000 ? 0 : 99);
     const discount = 0; // Can be calculated from coupons/promotions
     const total = subtotal + tax + shipping - discount;
 
@@ -230,6 +303,7 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
     });
 
     await order.save();
+    console.log('[Order Creation] Order created successfully:', order._id, 'Order number:', order.orderNumber);
 
     res.status(201).json({
       success: true,
@@ -246,7 +320,8 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
       },
     });
   } catch (error: any) {
-    console.error('Error creating order:', error);
+    console.error('[Order Creation] Fatal error:', error);
+    console.error('[Order Creation] Error stack:', error.stack);
     next(createError(error.message || 'Failed to create order', 500));
   }
 });

@@ -792,13 +792,13 @@ router.post('/addresses', verifyToken, async (req: AuthRequest, res: Response, n
       type: Joi.string().valid('home', 'work', 'other').required(),
       firstName: Joi.string().required(),
       lastName: Joi.string().required(),
-      company: Joi.string().optional(),
+      company: Joi.string().allow('', null).optional(),
       addressLine1: Joi.string().required(),
-      addressLine2: Joi.string().optional(),
+      addressLine2: Joi.string().allow('', null).optional(),
       city: Joi.string().required(),
       state: Joi.string().required(),
       postalCode: Joi.string().required(),
-      country: Joi.string().default('India'),
+      country: Joi.string().allow('', null).default('India'),
       phone: Joi.string().required(),
       isDefault: Joi.boolean().default(false),
     });
@@ -842,13 +842,13 @@ router.put('/addresses/:addressId', verifyToken, async (req: AuthRequest, res: R
       type: Joi.string().valid('home', 'work', 'other').optional(),
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
-      company: Joi.string().optional(),
+      company: Joi.string().allow('', null).optional(),
       addressLine1: Joi.string().optional(),
-      addressLine2: Joi.string().optional(),
+      addressLine2: Joi.string().allow('', null).optional(),
       city: Joi.string().optional(),
       state: Joi.string().optional(),
       postalCode: Joi.string().optional(),
-      country: Joi.string().optional(),
+      country: Joi.string().allow('', null).optional(),
       phone: Joi.string().optional(),
       isDefault: Joi.boolean().optional(),
     });
@@ -1088,6 +1088,71 @@ router.post('/logout', verifyToken, async (req: AuthRequest, res: Response, next
       success: true,
       message: 'Logged out successfully'
     });
+  } catch (error) {
+    next(error);
+    return;
+  }
+});
+
+// Change password validation schema
+const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string().min(6).required(),
+});
+
+// @route   POST /api/auth/change-password
+// @desc    Change user password
+// @access  Private
+router.post('/change-password', verifyToken, async (req: AuthRequest, res: Response, next) => {
+  try {
+    const { error, value } = changePasswordSchema.validate(req.body);
+    if (error) {
+      throw createError(error.details[0].message, 400);
+    }
+
+    const { currentPassword, newPassword } = value;
+    const user = req.user;
+
+    if (!user) {
+      throw createError('User not authenticated', 401);
+    }
+
+    // Check if user has Firebase UID (uses Firebase Auth)
+    if (user.firebaseUid) {
+      // For Firebase-authenticated users, we need to update password in Firebase
+      try {
+        const auth = getFirebaseAuth();
+        
+        // Get the user from Firebase
+        const firebaseUser = await auth.getUser(user.firebaseUid);
+        
+        // Check if user has email (required for password update)
+        if (!firebaseUser.email) {
+          throw createError('Cannot change password for users without email', 400);
+        }
+
+        // Update password in Firebase
+        await auth.updateUser(user.firebaseUid, {
+          password: newPassword,
+        });
+
+        return res.json({
+          success: true,
+          message: 'Password changed successfully'
+        });
+      } catch (firebaseError: any) {
+        console.error('Firebase password update error:', firebaseError);
+        
+        if (firebaseError.code === 'auth/requires-recent-login') {
+          throw createError('Please re-login before changing your password', 401);
+        }
+        
+        throw createError('Failed to update password', 500);
+      }
+    } else {
+      // For users without Firebase (if any exist)
+      throw createError('Password change is only available for email-authenticated users', 400);
+    }
   } catch (error) {
     next(error);
     return;

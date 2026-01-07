@@ -16,6 +16,13 @@ export interface IUser extends Document {
     smsNotifications: boolean;
     emailNotifications: boolean;
   };
+  twoFactorAuth?: {
+    enabled: boolean;
+    secret?: string;
+    backupCodes?: string[];
+    verifiedAt?: Date;
+  };
+  isEmailVerified?: boolean;
   isActive: boolean;
   lastLogin?: Date;
   createdAt: Date;
@@ -160,6 +167,27 @@ const UserSchema = new Schema<IUser>({
       type: Boolean,
       default: true,
     },
+  },
+  twoFactorAuth: {
+    enabled: {
+      type: Boolean,
+      default: false,
+    },
+    secret: {
+      type: String,
+      select: false, // Don't include in normal queries for security
+    },
+    backupCodes: {
+      type: [String],
+      select: false,
+    },
+    verifiedAt: {
+      type: Date,
+    },
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
   },
   isActive: {
     type: Boolean,

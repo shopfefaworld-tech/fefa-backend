@@ -27,6 +27,8 @@ import wishlistRoutes from './routes/wishlist';
 import reviewRoutes from './routes/reviews';
 import analyticsRoutes from './routes/analytics';
 import settingsRoutes from './routes/settings';
+import newsletterRoutes from './routes/newsletter';
+import twoFactorRoutes from './routes/twoFactor';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -376,6 +378,8 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/2fa', twoFactorRoutes);
 
 // 404 handler
 app.use(notFound);
