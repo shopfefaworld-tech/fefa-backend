@@ -11,6 +11,11 @@ export interface IBanner extends Document {
   sortOrder: number;
   startDate?: Date;
   endDate?: Date;
+  // Target page configuration - where the banner should be displayed
+  targetType?: 'homepage' | 'category' | 'collection' | 'occasion';
+  targetId?: mongoose.Types.ObjectId; // Reference to the specific category/collection/occasion
+  targetSlug?: string; // Slug for easier querying
+  targetName?: string; // Store the name for display purposes
   targetAudience?: {
     gender?: 'male' | 'female' | 'all';
     ageRange?: {
@@ -52,6 +57,29 @@ const BannerSchema = new Schema<IBanner>({
     trim: true,
     enum: ['hero', 'featured', 'sidebar', 'footer'],
     default: 'hero',
+  },
+  // Target page configuration
+  targetType: {
+    type: String,
+    trim: true,
+    enum: ['homepage', 'category', 'collection', 'occasion'],
+    default: 'homepage',
+  },
+  targetId: {
+    type: Schema.Types.ObjectId,
+    refPath: 'targetTypeRef',
+    default: null,
+  },
+  targetSlug: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    default: null,
+  },
+  targetName: {
+    type: String,
+    trim: true,
+    default: null,
   },
   isActive: {
     type: Boolean,
@@ -103,6 +131,18 @@ const BannerSchema = new Schema<IBanner>({
 BannerSchema.index({ isActive: 1, sortOrder: 1 });
 BannerSchema.index({ startDate: 1, endDate: 1 });
 BannerSchema.index({ createdAt: -1 });
+BannerSchema.index({ targetType: 1, targetSlug: 1, isActive: 1 });
+BannerSchema.index({ targetType: 1, targetId: 1, isActive: 1 });
+
+// Virtual for dynamic ref path
+BannerSchema.virtual('targetTypeRef').get(function() {
+  switch (this.targetType) {
+    case 'category': return 'Category';
+    case 'collection': return 'Collection';
+    case 'occasion': return 'Occasion';
+    default: return null;
+  }
+});
 
 // Virtual for click-through rate
 BannerSchema.virtual('ctr').get(function() {
@@ -142,12 +182,14 @@ BannerSchema.statics.getActiveBanners = function() {
       {
         $or: [
           { startDate: { $exists: false } },
+          { startDate: null },
           { startDate: { $lte: now } }
         ]
       },
       {
         $or: [
           { endDate: { $exists: false } },
+          { endDate: null },
           { endDate: { $gte: now } }
         ]
       }
@@ -155,9 +197,42 @@ BannerSchema.statics.getActiveBanners = function() {
   }).sort({ sortOrder: 1, createdAt: -1 });
 };
 
+// Static method to get banners by target type and slug
+BannerSchema.statics.getBannersByTarget = function(targetType: string, targetSlug?: string) {
+  const now = new Date();
+  const query: any = {
+    isActive: true,
+    targetType: targetType,
+    $and: [
+      {
+        $or: [
+          { startDate: { $exists: false } },
+          { startDate: null },
+          { startDate: { $lte: now } }
+        ]
+      },
+      {
+        $or: [
+          { endDate: { $exists: false } },
+          { endDate: null },
+          { endDate: { $gte: now } }
+        ]
+      }
+    ]
+  };
+  
+  // If targetSlug is provided, filter by it
+  if (targetSlug) {
+    query.targetSlug = targetSlug.toLowerCase();
+  }
+  
+  return this.find(query).sort({ sortOrder: 1, createdAt: -1 });
+};
+
 // Add static method interface
 export interface IBannerModel extends mongoose.Model<IBanner> {
   getActiveBanners(): Promise<IBanner[]>;
+  getBannersByTarget(targetType: string, targetSlug?: string): Promise<IBanner[]>;
 }
 
 // Ensure virtual fields are serialized

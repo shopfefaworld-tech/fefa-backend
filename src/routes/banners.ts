@@ -65,6 +65,51 @@ router.get('/active',
   }
 );
 
+// @route   GET /api/banners/by-target
+// @desc    Get banners by target type and slug (for category/collection/occasion pages)
+// @access  Public
+router.get('/by-target', 
+  cacheService.cacheMiddleware({ ttl: 300 }), // Cache for 5 minutes
+  async (req: Request, res: Response) => {
+    try {
+      const { type, slug } = req.query;
+      
+      if (!type || typeof type !== 'string') {
+        return res.status(400).json({
+          success: false,
+          message: 'Target type is required'
+        });
+      }
+
+      const validTypes = ['homepage', 'category', 'collection', 'occasion'];
+      if (!validTypes.includes(type)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid target type. Must be one of: homepage, category, collection, occasion'
+        });
+      }
+
+      const banners = await (Banner as any).getBannersByTarget(
+        type, 
+        typeof slug === 'string' ? slug : undefined
+      );
+
+      return res.status(200).json({
+        success: true,
+        count: banners.length,
+        data: banners
+      });
+    } catch (error) {
+      console.error('Error fetching banners by target:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching banners',
+        error: process.env.NODE_ENV === 'development' ? error : 'Internal server error'
+      });
+    }
+  }
+);
+
 // @route   GET /api/banners/:id
 // @desc    Get single banner by ID
 // @access  Public
