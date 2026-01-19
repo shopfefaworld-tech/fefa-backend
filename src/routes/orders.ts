@@ -5,6 +5,8 @@ import Order from '../models/Order';
 import Cart from '../models/Cart';
 import Product from '../models/Product';
 import User from '../models/User';
+import Coupon from '../models/Coupon';
+import GiftOption from '../models/GiftOption';
 import { connectDB } from '../config/database';
 
 const router = Router();
@@ -256,11 +258,28 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
 
     console.log('[Order Creation] Processing', orderItems.length, 'items with subtotal:', subtotal);
 
+    // Optional gift selection
+    let giftPrice = 0;
+    let giftPayload: any = undefined;
+    if (req.body.gift?.optionId) {
+      const giftOption = await GiftOption.findById(req.body.gift.optionId);
+      if (giftOption && giftOption.isActive !== false) {
+        giftPrice = giftOption.price;
+        giftPayload = {
+          optionId: giftOption._id,
+          price: giftOption.price,
+          recipientName: req.body.gift.recipientName,
+          senderName: req.body.gift.senderName,
+          message: req.body.gift.message,
+        };
+      }
+    }
+
     // Calculate pricing
     const tax = cart?.tax || 0;
-    const shipping = cart?.shipping || (subtotal >= 1000 ? 0 : 99);
+    const shipping = cart?.shipping || (subtotal + giftPrice >= 1000 ? 0 : 99);
     const discount = 0; // Can be calculated from coupons/promotions
-    const total = subtotal + tax + shipping - discount;
+    const total = subtotal + giftPrice + tax + shipping - discount;
 
     // Create order
     const order = new Order({
@@ -285,13 +304,14 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
         gateway: 'razorpay',
       },
       pricing: {
-        subtotal,
+        subtotal: subtotal + giftPrice,
         tax,
         shipping,
         discount,
         total,
         currency: 'INR',
       },
+      gift: giftPayload,
       status: 'pending',
       timeline: [
         {
@@ -304,6 +324,14 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
 
     await order.save();
     console.log('[Order Creation] Order created successfully:', order._id, 'Order number:', order.orderNumber);
+
+    // Increment coupon usage if applied
+    if (req.body.couponCode) {
+      await Coupon.findOneAndUpdate(
+        { code: req.body.couponCode.toUpperCase() },
+        { $inc: { usedCount: 1 } }
+      );
+    }
 
     res.status(201).json({
       success: true,

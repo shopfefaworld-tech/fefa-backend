@@ -163,3 +163,81 @@ export const verifyEmailConnection = async (): Promise<boolean> => {
   }
 };
 
+// Send order confirmation email
+export const sendOrderConfirmationEmail = async (
+  email: string,
+  order: {
+    orderNumber: string;
+    items: Array<{ name: string; quantity: number; price: number; total: number }>;
+    pricing: { subtotal: number; shipping: number; discount?: number; total: number };
+    shippingAddress: any;
+  }
+): Promise<void> => {
+  const transporter = createTransporter();
+
+  const itemsHtml = (order.items || [])
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding:8px 12px;border:1px solid #e5e7eb;">${item.name}</td>
+          <td style="padding:8px 12px;border:1px solid #e5e7eb;text-align:center;">${item.quantity}</td>
+          <td style="padding:8px 12px;border:1px solid #e5e7eb;text-align:right;">₹${item.price}</td>
+          <td style="padding:8px 12px;border:1px solid #e5e7eb;text-align:right;">₹${item.total}</td>
+        </tr>
+      `
+    )
+    .join('');
+
+  const address = order.shippingAddress;
+  const addressHtml = address
+    ? `
+      <p style="margin:0;">${address.firstName || ''} ${address.lastName || ''}</p>
+      <p style="margin:0;">${address.addressLine1 || address.address || ''}</p>
+      ${address.addressLine2 ? `<p style="margin:0;">${address.addressLine2}</p>` : ''}
+      <p style="margin:0;">${address.city || ''}, ${address.state || ''} ${address.postalCode || ''}</p>
+      <p style="margin:0;">${address.country || ''}</p>
+    `
+    : '';
+
+  const discount = order.pricing.discount || 0;
+
+  const mailOptions = {
+    from: `"FEFA Jewelry" <${process.env.EMAIL_FROM || process.env.SMTP_USER}>`,
+    to: email,
+    subject: `Order Confirmed - #${order.orderNumber}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
+        <h2 style="color:#d4a574;">Thank you for your order!</h2>
+        <p>Your order <strong>#${order.orderNumber}</strong> has been confirmed.</p>
+        <h3 style="margin-top:20px;">Items</h3>
+        <table style="border-collapse: collapse; width:100%; font-size:14px;">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding:8px 12px;border:1px solid #e5e7eb;">Item</th>
+              <th style="text-align:center;padding:8px 12px;border:1px solid #e5e7eb;">Qty</th>
+              <th style="text-align:right;padding:8px 12px;border:1px solid #e5e7eb;">Price</th>
+              <th style="text-align:right;padding:8px 12px;border:1px solid #e5e7eb;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:20px;">Summary</h3>
+        <p style="margin:0;">Subtotal: ₹${order.pricing.subtotal}</p>
+        ${discount > 0 ? `<p style="margin:0;">Discount: -₹${discount}</p>` : ''}
+        <p style="margin:0;">Shipping: ₹${order.pricing.shipping}</p>
+        <p style="margin:4px 0 0 0;"><strong>Total: ₹${order.pricing.total}</strong></p>
+
+        <h3 style="margin-top:20px;">Shipping Address</h3>
+        ${addressHtml}
+
+        <p style="margin-top:24px;">We will notify you when your order ships.</p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+

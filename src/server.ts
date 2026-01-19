@@ -29,6 +29,10 @@ import analyticsRoutes from './routes/analytics';
 import settingsRoutes from './routes/settings';
 import newsletterRoutes from './routes/newsletter';
 import twoFactorRoutes from './routes/twoFactor';
+import couponsRoutes from './routes/coupons';
+import shippingRoutes from './routes/shipping';
+import quickPickRoutes from './routes/quickPicks';
+import giftRoutes from './routes/gifts';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -379,6 +383,10 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/coupons', couponsRoutes);
+app.use('/api/shipping', shippingRoutes);
+app.use('/api/quick-picks', quickPickRoutes);
+app.use('/api/gifts', giftRoutes);
 app.use('/api/2fa', twoFactorRoutes);
 
 // 404 handler

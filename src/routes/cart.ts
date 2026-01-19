@@ -5,6 +5,43 @@ import { verifyToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
+// Inventory validation helper
+const checkInventory = async (productId: string, variantId: string | undefined, requestedQty: number) => {
+  const product = await Product.findById(productId);
+  if (!product) return { available: false, message: 'Product not found' };
+
+  // Variant-level inventory
+  if (variantId && product.variants) {
+    const variant = product.variants.find((v: any) => v._id.toString() === variantId);
+    if (!variant) return { available: false, message: 'Variant not found' };
+    if (variant.isActive === false) return { available: false, message: 'Variant not available' };
+
+    const variantQty = variant.inventory?.quantity ?? 0;
+    if (variantQty <= 0) {
+      return { available: false, message: 'Out of stock', maxQty: 0 };
+    }
+    if (requestedQty > variantQty) {
+      return { available: false, message: `Only ${variantQty} available`, maxQty: variantQty };
+    }
+    return { available: true, maxQty: variantQty };
+  }
+
+  // Product-level inventory
+  if (product.inventory?.trackQuantity) {
+    const qty = product.inventory.quantity ?? 0;
+    if (qty <= 0 && !product.inventory.allowBackorder) {
+      return { available: false, message: 'Out of stock', maxQty: 0 };
+    }
+    if (!product.inventory.allowBackorder && requestedQty > qty) {
+      return { available: false, message: `Only ${qty} available`, maxQty: qty };
+    }
+    return { available: true, maxQty: qty };
+  }
+
+  // If not tracking quantity, treat as available
+  return { available: true, maxQty: requestedQty };
+};
+
 // Helper function to resolve variant data
 const resolveVariantData = (cart: any) => {
   if (!cart || !cart.items) return cart;
@@ -91,6 +128,16 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response) => {
       });
     }
 
+    // Inventory check for new addition
+    const inventoryCheck = await checkInventory(productId, variantId, quantity);
+    if (!inventoryCheck.available) {
+      return res.status(400).json({
+        success: false,
+        message: inventoryCheck.message,
+        maxQty: inventoryCheck.maxQty ?? 0
+      });
+    }
+
     // Get or create cart
     let cart = await Cart.findOne({ user: userId });
     if (!cart) {
@@ -121,6 +168,15 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response) => {
     );
 
     if (existingItem) {
+      const newQty = existingItem.quantity + quantity;
+      const inventoryCheckExisting = await checkInventory(productId, variantId || existingItem.variant?.toString(), newQty);
+      if (!inventoryCheckExisting.available) {
+        return res.status(400).json({
+          success: false,
+          message: inventoryCheckExisting.message,
+          maxQty: inventoryCheckExisting.maxQty ?? 0
+        });
+      }
       existingItem.quantity += quantity;
       existingItem.total = existingItem.quantity * existingItem.price;
     } else {
@@ -192,6 +248,17 @@ router.put('/:itemId', verifyToken, async (req: AuthRequest, res: Response) => {
       return res.status(404).json({
         success: false,
         message: 'Item not found in cart'
+      });
+    }
+
+    // Inventory check for updated quantity
+    const variantIdFromItem = item.variant ? item.variant.toString() : undefined;
+    const inventoryCheck = await checkInventory(item.product.toString(), variantIdFromItem, quantity);
+    if (!inventoryCheck.available) {
+      return res.status(400).json({
+        success: false,
+        message: inventoryCheck.message,
+        maxQty: inventoryCheck.maxQty ?? 0
       });
     }
 

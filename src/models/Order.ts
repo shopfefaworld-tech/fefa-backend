@@ -9,6 +9,7 @@ export interface IOrder extends Document {
   payment: IOrderPayment;
   pricing: IOrderPricing;
   status: OrderStatus;
+  gift?: IOrderGift;
   notes?: string;
   tracking?: IOrderTracking;
   timeline: IOrderTimeline[];
@@ -48,6 +49,14 @@ export interface IOrderPayment {
   paidAt?: Date;
   refundedAt?: Date;
   refundAmount?: number;
+}
+
+export interface IOrderGift {
+  optionId: mongoose.Types.ObjectId;
+  recipientName?: string;
+  senderName?: string;
+  message?: string;
+  price: number;
 }
 
 export interface IOrderPricing {
@@ -225,6 +234,22 @@ const OrderPricingSchema = new Schema<IOrderPricing>({
   },
 });
 
+const OrderGiftSchema = new Schema<IOrderGift>({
+  optionId: {
+    type: Schema.Types.ObjectId,
+    ref: 'GiftOption',
+    required: true,
+  },
+  recipientName: String,
+  senderName: String,
+  message: String,
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+});
+
 const OrderTrackingSchema = new Schema<IOrderTracking>({
   carrier: {
     type: String,
@@ -289,6 +314,9 @@ const OrderSchema = new Schema<IOrder>({
   pricing: {
     type: OrderPricingSchema,
     required: true,
+  },
+  gift: {
+    type: OrderGiftSchema,
   },
   status: {
     type: String,

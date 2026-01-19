@@ -105,6 +105,33 @@ const generateTokens = (userId: string) => {
   return { accessToken, refreshToken };
 };
 
+// @route   POST /api/auth/refresh
+// @desc    Refresh access token using refresh token
+// @access  Public
+router.post('/refresh', async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(400).json({ success: false, message: 'Refresh token is required' });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret') as any;
+    const userId = decoded.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const tokens = generateTokens(userId);
+    return res.json({ success: true, data: tokens });
+  } catch (error: any) {
+    console.error('Refresh token error:', error);
+    return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+  }
+});
+
 const updateProfileSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).optional(),
   lastName: Joi.string().min(2).max(50).optional(),

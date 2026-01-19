@@ -3,10 +3,40 @@ import { verifyToken, AuthRequest } from '../middleware/auth';
 import { createError } from '../middleware/errorHandler';
 import { createRazorpayOrder, verifyPaymentSignature } from '../config/razorpay';
 import Order, { IOrder } from '../models/Order';
+import Product from '../models/Product';
 import Cart from '../models/Cart';
+import User from '../models/User';
 import { connectDB } from '../config/database';
+import { sendOrderConfirmationEmail } from '../config/email';
 
 const router = Router();
+
+// Decrement product/variant inventory after successful payment
+const decrementInventory = async (orderId: string) => {
+  await connectDB();
+  const order = await Order.findById(orderId);
+  if (!order) return;
+
+  for (const item of order.items) {
+    const product = await Product.findById(item.product);
+    if (!product) continue;
+
+    if (item.variant) {
+      const variantIndex = product.variants.findIndex(
+        (v: any) => v._id.toString() === item.variant?.toString()
+      );
+      if (variantIndex !== -1) {
+        const currentQty = product.variants[variantIndex].inventory?.quantity ?? 0;
+        product.variants[variantIndex].inventory.quantity = Math.max(0, currentQty - item.quantity);
+      }
+    } else if (product.inventory?.trackQuantity) {
+      const currentQty = product.inventory.quantity ?? 0;
+      product.inventory.quantity = Math.max(0, currentQty - item.quantity);
+    }
+
+    await product.save();
+  }
+};
 
 /**
  * @route   POST /api/payments/create-order
@@ -112,6 +142,24 @@ router.post('/verify', verifyToken, async (req: AuthRequest, res: Response, next
 
       await order.save();
 
+      // Decrement inventory for purchased items
+      await decrementInventory(orderId);
+
+      // Send order confirmation email (best-effort)
+      try {
+        const user = await User.findById(order.user);
+        if (user?.email) {
+          await sendOrderConfirmationEmail(user.email, {
+            orderNumber: order.orderNumber,
+            items: order.items as any,
+            pricing: order.pricing as any,
+            shippingAddress: order.shippingAddress as any,
+          });
+        }
+      } catch (emailError) {
+        console.error('Order confirmation email failed:', emailError);
+      }
+
       // Clear user's cart after successful payment
       await Cart.findOneAndDelete({ user: req.user?._id });
     }
@@ -210,6 +258,7 @@ async function handlePaymentCaptured(payload: any) {
       });
 
       await order.save();
+      await decrementInventory(order._id.toString());
     }
   } catch (error) {
     console.error('Error handling payment captured:', error);
@@ -265,6 +314,7 @@ async function handleOrderPaid(payload: any) {
       });
 
       await order.save();
+      await decrementInventory(order._id.toString());
     }
   } catch (error) {
     console.error('Error handling order paid:', error);

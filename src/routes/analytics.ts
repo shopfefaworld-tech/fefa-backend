@@ -304,4 +304,39 @@ router.get('/conversion', verifyToken, requireAdmin, async (req: AuthRequest, re
   }
 });
 
+/**
+ * @route   GET /api/analytics/chart-data
+ * @desc    Get monthly revenue/orders chart data
+ * @access  Private/Admin
+ */
+router.get('/chart-data', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    const months = parseInt((req.query.months as string) || '12');
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - (months - 1));
+
+    const chartData = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate },
+          'payment.status': { $in: ['paid', 'completed', 'confirmed'] }
+        }
+      },
+      {
+        $group: {
+          _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+          revenue: { $sum: '$pricing.total' },
+          orders: { $sum: 1 }
+        }
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } }
+    ]);
+
+    res.json({ success: true, data: chartData });
+  } catch (error: any) {
+    next(createError(error.message || 'Failed to fetch chart data', 500));
+  }
+});
+
 export default router;
