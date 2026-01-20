@@ -339,4 +339,44 @@ router.get('/chart-data', verifyToken, requireAdmin, async (req: AuthRequest, re
   }
 });
 
+/**
+ * @route   DELETE /api/analytics/clear-test-data
+ * @desc    Clear test orders and non-admin users (for cleaning up fake/test data)
+ * @access  Private/Admin
+ */
+router.delete('/clear-test-data', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    
+    // Import Cart and Wishlist models for cleanup
+    const Cart = (await import('../models/Cart')).default;
+    const Wishlist = (await import('../models/Wishlist')).default;
+
+    // Delete all orders
+    const deletedOrders = await Order.deleteMany({});
+    
+    // Delete all non-admin users (keep admin and super_admin)
+    const deletedUsers = await User.deleteMany({
+      role: { $nin: ['admin', 'super_admin'] }
+    });
+
+    // Clean up orphaned carts and wishlists
+    const deletedCarts = await Cart.deleteMany({});
+    const deletedWishlists = await Wishlist.deleteMany({});
+
+    res.json({
+      success: true,
+      message: 'Test data cleared successfully',
+      data: {
+        ordersDeleted: deletedOrders.deletedCount,
+        usersDeleted: deletedUsers.deletedCount,
+        cartsDeleted: deletedCarts.deletedCount,
+        wishlistsDeleted: deletedWishlists.deletedCount
+      }
+    });
+  } catch (error: any) {
+    next(createError(error.message || 'Failed to clear test data', 500));
+  }
+});
+
 export default router;
