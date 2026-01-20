@@ -52,6 +52,7 @@ router.post('/apply', async (req: Request, res: Response) => {
         discount,
         code: coupon.code,
         discountType: coupon.discountType,
+        discountValue: coupon.discountValue,
         maxDiscount: coupon.maxDiscount,
       }
     });
