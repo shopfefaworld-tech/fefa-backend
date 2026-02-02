@@ -100,6 +100,16 @@ const decrementInventory = async (orderId: string) => {
  */
 router.post('/create-order', verifyToken, async (req: AuthRequest, res: Response, next) => {
   try {
+    // Fail fast with clear message if Razorpay env is missing (e.g. on Vercel)
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return next(
+        createError(
+          'Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your deployment environment (e.g. Vercel Project Settings → Environment Variables).',
+          503
+        )
+      );
+    }
+
     const userId = req.user?._id;
     const { amount, currency = 'INR', orderId: dbOrderId } = req.body;
 
