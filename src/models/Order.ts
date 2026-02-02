@@ -350,11 +350,11 @@ OrderSchema.index({ status: 1 });
 OrderSchema.index({ createdAt: -1 });
 OrderSchema.index({ 'payment.transactionId': 1 });
 
-// Pre-save middleware to generate order number
-OrderSchema.pre('save', async function(next) {
+// Pre-validate middleware to generate order number (runs before validation so required field is set)
+OrderSchema.pre('validate', async function(next) {
   if (!this.orderNumber) {
     const count = await mongoose.model('Order').countDocuments();
-    this.orderNumber = `FEFA${String(count + 1).padStart(6, '0')}`;
+    this.orderNumber = `FEFA${String(count + 1).padStart(6, '0')}`.toUpperCase();
   }
   next();
 });
