@@ -95,7 +95,8 @@ const decrementInventory = async (orderId: string) => {
 
 /**
  * @route   POST /api/payments/create-order
- * @desc    Create Razorpay order
+ * @desc    Create Razorpay order. Request body.orderId = your DB order _id (for linking).
+ *          Response order.id = Razorpay order ID (order_xxx) — use this for Razorpay checkout.
  * @access  Private
  */
 router.post('/create-order', verifyToken, async (req: AuthRequest, res: Response, next) => {
@@ -117,11 +118,14 @@ router.post('/create-order', verifyToken, async (req: AuthRequest, res: Response
       return next(createError('Invalid amount', 400));
     }
 
-    // Convert amount to paise (Razorpay expects amount in smallest currency unit)
-    const amountInPaise = Math.round(amount * 100);
+    // Convert amount to paise (Razorpay expects amount in smallest currency unit; min 10 paise)
+    const amountInPaise = Math.round(Number(amount) * 100);
+    if (amountInPaise < 10) {
+      return next(createError('Order amount is below Razorpay minimum (₹0.10)', 400));
+    }
 
-    // Generate receipt ID
-    const receipt = `receipt_${Date.now()}_${userId}`;
+    // Receipt: max 40 chars, must be unique (Razorpay API requirement)
+    const receipt = `rcpt_${Date.now()}`.slice(0, 40);
 
     // Create Razorpay order
     const razorpayOrder = await createRazorpayOrder(
