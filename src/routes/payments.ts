@@ -152,8 +152,9 @@ router.post('/create-order', verifyToken, async (req: AuthRequest, res: Response
       },
     });
   } catch (error: any) {
+    const message = error?.message ?? 'Failed to create payment order';
     console.error('Error creating Razorpay order:', error);
-    next(createError(error.message || 'Failed to create payment order', 500));
+    next(createError(String(message), 500));
   }
 });
 

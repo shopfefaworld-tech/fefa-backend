@@ -84,8 +84,14 @@ export const createRazorpayOrder = async (
     const order = await razorpay.orders.create(options);
     return order;
   } catch (error: any) {
+    const msg =
+      (typeof error?.message === 'string' && error.message) ||
+      (typeof error?.description === 'string' && error.description) ||
+      (typeof error?.error?.description === 'string' && error.error.description) ||
+      (typeof error === 'string' && error) ||
+      'Unknown Razorpay error';
     console.error('Error creating Razorpay order:', error);
-    throw new Error(`Failed to create Razorpay order: ${error.message}`);
+    throw new Error(`Razorpay: ${msg}`);
   }
 };
 

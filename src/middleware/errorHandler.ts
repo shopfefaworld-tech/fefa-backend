@@ -57,6 +57,8 @@ export const errorHandler = (
   const allowedOrigins = [
     process.env.FRONTEND_URL,
     'https://fefa-frontend.vercel.app',
+    'https://www.shopfefa.world',
+    'https://shopfefa.world',
     'http://localhost:3000',
     'http://localhost:3001'
   ].filter(Boolean);
