@@ -8,8 +8,63 @@ import Cart from '../models/Cart';
 import User from '../models/User';
 import { connectDB } from '../config/database';
 import { sendOrderConfirmationEmail } from '../config/email';
+import shiprocketService from '../services/shiprocketService';
 
 const router = Router();
+
+// Auto-create shipment setting (can be controlled via env or settings)
+const AUTO_CREATE_SHIPMENT = process.env.AUTO_CREATE_SHIPROCKET_SHIPMENT === 'true';
+
+// Helper function to create Shiprocket shipment (non-blocking)
+const createShiprocketShipmentAsync = async (orderId: string) => {
+  try {
+    if (!shiprocketService.isConfigured()) {
+      console.log('[Shiprocket] Not configured, skipping auto-shipment creation');
+      return;
+    }
+
+    const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
+    if (!order) {
+      console.error('[Shiprocket] Order not found for shipment creation:', orderId);
+      return;
+    }
+
+    // Don't create if already has tracking
+    if (order.tracking?.shiprocketOrderId) {
+      console.log('[Shiprocket] Shipment already exists for order:', order.orderNumber);
+      return;
+    }
+
+    console.log('[Shiprocket] Auto-creating shipment for order:', order.orderNumber);
+
+    const shipmentResult = await shiprocketService.createFullShipment(order, {
+      autoPickup: true,
+    });
+
+    // Update order with tracking info
+    order.tracking = {
+      carrier: shipmentResult.courierName,
+      trackingNumber: shipmentResult.awbCode,
+      trackingUrl: shipmentResult.trackingUrl,
+      shiprocketOrderId: shipmentResult.shiprocketOrderId,
+      shipmentId: shipmentResult.shipmentId,
+    };
+
+    // Update status to processing
+    order.status = 'processing';
+    order.timeline.push({
+      status: 'processing',
+      timestamp: new Date(),
+      note: `Shipment auto-created with ${shipmentResult.courierName}`,
+    });
+
+    await order.save();
+    console.log('[Shiprocket] Shipment created successfully:', shipmentResult.awbCode);
+  } catch (error: any) {
+    console.error('[Shiprocket] Auto-shipment creation failed (non-blocking):', error.message);
+    // Don't throw - this is a non-blocking operation
+  }
+};
 
 // Decrement product/variant inventory after successful payment
 const decrementInventory = async (orderId: string) => {
@@ -162,6 +217,13 @@ router.post('/verify', verifyToken, async (req: AuthRequest, res: Response, next
 
       // Clear user's cart after successful payment
       await Cart.findOneAndDelete({ user: req.user?._id });
+
+      // Auto-create Shiprocket shipment if enabled (non-blocking)
+      if (AUTO_CREATE_SHIPMENT) {
+        createShiprocketShipmentAsync(orderId).catch(err => {
+          console.error('[Shiprocket] Auto-shipment error (non-blocking):', err.message);
+        });
+      }
     }
 
     res.status(200).json({

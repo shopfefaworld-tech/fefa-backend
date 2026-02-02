@@ -8,8 +8,84 @@ import User from '../models/User';
 import Coupon from '../models/Coupon';
 import GiftOption from '../models/GiftOption';
 import { connectDB } from '../config/database';
+import { 
+  sendOrderConfirmationEmail, 
+  sendOrderShippedEmail, 
+  sendOrderDeliveredEmail, 
+  sendOrderCancelledEmail 
+} from '../config/email';
 
 const router = Router();
+
+// Helper function to send status-based emails (best-effort, non-blocking)
+const sendStatusEmail = async (order: any, previousStatus: string, newStatus: string, tracking?: any) => {
+  try {
+    // Get user email
+    let userEmail: string | null = null;
+    if (typeof order.user === 'object' && order.user?.email) {
+      userEmail = order.user.email;
+    } else {
+      const user = await User.findById(order.user);
+      userEmail = user?.email || null;
+    }
+
+    if (!userEmail) {
+      console.log('[Order Email] No user email found for order:', order.orderNumber);
+      return;
+    }
+
+    // Prepare order data for emails
+    const orderData = {
+      orderNumber: order.orderNumber,
+      items: order.items.map((item: any) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total,
+      })),
+      pricing: order.pricing,
+      shippingAddress: order.shippingAddress,
+    };
+
+    // Send appropriate email based on new status
+    switch (newStatus) {
+      case 'shipped':
+        if (tracking?.trackingNumber) {
+          await sendOrderShippedEmail(userEmail, orderData, {
+            carrier: tracking.carrier,
+            trackingNumber: tracking.trackingNumber,
+            trackingUrl: tracking.trackingUrl,
+            estimatedDelivery: tracking.estimatedDelivery,
+          });
+          console.log(`[Order Email] Shipped email sent for order ${order.orderNumber}`);
+        }
+        break;
+
+      case 'delivered':
+        await sendOrderDeliveredEmail(userEmail, {
+          orderNumber: order.orderNumber,
+          items: order.items.map((item: any) => ({
+            name: item.name,
+            quantity: item.quantity,
+          })),
+        });
+        console.log(`[Order Email] Delivered email sent for order ${order.orderNumber}`);
+        break;
+
+      case 'cancelled':
+        await sendOrderCancelledEmail(userEmail, orderData, 'Order was cancelled');
+        console.log(`[Order Email] Cancelled email sent for order ${order.orderNumber}`);
+        break;
+
+      default:
+        // No email for other status changes
+        break;
+    }
+  } catch (error) {
+    // Log error but don't fail the request
+    console.error('[Order Email] Failed to send status email:', error);
+  }
+};
 
 /**
  * @route   GET /api/orders
@@ -365,20 +441,29 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
     const orderId = req.params.id;
     const { status, note, payment, tracking } = req.body;
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
 
     if (!order) {
       return next(createError('Order not found', 404));
     }
 
     // Check if user is admin or order owner
-    const isOwner = order.user.toString() === req.user?._id.toString();
+    let orderUserId: string | null = null;
+    if (order.user && typeof order.user === 'object' && (order.user as any)._id) {
+      orderUserId = (order.user as any)._id.toString();
+    } else if (order.user) {
+      orderUserId = order.user.toString();
+    }
+    const isOwner = !!orderUserId && orderUserId === req.user?._id.toString();
     const userRole = req.user?.role;
     const isAdmin = userRole === 'admin' || userRole === 'super_admin';
 
     if (!isOwner && !isAdmin) {
       return next(createError('Unauthorized', 403));
     }
+
+    // Store previous status for email logic
+    const previousStatus = order.status;
 
     // Update order fields
     if (status) {
@@ -405,9 +490,17 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
       if (tracking.carrier) order.tracking.carrier = tracking.carrier;
       if (tracking.trackingNumber) order.tracking.trackingNumber = tracking.trackingNumber;
       if (tracking.trackingUrl) order.tracking.trackingUrl = tracking.trackingUrl;
+      if (tracking.estimatedDelivery) order.tracking.estimatedDelivery = tracking.estimatedDelivery;
     }
 
     await order.save();
+
+    // Send status change email (non-blocking)
+    if (status && status !== previousStatus) {
+      sendStatusEmail(order, previousStatus, status, tracking).catch(err => {
+        console.error('[Order Update] Email send failed (non-blocking):', err.message);
+      });
+    }
 
     const updatedOrder = await Order.findById(orderId)
       .populate('user', 'firstName lastName email')
@@ -424,6 +517,74 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
 });
 
 /**
+ * @route   POST /api/orders/:id/confirmation
+ * @desc    Resend order confirmation email
+ * @access  Private/Admin
+ */
+router.post('/:id/confirmation', verifyToken, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    const orderId = req.params.id;
+    const userRole = req.user?.role;
+    const isAdmin = userRole === 'admin' || userRole === 'super_admin';
+
+    // Find the order
+    const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
+
+    if (!order) {
+      return next(createError('Order not found', 404));
+    }
+
+    // Check authorization - admin can resend for any order, user only for their own
+    let orderUserId: string | null = null;
+    if (order.user && typeof order.user === 'object' && (order.user as any)._id) {
+      orderUserId = (order.user as any)._id.toString();
+    } else if (order.user) {
+      orderUserId = order.user.toString();
+    }
+    const isOwner = !!orderUserId && orderUserId === req.user?._id.toString();
+
+    if (!isOwner && !isAdmin) {
+      return next(createError('Unauthorized', 403));
+    }
+
+    // Get user email
+    let userEmail: string | null = null;
+    if (typeof order.user === 'object' && (order.user as any)?.email) {
+      userEmail = (order.user as any).email;
+    } else {
+      const user = await User.findById(order.user);
+      userEmail = user?.email || null;
+    }
+
+    if (!userEmail) {
+      return next(createError('User email not found', 400));
+    }
+
+    // Send confirmation email
+    await sendOrderConfirmationEmail(userEmail, {
+      orderNumber: order.orderNumber,
+      items: order.items.map((item: any) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total,
+      })),
+      pricing: order.pricing,
+      shippingAddress: order.shippingAddress,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Confirmation email sent successfully',
+    });
+  } catch (error: any) {
+    console.error('[Order Confirmation Email] Error:', error);
+    next(createError(error.message || 'Failed to send confirmation email', 500));
+  }
+});
+
+/**
  * @route   DELETE /api/orders/:id
  * @desc    Cancel order
  * @access  Private
@@ -433,11 +594,12 @@ router.delete('/:id', verifyToken, async (req: AuthRequest, res: Response, next)
     await connectDB();
     const userId = req.user?._id;
     const orderId = req.params.id;
+    const { reason } = req.body;
 
     const order = await Order.findOne({
       _id: orderId,
       user: userId,
-    });
+    }).populate('user', 'email firstName lastName');
 
     if (!order) {
       return next(createError('Order not found', 404));
@@ -452,9 +614,38 @@ router.delete('/:id', verifyToken, async (req: AuthRequest, res: Response, next)
     order.timeline.push({
       status: 'cancelled',
       timestamp: new Date(),
-      note: 'Order cancelled by user',
+      note: reason || 'Order cancelled by user',
     });
     await order.save();
+
+    // Send cancellation email (non-blocking)
+    (async () => {
+      try {
+        let userEmail: string | null = null;
+        if (typeof order.user === 'object' && (order.user as any)?.email) {
+          userEmail = (order.user as any).email;
+        } else {
+          const user = await User.findById(order.user);
+          userEmail = user?.email || null;
+        }
+
+        if (userEmail) {
+          await sendOrderCancelledEmail(userEmail, {
+            orderNumber: order.orderNumber,
+            items: order.items.map((item: any) => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              total: item.total,
+            })),
+            pricing: order.pricing,
+          }, reason || 'Cancelled by customer');
+          console.log(`[Order Cancel] Cancellation email sent for order ${order.orderNumber}`);
+        }
+      } catch (emailError) {
+        console.error('[Order Cancel] Failed to send cancellation email:', emailError);
+      }
+    })();
 
     res.status(200).json({
       success: true,

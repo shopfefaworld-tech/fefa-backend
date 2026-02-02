@@ -74,6 +74,9 @@ export interface IOrderTracking {
   trackingUrl?: string;
   estimatedDelivery?: Date;
   deliveredAt?: Date;
+  // Shiprocket specific fields
+  shiprocketOrderId?: number;
+  shipmentId?: number;
 }
 
 export interface IOrderTimeline {
@@ -265,6 +268,13 @@ const OrderTrackingSchema = new Schema<IOrderTracking>({
   },
   deliveredAt: {
     type: Date,
+  },
+  // Shiprocket specific fields
+  shiprocketOrderId: {
+    type: Number,
+  },
+  shipmentId: {
+    type: Number,
   },
 });
 
