@@ -8,3 +8,4 @@ export { default as Order, IOrder, IOrderItem, IOrderAddress, IOrderPayment, IOr
 export { default as Review, IReview } from './Review';
 export { default as Wishlist, IWishlist, IWishlistItem } from './Wishlist';
 export { OTP, IOTP } from './OTP';
+export { default as StockMovement, IStockMovement, StockMovementType, StockReferenceType } from './StockMovement';

@@ -33,6 +33,7 @@ import couponsRoutes from './routes/coupons';
 import shippingRoutes from './routes/shipping';
 import quickPickRoutes from './routes/quickPicks';
 import giftRoutes from './routes/gifts';
+import inventoryRoutes from './routes/inventory';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -225,6 +226,7 @@ app.get('/', (req, res) => {
       cart: '/api/cart',
       orders: '/api/orders',
       categories: '/api/categories',
+      inventory: '/api/inventory',
       collections: '/api/collections',
       banners: '/api/banners',
       wishlist: '/api/wishlist',
@@ -340,6 +342,7 @@ app.get('/api', (req, res) => {
       cart: '/api/cart',
       orders: '/api/orders',
       categories: '/api/categories',
+      inventory: '/api/inventory',
       banners: '/api/banners',
       wishlist: '/api/wishlist',
       reviews: '/api/reviews'
@@ -392,6 +395,7 @@ app.use('/api/shipping', shippingRoutes);
 app.use('/api/quick-picks', quickPickRoutes);
 app.use('/api/gifts', giftRoutes);
 app.use('/api/2fa', twoFactorRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // 404 handler
 app.use(notFound);

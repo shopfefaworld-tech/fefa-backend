@@ -27,7 +27,7 @@ router.get('/overview', verifyToken, requireAdmin, async (req: AuthRequest, res:
     const [totalOrders, totalRevenue, recentOrders, recentRevenue, totalUsers, recentUsers] = await Promise.all([
       Order.countDocuments(),
       Order.aggregate([
-        { $match: { 'payment.status': 'completed' } },
+        { $match: { 'payment.status': { $in: ['paid', 'completed'] } } },
         { $group: { _id: null, total: { $sum: '$pricing.total' } } }
       ]),
       Order.countDocuments({ createdAt: { $gte: thirtyDaysAgo } }),
@@ -35,7 +35,7 @@ router.get('/overview', verifyToken, requireAdmin, async (req: AuthRequest, res:
         { 
           $match: { 
             createdAt: { $gte: thirtyDaysAgo },
-            'payment.status': 'completed'
+            'payment.status': { $in: ['paid', 'completed'] }
           } 
         },
         { $group: { _id: null, total: { $sum: '$pricing.total' } } }
@@ -53,7 +53,7 @@ router.get('/overview', verifyToken, requireAdmin, async (req: AuthRequest, res:
         { 
           $match: { 
             createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo },
-            'payment.status': 'completed'
+            'payment.status': { $in: ['paid', 'completed'] }
           } 
         },
         { $group: { _id: null, total: { $sum: '$pricing.total' } } }
@@ -137,7 +137,7 @@ router.get('/revenue', verifyToken, requireAdmin, async (req: AuthRequest, res: 
       {
         $match: {
           createdAt: { $gte: dateRange },
-          'payment.status': 'completed'
+          'payment.status': { $in: ['paid', 'completed'] }
         }
       },
       {
@@ -171,7 +171,7 @@ router.get('/top-products', verifyToken, requireAdmin, async (req: AuthRequest, 
     const { limit = 10 } = req.query;
 
     const topProducts = await Order.aggregate([
-      { $match: { 'payment.status': 'completed' } },
+      { $match: { 'payment.status': { $in: ['paid', 'completed'] } } },
       { $unwind: '$items' },
       {
         $group: {
@@ -211,7 +211,7 @@ router.get('/customers', verifyToken, requireAdmin, async (req: AuthRequest, res
 
     // Get customer segments by order count
     const customerSegments = await Order.aggregate([
-      { $match: { 'payment.status': 'completed' } },
+      { $match: { 'payment.status': { $in: ['paid', 'completed'] } } },
       {
         $group: {
           _id: '$user',

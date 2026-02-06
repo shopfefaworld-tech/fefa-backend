@@ -6,6 +6,7 @@ import Order, { IOrder } from '../models/Order';
 import Product from '../models/Product';
 import Cart from '../models/Cart';
 import User from '../models/User';
+import StockMovement from '../models/StockMovement';
 import { connectDB } from '../config/database';
 import { sendOrderConfirmationEmail } from '../config/email';
 import shiprocketService from '../services/shiprocketService';
@@ -72,9 +73,27 @@ const decrementInventory = async (orderId: string) => {
   const order = await Order.findById(orderId);
   if (!order) return;
 
-  for (const item of order.items) {
+  for (let index = 0; index < order.items.length; index += 1) {
+    const item = order.items[index];
     const product = await Product.findById(item.product);
     if (!product) continue;
+
+    // Prevent duplicate stock deduction for the same order line (webhook retries, duplicate callbacks, etc.).
+    const existingMovement = await StockMovement.findOne({
+      product: product._id,
+      type: 'sale',
+      referenceType: 'order',
+      referenceId: orderId,
+      'metadata.lineIndex': index,
+    }).select('_id');
+
+    if (existingMovement) {
+      continue;
+    }
+
+    let previousQuantity = product.inventory?.quantity ?? 0;
+    let newQuantity = previousQuantity;
+    let quantityChange = 0;
 
     if (item.variant) {
       const variantIndex = product.variants.findIndex(
@@ -86,10 +105,34 @@ const decrementInventory = async (orderId: string) => {
       }
     } else if (product.inventory?.trackQuantity) {
       const currentQty = product.inventory.quantity ?? 0;
-      product.inventory.quantity = Math.max(0, currentQty - item.quantity);
+      previousQuantity = currentQty;
+      newQuantity = Math.max(0, currentQty - item.quantity);
+      quantityChange = newQuantity - previousQuantity;
+      product.inventory.quantity = newQuantity;
     }
 
     await product.save();
+
+    if (quantityChange !== 0 || !item.variant) {
+      await StockMovement.create({
+        product: product._id,
+        type: 'sale',
+        quantityChange,
+        previousQuantity,
+        newQuantity,
+        unit: 'PCS',
+        note: `Inventory deducted for order ${order.orderNumber || orderId}`,
+        referenceType: 'order',
+        referenceId: orderId,
+        movementDate: new Date(),
+        metadata: {
+          orderNumber: order.orderNumber,
+          sku: item.sku,
+          lineIndex: index,
+          variantId: item.variant?.toString?.() || null,
+        },
+      });
+    }
   }
 };
 
@@ -399,4 +442,3 @@ async function handleOrderPaid(payload: any) {
 }
 
 export default router;
-

@@ -3,8 +3,9 @@ import Product, { IProduct } from '../models/Product';
 import Category from '../models/Category';
 import Occasion from '../models/Occasion';
 import Collection from '../models/Collection';
+import StockMovement from '../models/StockMovement';
 import { errorHandler } from '../middleware/errorHandler';
-import { verifyToken, requireAdmin } from '../middleware/auth';
+import { verifyToken, requireAdmin, AuthRequest } from '../middleware/auth';
 import { uploadMultiple, handleUploadError } from '../middleware/upload';
 import { uploadImage, deleteImage } from '../config/cloudinary';
 import * as fs from 'fs';
@@ -251,7 +252,7 @@ router.post('/',
   requireAdmin, 
   uploadMultiple, 
   handleUploadError,
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     // Log that POST /api/products was reached
     console.log(`[PRODUCTS] POST /api/products reached`);
     console.log(`[PRODUCTS] Origin: ${req.headers.origin || 'none'}`);
@@ -482,13 +483,32 @@ router.post('/',
 
       // Handle nested inventory fields from FormData (e.g., 'inventory.quantity')
       if (productData['inventory.quantity'] !== undefined) {
+        const lowStockThreshold =
+          productData['inventory.lowStockThreshold'] !== undefined
+            ? parseInt(productData['inventory.lowStockThreshold']) || 5
+            : 5;
         productData.inventory = {
           trackQuantity: true,
           quantity: parseInt(productData['inventory.quantity']) || 0,
-          lowStockThreshold: 5,
+          lowStockThreshold,
           allowBackorder: false
         };
         delete productData['inventory.quantity'];
+      }
+
+      if (productData['inventory.lowStockThreshold'] !== undefined) {
+        const threshold = parseInt(productData['inventory.lowStockThreshold']) || 5;
+        if (!productData.inventory) {
+          productData.inventory = {
+            trackQuantity: true,
+            quantity: 0,
+            lowStockThreshold: threshold,
+            allowBackorder: false,
+          };
+        } else {
+          productData.inventory.lowStockThreshold = threshold;
+        }
+        delete productData['inventory.lowStockThreshold'];
       }
 
       // Parse numeric fields from FormData (they come as strings)
@@ -547,6 +567,24 @@ router.post('/',
       // Create the product
       const product = new Product(productData);
       await product.save();
+
+      // Log opening stock as first movement if quantity exists.
+      const openingQty = product.inventory?.quantity ?? 0;
+      if (openingQty > 0) {
+        await StockMovement.create({
+          product: product._id,
+          type: 'opening_stock',
+          quantityChange: openingQty,
+          previousQuantity: 0,
+          newQuantity: openingQty,
+          unit: 'PCS',
+          note: 'Opening stock',
+          referenceType: 'product',
+          referenceId: product._id.toString(),
+          movementDate: productData.openingStockDate ? new Date(productData.openingStockDate) : new Date(),
+          createdBy: req.user?._id,
+        });
+      }
 
       // Populate category, subcategory, and collections for response
       await product.populate('category', 'name slug');
@@ -1069,7 +1107,7 @@ router.delete('/:id/images/:imageIndex', verifyToken, requireAdmin, async (req: 
 // @route   PUT /api/products/:id
 // @desc    Update product
 // @access  Private/Admin
-router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response) => {
+router.put('/:id', verifyToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -1082,6 +1120,8 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
         message: 'Product not found'
       });
     }
+
+    const previousQuantity = product.inventory?.quantity ?? 0;
 
     // Handle category name to ObjectId conversion if needed
     if (updateData.category && typeof updateData.category === 'string') {
@@ -1109,6 +1149,19 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
       }
       product.inventory.quantity = parseInt(updateData['inventory.quantity']) || 0;
       delete updateData['inventory.quantity'];
+    }
+
+    if (updateData['inventory.lowStockThreshold'] !== undefined) {
+      if (!product.inventory) {
+        product.inventory = {
+          trackQuantity: true,
+          quantity: 0,
+          lowStockThreshold: 10,
+          allowBackorder: false,
+        };
+      }
+      product.inventory.lowStockThreshold = parseInt(updateData['inventory.lowStockThreshold']) || 10;
+      delete updateData['inventory.lowStockThreshold'];
     }
 
     // Handle dimensions - ensure it's a proper object
@@ -1227,13 +1280,31 @@ router.put('/:id', verifyToken, requireAdmin, async (req: Request, res: Response
 
     // Update other fields
     Object.keys(updateData).forEach(key => {
-      if (key !== 'inventory' && key !== 'dimensions' && key !== 'images' && key !== 'inventory.quantity' && key !== 'occasions' && key !== 'collections') {
+      if (key !== 'inventory' && key !== 'dimensions' && key !== 'images' && key !== 'inventory.quantity' && key !== 'inventory.lowStockThreshold' && key !== 'occasions' && key !== 'collections' && key !== 'stockNote') {
         (product as any)[key] = updateData[key];
       }
     });
 
     // Save the product
     await product.save();
+
+    const newQuantity = product.inventory?.quantity ?? 0;
+    const quantityChange = newQuantity - previousQuantity;
+    if (quantityChange !== 0) {
+      await StockMovement.create({
+        product: product._id,
+        type: 'adjustment',
+        quantityChange,
+        previousQuantity,
+        newQuantity,
+        unit: 'PCS',
+        note: updateData.stockNote || 'Stock changed via product update',
+        referenceType: 'product',
+        referenceId: product._id.toString(),
+        movementDate: new Date(),
+        createdBy: req.user?._id,
+      });
+    }
 
     // Populate and return
     await product.populate('category', 'name slug');
