@@ -30,6 +30,17 @@ export interface ISettings extends Document {
   razorpayKeySecret?: string;
   currency: string;
   taxRate: number;
+
+  // Shipping Settings
+  shippingProvider: 'bluedart' | 'manual';
+  shippingAutoCreateShipment: boolean;
+  shippingPickupPincode: string;
+  shippingDefaultWeight: number;
+  shippingDefaultLength: number;
+  shippingDefaultBreadth: number;
+  shippingDefaultHeight: number;
+  shippingInsuredByDefault: boolean;
+  shippingDefaultServiceType: string;
   
   // Security Settings
   enableTwoFactor: boolean;
@@ -135,6 +146,45 @@ const SettingsSchema: Schema = new Schema({
   taxRate: {
     type: Number,
     default: 0
+  },
+
+  // Shipping Settings
+  shippingProvider: {
+    type: String,
+    enum: ['bluedart', 'manual'],
+    default: 'bluedart'
+  },
+  shippingAutoCreateShipment: {
+    type: Boolean,
+    default: false
+  },
+  shippingPickupPincode: {
+    type: String,
+    default: process.env.SHIPPING_PICKUP_PINCODE || '110001'
+  },
+  shippingDefaultWeight: {
+    type: Number,
+    default: 0.5
+  },
+  shippingDefaultLength: {
+    type: Number,
+    default: 15
+  },
+  shippingDefaultBreadth: {
+    type: Number,
+    default: 10
+  },
+  shippingDefaultHeight: {
+    type: Number,
+    default: 5
+  },
+  shippingInsuredByDefault: {
+    type: Boolean,
+    default: false
+  },
+  shippingDefaultServiceType: {
+    type: String,
+    default: 'surface'
   },
   
   // Security Settings

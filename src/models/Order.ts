@@ -69,12 +69,15 @@ export interface IOrderPricing {
 }
 
 export interface IOrderTracking {
+  provider?: 'bluedart' | 'manual';
   carrier?: string;
   trackingNumber?: string;
   trackingUrl?: string;
   estimatedDelivery?: Date;
   deliveredAt?: Date;
-  // Shiprocket specific fields
+  providerOrderId?: string;
+  providerShipmentId?: string;
+  // Legacy fields kept for migration/backward compatibility
   shiprocketOrderId?: number;
   shipmentId?: number;
 }
@@ -254,6 +257,10 @@ const OrderGiftSchema = new Schema<IOrderGift>({
 });
 
 const OrderTrackingSchema = new Schema<IOrderTracking>({
+  provider: {
+    type: String,
+    enum: ['bluedart', 'manual'],
+  },
   carrier: {
     type: String,
   },
@@ -269,7 +276,13 @@ const OrderTrackingSchema = new Schema<IOrderTracking>({
   deliveredAt: {
     type: Date,
   },
-  // Shiprocket specific fields
+  providerOrderId: {
+    type: String,
+  },
+  providerShipmentId: {
+    type: String,
+  },
+  // Legacy fields kept for migration/backward compatibility
   shiprocketOrderId: {
     type: Number,
   },

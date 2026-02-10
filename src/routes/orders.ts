@@ -17,6 +17,14 @@ import {
 
 const router = Router();
 
+const normalizeTrackingInput = (tracking: any) => {
+  if (!tracking) return null;
+  return {
+    ...tracking,
+    trackingUrl: tracking.trackingUrl || tracking.url,
+  };
+};
+
 // Helper function to send status-based emails (best-effort, non-blocking)
 const sendStatusEmail = async (order: any, previousStatus: string, newStatus: string, tracking?: any) => {
   try {
@@ -440,6 +448,7 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
     await connectDB();
     const orderId = req.params.id;
     const { status, note, payment, tracking } = req.body;
+    const normalizedTracking = normalizeTrackingInput(tracking);
 
     const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
 
@@ -482,22 +491,24 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
     }
 
     // Admin can update tracking info
-    if (isAdmin && tracking) {
+    if (isAdmin && normalizedTracking) {
       // Initialize tracking if it doesn't exist
       if (!order.tracking) {
         order.tracking = {};
       }
-      if (tracking.carrier) order.tracking.carrier = tracking.carrier;
-      if (tracking.trackingNumber) order.tracking.trackingNumber = tracking.trackingNumber;
-      if (tracking.trackingUrl) order.tracking.trackingUrl = tracking.trackingUrl;
-      if (tracking.estimatedDelivery) order.tracking.estimatedDelivery = tracking.estimatedDelivery;
+      if (normalizedTracking.carrier) order.tracking.carrier = normalizedTracking.carrier;
+      if (normalizedTracking.trackingNumber) order.tracking.trackingNumber = normalizedTracking.trackingNumber;
+      if (normalizedTracking.trackingUrl) order.tracking.trackingUrl = normalizedTracking.trackingUrl;
+      if (normalizedTracking.estimatedDelivery) {
+        order.tracking.estimatedDelivery = normalizedTracking.estimatedDelivery;
+      }
     }
 
     await order.save();
 
     // Send status change email (non-blocking)
     if (status && status !== previousStatus) {
-      sendStatusEmail(order, previousStatus, status, tracking).catch(err => {
+      sendStatusEmail(order, previousStatus, status, normalizedTracking || tracking).catch(err => {
         console.error('[Order Update] Email send failed (non-blocking):', err.message);
       });
     }

@@ -10,6 +10,7 @@
 import mongoose from 'mongoose';
 import Review from '../models/Review';
 import Settings from '../models/Settings';
+import Order from '../models/Order';
 import { connectDB } from '../config/database';
 
 interface MigrationResult {
@@ -88,6 +89,15 @@ async function migrateSettings(): Promise<MigrationResult> {
       emailFrom: 'info@fefajewelry.com',
       enableCOD: true,
       enableRazorpay: true,
+      shippingProvider: 'bluedart',
+      shippingAutoCreateShipment: false,
+      shippingPickupPincode: process.env.SHIPPING_PICKUP_PINCODE || '110001',
+      shippingDefaultWeight: 0.5,
+      shippingDefaultLength: 15,
+      shippingDefaultBreadth: 10,
+      shippingDefaultHeight: 5,
+      shippingInsuredByDefault: false,
+      shippingDefaultServiceType: 'surface',
       currency: 'INR',
       taxRate: 0,
       enableTwoFactor: false,
@@ -116,6 +126,131 @@ async function migrateSettings(): Promise<MigrationResult> {
 }
 
 /**
+ * Migration 4: Ensure shipping settings fields exist
+ */
+async function migrateShippingSettingsDefaults(): Promise<MigrationResult> {
+  try {
+    const settings = await Settings.findOne();
+    if (!settings) {
+      return {
+        success: true,
+        message: 'Settings not found, skipped shipping settings default migration',
+        affected: 0,
+      };
+    }
+
+    let touched = false;
+    const defaults: Record<string, any> = {
+      shippingProvider: 'bluedart',
+      shippingAutoCreateShipment: false,
+      shippingPickupPincode: process.env.SHIPPING_PICKUP_PINCODE || '110001',
+      shippingDefaultWeight: 0.5,
+      shippingDefaultLength: 15,
+      shippingDefaultBreadth: 10,
+      shippingDefaultHeight: 5,
+      shippingInsuredByDefault: false,
+      shippingDefaultServiceType: 'surface',
+    };
+
+    Object.entries(defaults).forEach(([key, value]) => {
+      if ((settings as any)[key] === undefined || (settings as any)[key] === null) {
+        (settings as any)[key] = value;
+        touched = true;
+      }
+    });
+
+    if (touched) {
+      await settings.save();
+      return {
+        success: true,
+        message: 'Shipping settings defaults added to settings document',
+        affected: 1,
+      };
+    }
+
+    return {
+      success: true,
+      message: 'Shipping settings defaults already present',
+      affected: 0,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Error migrating shipping settings defaults: ${error.message}`,
+    };
+  }
+}
+
+/**
+ * Migration 3: Move provider-specific tracking fields to generic fields
+ * - tracking.shiprocketOrderId -> tracking.providerOrderId
+ * - tracking.shipmentId -> tracking.providerShipmentId
+ * - tracking.provider defaults:
+ *   - bluedart: records that had provider IDs
+ *   - manual: records with manual tracking but no provider IDs
+ */
+async function migrateShippingTrackingFields(): Promise<MigrationResult> {
+  try {
+    const orders = await Order.find({
+      tracking: { $exists: true },
+      $or: [
+        { 'tracking.provider': { $exists: false } },
+        { 'tracking.providerOrderId': { $exists: false } },
+        { 'tracking.providerShipmentId': { $exists: false } },
+        { 'tracking.providerOrderId': '' },
+        { 'tracking.providerShipmentId': '' },
+      ],
+    }).select('_id tracking');
+
+    let modifiedCount = 0;
+
+    for (const order of orders) {
+      const tracking: any = order.tracking || {};
+      let touched = false;
+
+      const legacyOrderId = tracking.shiprocketOrderId;
+      const legacyShipmentId = tracking.shipmentId;
+
+      if (!tracking.providerOrderId && legacyOrderId !== undefined && legacyOrderId !== null) {
+        tracking.providerOrderId = String(legacyOrderId);
+        touched = true;
+      }
+
+      if (!tracking.providerShipmentId && legacyShipmentId !== undefined && legacyShipmentId !== null) {
+        tracking.providerShipmentId = String(legacyShipmentId);
+        touched = true;
+      }
+
+      if (!tracking.provider) {
+        if (tracking.providerOrderId || tracking.providerShipmentId) {
+          tracking.provider = 'bluedart';
+        } else if (tracking.trackingNumber || tracking.trackingUrl || tracking.carrier) {
+          tracking.provider = 'manual';
+        }
+        touched = true;
+      }
+
+      if (touched) {
+        order.tracking = tracking;
+        await order.save();
+        modifiedCount += 1;
+      }
+    }
+
+    return {
+      success: true,
+      message: 'Shipping tracking fields migration completed',
+      affected: modifiedCount,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Error migrating shipping tracking fields: ${error.message}`,
+    };
+  }
+}
+
+/**
  * Run all migrations
  */
 export async function runMigrations(): Promise<void> {
@@ -130,6 +265,8 @@ export async function runMigrations(): Promise<void> {
     // Run migrations
     results.push(await migrateReviewApprovalStatus());
     results.push(await migrateSettings());
+    results.push(await migrateShippingTrackingFields());
+    results.push(await migrateShippingSettingsDefaults());
 
     // Log results
     console.log('\n📊 Migration Results:');

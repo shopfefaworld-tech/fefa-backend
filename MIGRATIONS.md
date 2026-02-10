@@ -19,6 +19,15 @@ This document explains the database changes required after the admin panel updat
   - A default settings document will be created automatically on first access
   - Or you can run migrations to initialize it immediately
 
+### 3. Shipping Tracking Fields
+- **Change**: Tracking model now uses provider-neutral fields
+- **Reason**: Shiprocket was removed and Blue Dart integration now uses generic shipping provider IDs
+- **Impact**:
+  - `tracking.shiprocketOrderId` is migrated to `tracking.providerOrderId`
+  - `tracking.shipmentId` is migrated to `tracking.providerShipmentId`
+  - `tracking.provider` is set to `bluedart` for provider-tracked orders and `manual` for manual-tracked orders
+  - Legacy fields remain temporarily for backward compatibility
+
 ## Running Migrations
 
 ### Option 1: Using npm script (Recommended)
@@ -56,7 +65,11 @@ await runMigrations();
      - Email configuration
      - Payment settings (Razorpay, COD)
      - Security settings
-     - Notification preferences
+      - Notification preferences
+
+3. **Shipping Tracking Normalization**
+   - Migrates legacy Shiprocket-specific tracking fields to provider-neutral tracking fields
+   - Applies safe defaults for tracking provider when missing
 
 ## Important Notes
 
@@ -79,6 +92,14 @@ After running migrations, verify:
    ```javascript
    // In MongoDB shell or Compass
    db.settings.findOne()
+   ```
+
+3. **Shipping tracking fields**: Verify provider-neutral fields are populated
+   ```javascript
+   db.orders.find(
+     { tracking: { $exists: true } },
+     { 'tracking.provider': 1, 'tracking.providerOrderId': 1, 'tracking.providerShipmentId': 1 }
+   ).limit(10)
    ```
 
 ## Troubleshooting

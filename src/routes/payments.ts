@@ -7,48 +7,69 @@ import Product from '../models/Product';
 import Cart from '../models/Cart';
 import User from '../models/User';
 import StockMovement from '../models/StockMovement';
+import Settings from '../models/Settings';
 import { connectDB } from '../config/database';
 import { sendOrderConfirmationEmail } from '../config/email';
-import shiprocketService from '../services/shiprocketService';
+import shippingProvider from '../services/shippingProvider';
 
 const router = Router();
 
-// Auto-create shipment setting (can be controlled via env or settings)
-const AUTO_CREATE_SHIPMENT = process.env.AUTO_CREATE_SHIPROCKET_SHIPMENT === 'true';
+const AUTO_CREATE_SHIPMENT = process.env.AUTO_CREATE_SHIPMENT === 'true';
 
-// Helper function to create Shiprocket shipment (non-blocking)
-const createShiprocketShipmentAsync = async (orderId: string) => {
+const createProviderShipmentAsync = async (
+  orderId: string,
+  options?: {
+    defaultWeight?: number;
+    defaultDimensions?: { length: number; breadth: number; height: number };
+    defaultInsured?: boolean;
+    defaultServiceType?: string;
+  }
+) => {
   try {
-    if (!shiprocketService.isConfigured()) {
-      console.log('[Shiprocket] Not configured, skipping auto-shipment creation');
+    if (!shippingProvider.isConfigured()) {
+      console.log('[Shipping] Provider not configured, skipping auto-shipment creation');
       return;
     }
 
     const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
     if (!order) {
-      console.error('[Shiprocket] Order not found for shipment creation:', orderId);
+      console.error('[Shipping] Order not found for shipment creation:', orderId);
       return;
     }
 
     // Don't create if already has tracking
-    if (order.tracking?.shiprocketOrderId) {
-      console.log('[Shiprocket] Shipment already exists for order:', order.orderNumber);
+    if (order.tracking?.providerOrderId || order.tracking?.shiprocketOrderId) {
+      console.log('[Shipping] Shipment already exists for order:', order.orderNumber);
       return;
     }
 
-    console.log('[Shiprocket] Auto-creating shipment for order:', order.orderNumber);
+    console.log('[Shipping] Auto-creating Blue Dart shipment for order:', order.orderNumber);
 
-    const shipmentResult = await shiprocketService.createFullShipment(order, {
+    const shipmentResult = await shippingProvider.createShipment(order, {
       autoPickup: true,
+      weight: options?.defaultWeight,
+      dimensions: options?.defaultDimensions,
+      insured: options?.defaultInsured,
+      serviceType: options?.defaultServiceType,
     });
 
     // Update order with tracking info
     order.tracking = {
-      carrier: shipmentResult.courierName,
+      ...order.tracking,
+      provider: 'bluedart',
+      carrier: shipmentResult.courierName || 'Blue Dart',
       trackingNumber: shipmentResult.awbCode,
       trackingUrl: shipmentResult.trackingUrl,
-      shiprocketOrderId: shipmentResult.shiprocketOrderId,
-      shipmentId: shipmentResult.shipmentId,
+      providerOrderId:
+        shipmentResult.providerOrderId !== undefined && shipmentResult.providerOrderId !== null
+          ? String(shipmentResult.providerOrderId)
+          : undefined,
+      providerShipmentId:
+        shipmentResult.providerShipmentId !== undefined && shipmentResult.providerShipmentId !== null
+          ? String(shipmentResult.providerShipmentId)
+          : undefined,
+      shiprocketOrderId: undefined,
+      shipmentId: undefined,
     };
 
     // Update status to processing
@@ -60,9 +81,9 @@ const createShiprocketShipmentAsync = async (orderId: string) => {
     });
 
     await order.save();
-    console.log('[Shiprocket] Shipment created successfully:', shipmentResult.awbCode);
+    console.log('[Shipping] Shipment created successfully:', shipmentResult.awbCode);
   } catch (error: any) {
-    console.error('[Shiprocket] Auto-shipment creation failed (non-blocking):', error.message);
+    console.error('[Shipping] Auto-shipment creation failed (non-blocking):', error.message);
     // Don't throw - this is a non-blocking operation
   }
 };
@@ -276,10 +297,36 @@ router.post('/verify', verifyToken, async (req: AuthRequest, res: Response, next
       // Clear user's cart after successful payment
       await Cart.findOneAndDelete({ user: req.user?._id });
 
-      // Auto-create Shiprocket shipment if enabled (non-blocking)
-      if (AUTO_CREATE_SHIPMENT) {
-        createShiprocketShipmentAsync(orderId).catch(err => {
-          console.error('[Shiprocket] Auto-shipment error (non-blocking):', err.message);
+      // Auto-create shipment if enabled (non-blocking)
+      const settings = await Settings.findOne().select(
+        'shippingAutoCreateShipment shippingDefaultWeight shippingDefaultLength shippingDefaultBreadth shippingDefaultHeight shippingInsuredByDefault shippingDefaultServiceType'
+      );
+      const shouldAutoCreateShipment =
+        settings?.shippingAutoCreateShipment !== undefined
+          ? Boolean(settings.shippingAutoCreateShipment)
+          : AUTO_CREATE_SHIPMENT;
+
+      if (shouldAutoCreateShipment) {
+        createProviderShipmentAsync(orderId, {
+          defaultWeight:
+            typeof settings?.shippingDefaultWeight === 'number' ? settings.shippingDefaultWeight : 0.5,
+          defaultDimensions: {
+            length:
+              typeof settings?.shippingDefaultLength === 'number' ? settings.shippingDefaultLength : 15,
+            breadth:
+              typeof settings?.shippingDefaultBreadth === 'number'
+                ? settings.shippingDefaultBreadth
+                : 10,
+            height:
+              typeof settings?.shippingDefaultHeight === 'number' ? settings.shippingDefaultHeight : 5,
+          },
+          defaultInsured:
+            settings?.shippingInsuredByDefault !== undefined
+              ? Boolean(settings.shippingInsuredByDefault)
+              : false,
+          defaultServiceType: settings?.shippingDefaultServiceType || 'surface',
+        }).catch(err => {
+          console.error('[Shipping] Auto-shipment error (non-blocking):', err.message);
         });
       }
     }

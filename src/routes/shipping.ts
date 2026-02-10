@@ -1,189 +1,223 @@
+import crypto from 'crypto';
 import { Router, Request, Response, NextFunction } from 'express';
 import { verifyToken, AuthRequest, requireAdmin } from '../middleware/auth';
 import { createError } from '../middleware/errorHandler';
 import { connectDB } from '../config/database';
 import Order from '../models/Order';
-import User from '../models/User';
-import shiprocketService from '../services/shiprocketService';
+import Settings from '../models/Settings';
+import shippingProvider from '../services/shippingProvider';
 import { sendOrderShippedEmail, sendOrderDeliveredEmail } from '../config/email';
+import { mapProviderStatusToOrderStatus } from '../utils/shippingStatusMap';
 
 const router = Router();
 
-// Simple configurable shipping calculation
 const SHIPPING_CONFIG = {
   freeShippingThreshold: 1000,
   baseRate: 99,
   expressRate: 199,
-  defaultPickupPincode: process.env.SHIPROCKET_PICKUP_PINCODE || '110001', // Delhi default
+  defaultPickupPincode: process.env.SHIPPING_PICKUP_PINCODE || '110001',
 };
 
-/**
- * @route   POST /api/shipping/calculate
- * @desc    Calculate shipping cost (simple calculation)
- * @access  Public
- */
+interface ShippingRuntimeConfig {
+  provider: 'bluedart' | 'manual';
+  autoCreateShipment: boolean;
+  pickupPincode: string;
+  defaultWeight: number;
+  defaultDimensions: { length: number; breadth: number; height: number };
+  defaultInsured: boolean;
+  defaultServiceType: string;
+}
+
+const getShippingRuntimeConfig = async (): Promise<ShippingRuntimeConfig> => {
+  const settings = await Settings.findOne().select(
+    'shippingProvider shippingAutoCreateShipment shippingPickupPincode shippingDefaultWeight shippingDefaultLength shippingDefaultBreadth shippingDefaultHeight shippingInsuredByDefault shippingDefaultServiceType'
+  );
+
+  return {
+    provider: (settings?.shippingProvider as 'bluedart' | 'manual') || 'bluedart',
+    autoCreateShipment:
+      settings?.shippingAutoCreateShipment !== undefined
+        ? Boolean(settings.shippingAutoCreateShipment)
+        : process.env.AUTO_CREATE_SHIPMENT === 'true',
+    pickupPincode:
+      settings?.shippingPickupPincode ||
+      process.env.SHIPPING_PICKUP_PINCODE ||
+      SHIPPING_CONFIG.defaultPickupPincode,
+    defaultWeight:
+      typeof settings?.shippingDefaultWeight === 'number' ? settings.shippingDefaultWeight : 0.5,
+    defaultDimensions: {
+      length:
+        typeof settings?.shippingDefaultLength === 'number' ? settings.shippingDefaultLength : 15,
+      breadth:
+        typeof settings?.shippingDefaultBreadth === 'number'
+          ? settings.shippingDefaultBreadth
+          : 10,
+      height:
+        typeof settings?.shippingDefaultHeight === 'number' ? settings.shippingDefaultHeight : 5,
+    },
+    defaultInsured:
+      settings?.shippingInsuredByDefault !== undefined
+        ? Boolean(settings.shippingInsuredByDefault)
+        : false,
+    defaultServiceType: settings?.shippingDefaultServiceType || 'surface',
+  };
+};
+
+const normalizeTrackingUrl = (tracking: any): string | undefined =>
+  tracking?.trackingUrl || tracking?.url;
+
+const normalizeProviderId = (value: unknown): string | undefined => {
+  if (value === undefined || value === null || value === '') return undefined;
+  return String(value);
+};
+
 router.post('/calculate', async (req: Request, res: Response) => {
   try {
     const { subtotal } = req.body;
-
     const useFreeShipping = typeof subtotal === 'number' && subtotal >= SHIPPING_CONFIG.freeShippingThreshold;
 
-    const data = {
-      standard: {
-        cost: useFreeShipping ? 0 : SHIPPING_CONFIG.baseRate,
-        days: '5-7 business days',
-        label: useFreeShipping ? 'Free Shipping' : 'Standard Shipping',
+    return res.json({
+      success: true,
+      data: {
+        standard: {
+          cost: useFreeShipping ? 0 : SHIPPING_CONFIG.baseRate,
+          days: '5-7 business days',
+          label: useFreeShipping ? 'Free Shipping' : 'Standard Shipping',
+        },
+        express: {
+          cost: SHIPPING_CONFIG.expressRate,
+          days: '1-2 business days',
+          label: 'Express Delivery',
+        },
       },
-      express: {
-        cost: SHIPPING_CONFIG.expressRate,
-        days: '1-2 business days',
-        label: 'Express Delivery',
-      },
-    };
-
-    return res.json({ success: true, data });
+    });
   } catch (error: any) {
     console.error('Shipping calculation error:', error);
     return res.status(500).json({ success: false, message: 'Failed to calculate shipping' });
   }
 });
 
-/**
- * @route   POST /api/shipping/check-serviceability
- * @desc    Check if shipping is available to a pincode via Shiprocket
- * @access  Public
- */
 router.post('/check-serviceability', async (req: Request, res: Response) => {
   try {
+    await connectDB();
     const { deliveryPincode, weight = 0.5, cod = false } = req.body;
+    const runtimeConfig = await getShippingRuntimeConfig();
 
     if (!deliveryPincode) {
       return res.status(400).json({ success: false, message: 'Delivery pincode is required' });
     }
 
-    // Check if Shiprocket is configured
-    if (!shiprocketService.isConfigured()) {
-      // Return basic availability if Shiprocket not configured
+    if (!shippingProvider.isConfigured()) {
       return res.json({
         success: true,
         data: {
           serviceable: true,
           couriers: [],
-          message: 'Shipping available (Shiprocket not configured for detailed check)',
+          message: 'Shipping available (provider not configured for detailed check)',
         },
       });
     }
 
-    const result = await shiprocketService.checkServiceability(
-      SHIPPING_CONFIG.defaultPickupPincode,
-      deliveryPincode,
-      weight,
-      cod
+    const result = await shippingProvider.checkServiceability(
+      runtimeConfig.pickupPincode,
+      String(deliveryPincode),
+      Number(weight) || 0.5,
+      Boolean(cod)
     );
-
-    const couriers = result.data?.available_courier_companies || [];
 
     return res.json({
       success: true,
       data: {
-        serviceable: couriers.length > 0,
-        couriers: couriers.map((c) => ({
-          id: c.courier_company_id,
-          name: c.courier_name,
-          rate: c.rate,
-          estimatedDays: c.estimated_delivery_days,
-          cod: c.cod_charges,
+        serviceable: result.serviceable,
+        couriers: result.couriers.map((courier) => ({
+          id: courier.id,
+          name: courier.name,
+          rate: courier.rate,
+          estimatedDays: courier.estimatedDays,
+          cod: courier.codCharge,
         })),
-        recommendedCourierId: result.data?.recommended_courier_company_id,
+        recommendedCourierId: result.recommendedCourierId,
       },
     });
   } catch (error: any) {
     console.error('Serviceability check error:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: error.message || 'Failed to check serviceability' 
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to check serviceability',
     });
   }
 });
 
-/**
- * @route   POST /api/shipping/create-shipment/:orderId
- * @desc    Create a shipment in Shiprocket for an order
- * @access  Private/Admin
- */
 router.post('/create-shipment/:orderId', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
   try {
     await connectDB();
     const { orderId } = req.params;
-    const { weight, dimensions, courierId, autoPickup = true } = req.body;
+    const { weight, dimensions, courierId, declaredValue, insured, serviceType, autoPickup = true } = req.body;
+    const runtimeConfig = await getShippingRuntimeConfig();
 
-    // Check if Shiprocket is configured
-    if (!shiprocketService.isConfigured()) {
-      return next(createError('Shiprocket is not configured', 400));
+    if (!shippingProvider.isConfigured()) {
+      return next(createError('Blue Dart is not configured', 400));
     }
 
-    // Get the order
     const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
     if (!order) {
       return next(createError('Order not found', 404));
     }
 
-    // Check if shipment already exists
-    if (order.tracking?.shiprocketOrderId) {
+    if (order.tracking?.providerOrderId || order.tracking?.shiprocketOrderId) {
       return next(createError('Shipment already created for this order', 400));
     }
 
-    // Create full shipment (order + AWB + pickup)
-    const shipmentResult = await shiprocketService.createFullShipment(order, {
-      weight,
-      dimensions,
+    const shipmentResult = await shippingProvider.createShipment(order, {
+      weight: typeof weight === 'number' ? weight : runtimeConfig.defaultWeight,
+      dimensions: dimensions || runtimeConfig.defaultDimensions,
       courierId,
+      declaredValue,
+      insured: insured !== undefined ? Boolean(insured) : runtimeConfig.defaultInsured,
+      serviceType: serviceType || runtimeConfig.defaultServiceType,
       autoPickup,
     });
 
-    // Update order with tracking information
     order.tracking = {
-      carrier: shipmentResult.courierName,
+      ...order.tracking,
+      provider: 'bluedart',
+      carrier: shipmentResult.courierName || 'Blue Dart',
       trackingNumber: shipmentResult.awbCode,
       trackingUrl: shipmentResult.trackingUrl,
-      shiprocketOrderId: shipmentResult.shiprocketOrderId,
-      shipmentId: shipmentResult.shipmentId,
-    };
+      providerOrderId: normalizeProviderId(shipmentResult.providerOrderId),
+      providerShipmentId: normalizeProviderId(shipmentResult.providerShipmentId),
+      shiprocketOrderId: undefined,
+      shipmentId: undefined,
+    } as any;
 
-    // Update status to processing if still confirmed
     if (order.status === 'confirmed') {
       order.status = 'processing';
       order.timeline.push({
         status: 'processing',
         timestamp: new Date(),
-        note: `Shipment created with ${shipmentResult.courierName}`,
+        note: `Shipment created with ${shipmentResult.courierName || 'Blue Dart'}`,
       });
     }
 
     await order.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Shipment created successfully',
       data: {
-        shiprocketOrderId: shipmentResult.shiprocketOrderId,
-        shipmentId: shipmentResult.shipmentId,
+        providerOrderId: shipmentResult.providerOrderId,
+        providerShipmentId: shipmentResult.providerShipmentId,
         awbCode: shipmentResult.awbCode,
-        courierName: shipmentResult.courierName,
+        courierName: shipmentResult.courierName || 'Blue Dart',
         trackingUrl: shipmentResult.trackingUrl,
       },
     });
   } catch (error: any) {
     console.error('Create shipment error:', error);
-    next(createError(error.message || 'Failed to create shipment', 500));
+    return next(createError(error.message || 'Failed to create shipment', 500));
   }
 });
 
-/**
- * @route   GET /api/shipping/track/:orderId
- * @desc    Track shipment for an order
- * @access  Private
- */
 router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Response, next) => {
   try {
     await connectDB();
@@ -192,18 +226,14 @@ router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Respons
     const userRole = req.user?.role;
     const isAdmin = userRole === 'admin' || userRole === 'super_admin';
 
-    // Get the order
     const query: any = { _id: orderId };
-    if (!isAdmin) {
-      query.user = userId;
-    }
+    if (!isAdmin) query.user = userId;
 
     const order = await Order.findOne(query);
     if (!order) {
       return next(createError('Order not found', 404));
     }
 
-    // Check if we have tracking info
     if (!order.tracking?.trackingNumber) {
       return res.json({
         success: true,
@@ -215,26 +245,21 @@ router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Respons
       });
     }
 
-    // Check if Shiprocket is configured
-    if (!shiprocketService.isConfigured()) {
+    if (!shippingProvider.isConfigured()) {
       return res.json({
         success: true,
         data: {
           status: order.status,
           trackingNumber: order.tracking.trackingNumber,
           carrier: order.tracking.carrier,
-          trackingUrl: order.tracking.trackingUrl,
-          message: 'Real-time tracking not available (Shiprocket not configured)',
+          trackingUrl: normalizeTrackingUrl(order.tracking),
+          message: 'Real-time tracking not available (provider not configured)',
         },
       });
     }
 
-    // Get real-time tracking from Shiprocket
     try {
-      const trackingData = await shiprocketService.trackByAWB(order.tracking.trackingNumber);
-      
-      const shipmentTrack = trackingData.tracking_data?.shipment_track?.[0];
-      const activities = trackingData.tracking_data?.shipment_track_activities || [];
+      const tracking = await shippingProvider.trackByAwb(order.tracking.trackingNumber);
 
       return res.json({
         success: true,
@@ -242,42 +267,36 @@ router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Respons
           status: order.status,
           trackingNumber: order.tracking.trackingNumber,
           carrier: order.tracking.carrier,
-          trackingUrl: trackingData.tracking_data?.track_url || order.tracking.trackingUrl,
-          currentStatus: shipmentTrack?.current_status,
-          estimatedDelivery: shipmentTrack?.edd || trackingData.tracking_data?.etd,
-          activities: activities.map((a) => ({
-            date: a.date,
-            status: a.status,
-            activity: a.activity,
-            location: a.location,
+          trackingUrl: tracking.trackingUrl || normalizeTrackingUrl(order.tracking),
+          currentStatus: tracking.currentStatus,
+          estimatedDelivery: tracking.estimatedDelivery,
+          activities: tracking.activities.map((activity) => ({
+            date: activity.date,
+            status: activity.status,
+            activity: activity.activity,
+            location: activity.location,
           })),
         },
       });
     } catch (trackError: any) {
-      console.error('Shiprocket tracking error:', trackError);
-      // Return basic info if tracking fails
+      console.error('Blue Dart tracking error:', trackError);
       return res.json({
         success: true,
         data: {
           status: order.status,
           trackingNumber: order.tracking.trackingNumber,
           carrier: order.tracking.carrier,
-          trackingUrl: order.tracking.trackingUrl,
+          trackingUrl: normalizeTrackingUrl(order.tracking),
           message: 'Could not fetch real-time tracking',
         },
       });
     }
   } catch (error: any) {
     console.error('Track shipment error:', error);
-    next(createError(error.message || 'Failed to track shipment', 500));
+    return next(createError(error.message || 'Failed to track shipment', 500));
   }
 });
 
-/**
- * @route   POST /api/shipping/cancel/:orderId
- * @desc    Cancel shipment for an order
- * @access  Private/Admin
- */
 router.post('/cancel/:orderId', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
   try {
     await connectDB();
@@ -292,17 +311,18 @@ router.post('/cancel/:orderId', verifyToken, requireAdmin, async (req: AuthReque
       return next(createError('No shipment to cancel', 400));
     }
 
-    // Check if Shiprocket is configured
-    if (shiprocketService.isConfigured()) {
+    if (shippingProvider.isConfigured()) {
       try {
-        await shiprocketService.cancelShipment([order.tracking.trackingNumber]);
+        const shipmentReference =
+          order.tracking.providerShipmentId ||
+          order.tracking.shipmentId ||
+          order.tracking.trackingNumber;
+        await shippingProvider.cancelShipment(String(shipmentReference));
       } catch (cancelError: any) {
-        console.error('Shiprocket cancel error:', cancelError);
-        // Continue even if Shiprocket cancel fails
+        console.error('Blue Dart cancel error:', cancelError);
       }
     }
 
-    // Clear tracking info
     order.tracking = undefined;
     order.timeline.push({
       status: order.status,
@@ -312,48 +332,35 @@ router.post('/cancel/:orderId', verifyToken, requireAdmin, async (req: AuthReque
 
     await order.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Shipment cancelled successfully',
     });
   } catch (error: any) {
     console.error('Cancel shipment error:', error);
-    next(createError(error.message || 'Failed to cancel shipment', 500));
+    return next(createError(error.message || 'Failed to cancel shipment', 500));
   }
 });
 
-/**
- * @route   GET /api/shipping/pickup-locations
- * @desc    Get available pickup locations from Shiprocket
- * @access  Private/Admin
- */
 router.get(
   '/pickup-locations',
   verifyToken,
   requireAdmin,
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-      if (!shiprocketService.isConfigured()) {
+      if (!shippingProvider.isConfigured()) {
         res.json({
           success: true,
           data: [],
-          message: 'Shiprocket not configured',
+          message: 'Blue Dart not configured',
         });
         return;
       }
 
-      const result = await shiprocketService.getPickupLocations();
-      const locations = result.data?.shipping_address || [];
-
+      const locations = await shippingProvider.getPickupLocations();
       res.json({
         success: true,
-        data: locations.map((loc) => ({
-          id: loc.id,
-          name: loc.pickup_location,
-          address: `${loc.address}, ${loc.city}, ${loc.state} ${loc.pin_code}`,
-          phone: loc.phone,
-          isPrimary: loc.is_primary_location === 1,
-        })),
+        data: locations,
       });
     } catch (error: any) {
       console.error('Get pickup locations error:', error);
@@ -362,18 +369,13 @@ router.get(
   }
 );
 
-/**
- * @route   POST /api/shipping/generate-label/:orderId
- * @desc    Generate shipping label for an order
- * @access  Private/Admin
- */
 router.post('/generate-label/:orderId', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
   try {
     await connectDB();
     const { orderId } = req.params;
 
-    if (!shiprocketService.isConfigured()) {
-      return next(createError('Shiprocket not configured', 400));
+    if (!shippingProvider.isConfigured()) {
+      return next(createError('Blue Dart not configured', 400));
     }
 
     const order = await Order.findById(orderId);
@@ -381,100 +383,303 @@ router.post('/generate-label/:orderId', verifyToken, requireAdmin, async (req: A
       return next(createError('Order not found', 404));
     }
 
-    if (!order.tracking?.shipmentId) {
+    const shipmentReference =
+      order.tracking?.providerShipmentId ||
+      (order.tracking as any)?.shipmentId ||
+      order.tracking?.trackingNumber;
+
+    if (!shipmentReference) {
       return next(createError('No shipment found for this order', 400));
     }
 
-    const result = await shiprocketService.generateLabel(order.tracking.shipmentId);
+    const result = await shippingProvider.generateLabel(String(shipmentReference));
 
-    res.json({
+    return res.json({
       success: true,
       data: {
-        labelUrl: result.label_url,
+        labelUrl: result.labelUrl,
       },
     });
   } catch (error: any) {
     console.error('Generate label error:', error);
-    next(createError(error.message || 'Failed to generate label', 500));
+    return next(createError(error.message || 'Failed to generate label', 500));
   }
 });
 
-/**
- * @route   POST /api/shipping/webhook
- * @desc    Webhook endpoint for Shiprocket status updates
- * @access  Public (verified by Shiprocket)
- */
+router.get('/admin/status', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    const runtimeConfig = await getShippingRuntimeConfig();
+
+    return res.json({
+      success: true,
+      data: {
+        provider: runtimeConfig.provider,
+        configured: shippingProvider.isConfigured(),
+        autoCreateShipment: runtimeConfig.autoCreateShipment,
+        pickupPincode: runtimeConfig.pickupPincode,
+        defaults: {
+          weight: runtimeConfig.defaultWeight,
+          dimensions: runtimeConfig.defaultDimensions,
+          insured: runtimeConfig.defaultInsured,
+          serviceType: runtimeConfig.defaultServiceType,
+        },
+      },
+    });
+  } catch (error: any) {
+    return next(createError(error.message || 'Failed to fetch shipping status', 500));
+  }
+});
+
+router.get('/admin/config', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    const runtimeConfig = await getShippingRuntimeConfig();
+    return res.json({
+      success: true,
+      data: runtimeConfig,
+    });
+  } catch (error: any) {
+    return next(createError(error.message || 'Failed to fetch shipping config', 500));
+  }
+});
+
+router.put('/admin/config', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = await Settings.create({
+        storeName: 'FEFA Jewelry',
+        storeEmail: process.env.SMTP_USER || 'contact@fefajewelry.com',
+        emailFrom: process.env.SMTP_USER || 'contact@fefajewelry.com',
+      });
+    }
+
+    const body = req.body || {};
+    if (body.provider) settings.shippingProvider = body.provider;
+    if (body.autoCreateShipment !== undefined) {
+      settings.shippingAutoCreateShipment = Boolean(body.autoCreateShipment);
+    }
+    if (body.pickupPincode) settings.shippingPickupPincode = String(body.pickupPincode);
+    if (body.defaultWeight !== undefined) settings.shippingDefaultWeight = Number(body.defaultWeight);
+    if (body.defaultDimensions?.length !== undefined) {
+      settings.shippingDefaultLength = Number(body.defaultDimensions.length);
+    }
+    if (body.defaultDimensions?.breadth !== undefined) {
+      settings.shippingDefaultBreadth = Number(body.defaultDimensions.breadth);
+    }
+    if (body.defaultDimensions?.height !== undefined) {
+      settings.shippingDefaultHeight = Number(body.defaultDimensions.height);
+    }
+    if (body.defaultInsured !== undefined) {
+      settings.shippingInsuredByDefault = Boolean(body.defaultInsured);
+    }
+    if (body.defaultServiceType) settings.shippingDefaultServiceType = String(body.defaultServiceType);
+
+    await settings.save();
+
+    const runtimeConfig = await getShippingRuntimeConfig();
+    return res.json({
+      success: true,
+      message: 'Shipping config updated successfully',
+      data: runtimeConfig,
+    });
+  } catch (error: any) {
+    return next(createError(error.message || 'Failed to update shipping config', 500));
+  }
+});
+
+router.post('/admin/test-connection', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    if (!shippingProvider.isConfigured()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Blue Dart is not configured',
+      });
+    }
+
+    let check: any = null;
+    try {
+      const runtimeConfig = await getShippingRuntimeConfig();
+      check = await shippingProvider.checkServiceability(
+        runtimeConfig.pickupPincode,
+        runtimeConfig.pickupPincode,
+        runtimeConfig.defaultWeight,
+        false
+      );
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Connection test failed',
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Blue Dart connection is working',
+      data: {
+        configured: true,
+        serviceableSelfCheck: check?.serviceable ?? null,
+      },
+    });
+  } catch (error: any) {
+    return next(createError(error.message || 'Failed to test shipping connection', 500));
+  }
+});
+
+router.post('/admin/request-pickup/:orderId', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    const order = await Order.findById(req.params.orderId);
+    if (!order) {
+      return next(createError('Order not found', 404));
+    }
+
+    const shipmentReference =
+      order.tracking?.providerShipmentId ||
+      (order.tracking as any)?.shipmentId ||
+      order.tracking?.trackingNumber;
+
+    if (!shipmentReference) {
+      return next(createError('No shipment found for this order', 400));
+    }
+
+    await shippingProvider.requestPickup(String(shipmentReference));
+    order.timeline.push({
+      status: order.status,
+      timestamp: new Date(),
+      note: 'Pickup requested from Blue Dart',
+    } as any);
+    await order.save();
+
+    return res.json({
+      success: true,
+      message: 'Pickup requested successfully',
+    });
+  } catch (error: any) {
+    return next(createError(error.message || 'Failed to request pickup', 500));
+  }
+});
+
+router.post('/admin/refresh-tracking/:orderId', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
+  try {
+    await connectDB();
+    const order = await Order.findById(req.params.orderId);
+    if (!order) {
+      return next(createError('Order not found', 404));
+    }
+    if (!order.tracking?.trackingNumber) {
+      return next(createError('Tracking number not found for this order', 400));
+    }
+
+    const tracking = await shippingProvider.trackByAwb(order.tracking.trackingNumber);
+    if (tracking.trackingUrl) {
+      order.tracking.trackingUrl = tracking.trackingUrl;
+    }
+    if (tracking.estimatedDelivery) {
+      order.tracking.estimatedDelivery = new Date(tracking.estimatedDelivery);
+    }
+
+    const mappedStatus = mapProviderStatusToOrderStatus(undefined, tracking.currentStatus);
+    if (mappedStatus && mappedStatus !== order.status) {
+      order.status = mappedStatus as any;
+      order.timeline.push({
+        status: mappedStatus,
+        timestamp: new Date(),
+        note: `Blue Dart tracking refresh: ${tracking.currentStatus || 'Status updated'}`,
+      } as any);
+    }
+
+    await order.save();
+    return res.json({
+      success: true,
+      message: 'Tracking refreshed successfully',
+      data: tracking,
+    });
+  } catch (error: any) {
+    return next(createError(error.message || 'Failed to refresh tracking', 500));
+  }
+});
+
 router.post('/webhook', async (req: Request, res: Response) => {
   try {
     await connectDB();
-    
-    const { 
-      awb, 
-      current_status, 
-      current_status_id,
-      order_id,
-      etd,
-      scans,
-    } = req.body;
 
-    console.log('[Shiprocket Webhook] Received:', { awb, current_status, order_id });
-
-    if (!awb && !order_id) {
-      return res.status(400).json({ error: 'Missing awb or order_id' });
+    const webhookSecret = process.env.SHIPPING_WEBHOOK_SECRET;
+    if (webhookSecret) {
+      const signature = (req.headers['x-shipping-signature'] as string) || '';
+      if (signature) {
+        const digest = crypto
+          .createHmac('sha256', webhookSecret)
+          .update(JSON.stringify(req.body))
+          .digest('hex');
+        if (digest !== signature) {
+          return res.status(401).json({ received: false, message: 'Invalid webhook signature' });
+        }
+      }
     }
 
-    // Find order by AWB or Shiprocket order ID
+    const awb =
+      req.body?.awb ||
+      req.body?.awbCode ||
+      req.body?.waybill ||
+      req.body?.tracking_number;
+    const currentStatus =
+      req.body?.current_status ||
+      req.body?.status ||
+      req.body?.statusText ||
+      req.body?.event;
+    const currentStatusId =
+      req.body?.current_status_id ||
+      req.body?.status_id ||
+      req.body?.statusCode;
+    const providerOrderId =
+      req.body?.order_id ||
+      req.body?.orderId ||
+      req.body?.providerOrderId ||
+      req.body?.reference_number;
+    const etd = req.body?.etd || req.body?.estimated_delivery || req.body?.edd;
+
+    console.log('[Blue Dart Webhook] Received:', { awb, currentStatus, providerOrderId });
+
+    if (!awb && !providerOrderId) {
+      return res.status(400).json({ error: 'Missing awb or provider order id' });
+    }
+
     const query: any = {};
     if (awb) {
       query['tracking.trackingNumber'] = awb;
-    } else if (order_id) {
-      query['tracking.shiprocketOrderId'] = order_id;
+    } else if (providerOrderId) {
+      query.$or = [
+        { 'tracking.providerOrderId': String(providerOrderId) },
+        { 'tracking.shiprocketOrderId': Number(providerOrderId) },
+      ];
     }
 
     const order = await Order.findOne(query).populate('user', 'email firstName lastName');
-
     if (!order) {
-      console.log('[Shiprocket Webhook] Order not found for:', query);
+      console.log('[Blue Dart Webhook] Order not found for:', query);
       return res.status(200).json({ received: true, message: 'Order not found' });
     }
 
-    // Map Shiprocket status to our order status
-    const statusMap: Record<number, string> = {
-      1: 'processing',   // AWB Assigned
-      2: 'processing',   // Label Generated
-      3: 'processing',   // Pickup Scheduled
-      4: 'processing',   // Pickup Queued
-      5: 'processing',   // Manifest Generated
-      6: 'shipped',      // Shipped
-      7: 'shipped',      // Delivered
-      8: 'shipped',      // In Transit
-      9: 'shipped',      // Out for Delivery
-      17: 'delivered',   // Delivered
-      18: 'cancelled',   // Cancelled
-      19: 'returned',    // RTO Initiated
-      20: 'returned',    // RTO Delivered
-    };
-
-    const newStatus = statusMap[current_status_id];
+    const newStatus = mapProviderStatusToOrderStatus(currentStatusId, currentStatus);
     const previousStatus = order.status;
 
-    // Update order status if changed
     if (newStatus && newStatus !== order.status) {
       order.status = newStatus as any;
       order.timeline.push({
-        status: newStatus as any,
+        status: newStatus,
         timestamp: new Date(),
-        note: `Shiprocket: ${current_status}`,
-      });
+        note: `Blue Dart: ${currentStatus || 'Status update'}`,
+      } as any);
 
-      // Update estimated delivery if available
       if (etd && order.tracking) {
         order.tracking.estimatedDelivery = new Date(etd);
       }
 
       await order.save();
 
-      // Send appropriate email based on new status
       try {
         let userEmail: string | null = null;
         if (typeof order.user === 'object' && (order.user as any)?.email) {
@@ -498,11 +703,10 @@ router.post('/webhook', async (req: Request, res: Response) => {
               {
                 carrier: order.tracking?.carrier,
                 trackingNumber: order.tracking?.trackingNumber || awb,
-                trackingUrl: order.tracking?.trackingUrl,
+                trackingUrl: normalizeTrackingUrl(order.tracking),
                 estimatedDelivery: etd,
               }
             );
-            console.log(`[Shiprocket Webhook] Shipped email sent for order ${order.orderNumber}`);
           } else if (newStatus === 'delivered' && previousStatus !== 'delivered') {
             await sendOrderDeliveredEmail(userEmail, {
               orderNumber: order.orderNumber,
@@ -511,18 +715,16 @@ router.post('/webhook', async (req: Request, res: Response) => {
                 quantity: item.quantity,
               })),
             });
-            console.log(`[Shiprocket Webhook] Delivered email sent for order ${order.orderNumber}`);
           }
         }
       } catch (emailError) {
-        console.error('[Shiprocket Webhook] Email send failed:', emailError);
+        console.error('[Blue Dart Webhook] Email send failed:', emailError);
       }
     }
 
     return res.status(200).json({ received: true, status: 'processed' });
   } catch (error: any) {
-    console.error('[Shiprocket Webhook] Error:', error);
-    // Always return 200 to acknowledge receipt
+    console.error('[Blue Dart Webhook] Error:', error);
     return res.status(200).json({ received: true, error: error.message });
   }
 });
