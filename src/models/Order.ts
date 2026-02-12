@@ -69,7 +69,7 @@ export interface IOrderPricing {
 }
 
 export interface IOrderTracking {
-  provider?: 'bluedart' | 'manual';
+  provider?: 'bluedart' | 'delhivery' | 'manual';
   carrier?: string;
   trackingNumber?: string;
   trackingUrl?: string;
@@ -259,7 +259,7 @@ const OrderGiftSchema = new Schema<IOrderGift>({
 const OrderTrackingSchema = new Schema<IOrderTracking>({
   provider: {
     type: String,
-    enum: ['bluedart', 'manual'],
+    enum: ['bluedart', 'delhivery', 'manual'],
   },
   carrier: {
     type: String,

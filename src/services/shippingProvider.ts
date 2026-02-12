@@ -1,4 +1,5 @@
 import bluedartService from './bluedartService';
+import delhiveryService from './delhiveryService';
 
 export interface ServiceabilityResult {
   serviceable: boolean;
@@ -72,16 +73,32 @@ export interface ShippingProvider {
   >;
 }
 
-const shippingProvider: ShippingProvider = {
-  isConfigured: bluedartService.isConfigured,
-  checkServiceability: bluedartService.checkServiceability,
-  createShipment: bluedartService.createShipment,
-  trackByAwb: bluedartService.trackByAwb,
-  generateLabel: bluedartService.generateLabel,
-  requestPickup: bluedartService.requestPickup,
-  cancelShipment: bluedartService.cancelShipment,
-  createReturnPickup: bluedartService.createReturnPickup,
-  getPickupLocations: bluedartService.getPickupLocations,
+type ProviderKey = 'bluedart' | 'delhivery';
+
+const providerMap: Record<ProviderKey, ShippingProvider> = {
+  bluedart: bluedartService,
+  delhivery: delhiveryService as unknown as ShippingProvider,
 };
 
-export default shippingProvider;
+/**
+ * Resolve the concrete shipping provider implementation for the given key.
+ *
+ * NOTE: 'manual' is handled at a higher level by simply not invoking any
+ * provider methods. Attempting to resolve 'manual' here is considered a
+ * configuration error.
+ */
+export const getShippingProvider = (provider: 'bluedart' | 'delhivery' | 'manual'): ShippingProvider => {
+  if (provider === 'manual') {
+    throw new Error('Shipping provider is set to manual; no external shipments will be created.');
+  }
+
+  const impl = providerMap[provider as ProviderKey];
+  if (!impl) {
+    throw new Error(`Unsupported shipping provider: ${provider}`);
+  }
+  return impl;
+};
+
+// Default export kept for backward compatibility; defaults to Blue Dart.
+const defaultProvider: ShippingProvider = providerMap.bluedart;
+export default defaultProvider;

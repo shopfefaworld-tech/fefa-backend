@@ -10,90 +10,10 @@ import GiftOption from '../models/GiftOption';
 import { connectDB } from '../config/database';
 import { 
   sendOrderConfirmationEmail, 
-  sendOrderShippedEmail, 
-  sendOrderDeliveredEmail, 
   sendOrderCancelledEmail 
 } from '../config/email';
 
 const router = Router();
-
-const normalizeTrackingInput = (tracking: any) => {
-  if (!tracking) return null;
-  return {
-    ...tracking,
-    trackingUrl: tracking.trackingUrl || tracking.url,
-  };
-};
-
-// Helper function to send status-based emails (best-effort, non-blocking)
-const sendStatusEmail = async (order: any, previousStatus: string, newStatus: string, tracking?: any) => {
-  try {
-    // Get user email
-    let userEmail: string | null = null;
-    if (typeof order.user === 'object' && order.user?.email) {
-      userEmail = order.user.email;
-    } else {
-      const user = await User.findById(order.user);
-      userEmail = user?.email || null;
-    }
-
-    if (!userEmail) {
-      console.log('[Order Email] No user email found for order:', order.orderNumber);
-      return;
-    }
-
-    // Prepare order data for emails
-    const orderData = {
-      orderNumber: order.orderNumber,
-      items: order.items.map((item: any) => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.total,
-      })),
-      pricing: order.pricing,
-      shippingAddress: order.shippingAddress,
-    };
-
-    // Send appropriate email based on new status
-    switch (newStatus) {
-      case 'shipped':
-        if (tracking?.trackingNumber) {
-          await sendOrderShippedEmail(userEmail, orderData, {
-            carrier: tracking.carrier,
-            trackingNumber: tracking.trackingNumber,
-            trackingUrl: tracking.trackingUrl,
-            estimatedDelivery: tracking.estimatedDelivery,
-          });
-          console.log(`[Order Email] Shipped email sent for order ${order.orderNumber}`);
-        }
-        break;
-
-      case 'delivered':
-        await sendOrderDeliveredEmail(userEmail, {
-          orderNumber: order.orderNumber,
-          items: order.items.map((item: any) => ({
-            name: item.name,
-            quantity: item.quantity,
-          })),
-        });
-        console.log(`[Order Email] Delivered email sent for order ${order.orderNumber}`);
-        break;
-
-      case 'cancelled':
-        await sendOrderCancelledEmail(userEmail, orderData, 'Order was cancelled');
-        console.log(`[Order Email] Cancelled email sent for order ${order.orderNumber}`);
-        break;
-
-      default:
-        // No email for other status changes
-        break;
-    }
-  } catch (error) {
-    // Log error but don't fail the request
-    console.error('[Order Email] Failed to send status email:', error);
-  }
-};
 
 /**
  * @route   GET /api/orders
@@ -440,15 +360,33 @@ router.post('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
 
 /**
  * @route   PUT /api/orders/:id
- * @desc    Update order status (admin can update any order)
+ * @desc    Update non-shipping order fields (shipping status/tracking managed by provider)
  * @access  Private/Admin
  */
 router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) => {
   try {
     await connectDB();
+    const userRole = req.user?.role;
+    const isAdmin = userRole === 'admin' || userRole === 'super_admin';
+    if (!isAdmin) {
+      return next(createError('Unauthorized', 403));
+    }
+
     const orderId = req.params.id;
-    const { status, note, payment, tracking } = req.body;
-    const normalizedTracking = normalizeTrackingInput(tracking);
+    const { status, note, payment, tracking, notes } = req.body || {};
+
+    if (status !== undefined || note !== undefined || tracking !== undefined) {
+      return next(
+        createError(
+          'Manual status/tracking updates are disabled. Order status is synced from Delhivery tracking updates.',
+          400
+        )
+      );
+    }
+
+    if (!payment && notes === undefined) {
+      return next(createError('No supported fields provided for update', 400));
+    }
 
     const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
 
@@ -456,62 +394,16 @@ router.put('/:id', verifyToken, async (req: AuthRequest, res: Response, next) =>
       return next(createError('Order not found', 404));
     }
 
-    // Check if user is admin or order owner
-    let orderUserId: string | null = null;
-    if (order.user && typeof order.user === 'object' && (order.user as any)._id) {
-      orderUserId = (order.user as any)._id.toString();
-    } else if (order.user) {
-      orderUserId = order.user.toString();
-    }
-    const isOwner = !!orderUserId && orderUserId === req.user?._id.toString();
-    const userRole = req.user?.role;
-    const isAdmin = userRole === 'admin' || userRole === 'super_admin';
-
-    if (!isOwner && !isAdmin) {
-      return next(createError('Unauthorized', 403));
-    }
-
-    // Store previous status for email logic
-    const previousStatus = order.status;
-
-    // Update order fields
-    if (status) {
-      order.status = status as any;
-      order.timeline.push({
-        status: status as any,
-        timestamp: new Date(),
-        note: note || `Status updated to ${status}`,
-      });
-    }
-
-    // Admin can update payment status
-    if (isAdmin && payment) {
+    if (payment) {
       if (payment.status) order.payment.status = payment.status;
       if (payment.transactionId) order.payment.transactionId = payment.transactionId;
     }
 
-    // Admin can update tracking info
-    if (isAdmin && normalizedTracking) {
-      // Initialize tracking if it doesn't exist
-      if (!order.tracking) {
-        order.tracking = {};
-      }
-      if (normalizedTracking.carrier) order.tracking.carrier = normalizedTracking.carrier;
-      if (normalizedTracking.trackingNumber) order.tracking.trackingNumber = normalizedTracking.trackingNumber;
-      if (normalizedTracking.trackingUrl) order.tracking.trackingUrl = normalizedTracking.trackingUrl;
-      if (normalizedTracking.estimatedDelivery) {
-        order.tracking.estimatedDelivery = normalizedTracking.estimatedDelivery;
-      }
+    if (notes !== undefined) {
+      order.notes = String(notes || '');
     }
 
     await order.save();
-
-    // Send status change email (non-blocking)
-    if (status && status !== previousStatus) {
-      sendStatusEmail(order, previousStatus, status, normalizedTracking || tracking).catch(err => {
-        console.error('[Order Update] Email send failed (non-blocking):', err.message);
-      });
-    }
 
     const updatedOrder = await Order.findById(orderId)
       .populate('user', 'firstName lastName email')
@@ -680,9 +572,9 @@ router.get('/stats/summary', verifyToken, requireAdmin, async (req: AuthRequest,
     // Get total orders
     const totalOrders = await Order.countDocuments();
 
-    // Get total revenue
+    // Get total revenue (paid or legacy completed)
     const revenueAgg = await Order.aggregate([
-      { $match: { 'payment.status': 'completed' } },
+      { $match: { 'payment.status': { $in: ['paid', 'completed'] } } },
       { $group: { _id: null, total: { $sum: '$pricing.total' } } }
     ]);
     const totalRevenue = revenueAgg[0]?.total || 0;
@@ -718,7 +610,7 @@ router.get('/stats/summary', verifyToken, requireAdmin, async (req: AuthRequest,
       { 
         $match: { 
           createdAt: { $gte: thirtyDaysAgo },
-          'payment.status': 'completed'
+          'payment.status': { $in: ['paid', 'completed'] }
         } 
       },
       { $group: { _id: null, total: { $sum: '$pricing.total' } } }
@@ -730,7 +622,7 @@ router.get('/stats/summary', verifyToken, requireAdmin, async (req: AuthRequest,
       { 
         $match: { 
           createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo },
-          'payment.status': 'completed'
+          'payment.status': { $in: ['paid', 'completed'] }
         } 
       },
       { $group: { _id: null, total: { $sum: '$pricing.total' } } }

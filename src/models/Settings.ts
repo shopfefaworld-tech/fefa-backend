@@ -32,7 +32,7 @@ export interface ISettings extends Document {
   taxRate: number;
 
   // Shipping Settings
-  shippingProvider: 'bluedart' | 'manual';
+  shippingProvider: 'bluedart' | 'delhivery' | 'manual';
   shippingAutoCreateShipment: boolean;
   shippingPickupPincode: string;
   shippingDefaultWeight: number;
@@ -151,7 +151,7 @@ const SettingsSchema: Schema = new Schema({
   // Shipping Settings
   shippingProvider: {
     type: String,
-    enum: ['bluedart', 'manual'],
+    enum: ['bluedart', 'delhivery', 'manual'],
     default: 'bluedart'
   },
   shippingAutoCreateShipment: {

@@ -5,7 +5,7 @@ import { createError } from '../middleware/errorHandler';
 import { connectDB } from '../config/database';
 import Order from '../models/Order';
 import Settings from '../models/Settings';
-import shippingProvider from '../services/shippingProvider';
+import { getShippingProvider } from '../services/shippingProvider';
 import { sendOrderShippedEmail, sendOrderDeliveredEmail } from '../config/email';
 import { mapProviderStatusToOrderStatus } from '../utils/shippingStatusMap';
 
@@ -19,7 +19,7 @@ const SHIPPING_CONFIG = {
 };
 
 interface ShippingRuntimeConfig {
-  provider: 'bluedart' | 'manual';
+  provider: 'bluedart' | 'delhivery' | 'manual';
   autoCreateShipment: boolean;
   pickupPincode: string;
   defaultWeight: number;
@@ -34,7 +34,7 @@ const getShippingRuntimeConfig = async (): Promise<ShippingRuntimeConfig> => {
   );
 
   return {
-    provider: (settings?.shippingProvider as 'bluedart' | 'manual') || 'bluedart',
+    provider: (settings?.shippingProvider as 'bluedart' | 'delhivery' | 'manual') || 'bluedart',
     autoCreateShipment:
       settings?.shippingAutoCreateShipment !== undefined
         ? Boolean(settings.shippingAutoCreateShipment)
@@ -107,7 +107,17 @@ router.post('/check-serviceability', async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'Delivery pincode is required' });
     }
 
-    if (!shippingProvider.isConfigured()) {
+    // Resolve provider for detailed serviceability checks (if any)
+    let providerClient: ReturnType<typeof getShippingProvider> | null = null;
+    if (runtimeConfig.provider !== 'manual') {
+      try {
+        providerClient = getShippingProvider(runtimeConfig.provider);
+      } catch (err) {
+        console.error('[Shipping] Failed to resolve provider in check-serviceability:', err);
+      }
+    }
+
+    if (!providerClient || !providerClient.isConfigured()) {
       return res.json({
         success: true,
         data: {
@@ -118,7 +128,7 @@ router.post('/check-serviceability', async (req: Request, res: Response) => {
       });
     }
 
-    const result = await shippingProvider.checkServiceability(
+    const result = await providerClient.checkServiceability(
       runtimeConfig.pickupPincode,
       String(deliveryPincode),
       Number(weight) || 0.5,
@@ -155,8 +165,20 @@ router.post('/create-shipment/:orderId', verifyToken, requireAdmin, async (req: 
     const { weight, dimensions, courierId, declaredValue, insured, serviceType, autoPickup = true } = req.body;
     const runtimeConfig = await getShippingRuntimeConfig();
 
-    if (!shippingProvider.isConfigured()) {
-      return next(createError('Blue Dart is not configured', 400));
+    if (runtimeConfig.provider === 'manual') {
+      return next(createError('Shipping provider is set to manual; cannot create shipment', 400));
+    }
+
+    let providerClient: ReturnType<typeof getShippingProvider>;
+    try {
+      providerClient = getShippingProvider(runtimeConfig.provider);
+    } catch (err: any) {
+      console.error('[Shipping] Failed to resolve provider in create-shipment:', err);
+      return next(createError('Shipping provider is not configured', 400));
+    }
+
+    if (!providerClient.isConfigured()) {
+      return next(createError('Shipping provider is not configured', 400));
     }
 
     const order = await Order.findById(orderId).populate('user', 'email firstName lastName');
@@ -168,7 +190,7 @@ router.post('/create-shipment/:orderId', verifyToken, requireAdmin, async (req: 
       return next(createError('Shipment already created for this order', 400));
     }
 
-    const shipmentResult = await shippingProvider.createShipment(order, {
+    const shipmentResult = await providerClient.createShipment(order, {
       weight: typeof weight === 'number' ? weight : runtimeConfig.defaultWeight,
       dimensions: dimensions || runtimeConfig.defaultDimensions,
       courierId,
@@ -180,8 +202,10 @@ router.post('/create-shipment/:orderId', verifyToken, requireAdmin, async (req: 
 
     order.tracking = {
       ...order.tracking,
-      provider: 'bluedart',
-      carrier: shipmentResult.courierName || 'Blue Dart',
+      provider: runtimeConfig.provider,
+      carrier:
+        shipmentResult.courierName ||
+        (runtimeConfig.provider === 'delhivery' ? 'Delhivery' : 'Blue Dart'),
       trackingNumber: shipmentResult.awbCode,
       trackingUrl: shipmentResult.trackingUrl,
       providerOrderId: normalizeProviderId(shipmentResult.providerOrderId),
@@ -195,7 +219,7 @@ router.post('/create-shipment/:orderId', verifyToken, requireAdmin, async (req: 
       order.timeline.push({
         status: 'processing',
         timestamp: new Date(),
-        note: `Shipment created with ${shipmentResult.courierName || 'Blue Dart'}`,
+        note: `Shipment created with ${shipmentResult.courierName || 'shipping provider'}`,
       });
     }
 
@@ -208,7 +232,9 @@ router.post('/create-shipment/:orderId', verifyToken, requireAdmin, async (req: 
         providerOrderId: shipmentResult.providerOrderId,
         providerShipmentId: shipmentResult.providerShipmentId,
         awbCode: shipmentResult.awbCode,
-        courierName: shipmentResult.courierName || 'Blue Dart',
+        courierName:
+          shipmentResult.courierName ||
+          (runtimeConfig.provider === 'delhivery' ? 'Delhivery' : 'Blue Dart'),
         trackingUrl: shipmentResult.trackingUrl,
       },
     });
@@ -245,7 +271,17 @@ router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Respons
       });
     }
 
-    if (!shippingProvider.isConfigured()) {
+    const runtimeConfig = await getShippingRuntimeConfig();
+    let providerClient: ReturnType<typeof getShippingProvider> | null = null;
+    if (runtimeConfig.provider !== 'manual') {
+      try {
+        providerClient = getShippingProvider(runtimeConfig.provider);
+      } catch (err) {
+        console.error('[Shipping] Failed to resolve provider in track:', err);
+      }
+    }
+
+    if (!providerClient || !providerClient.isConfigured()) {
       return res.json({
         success: true,
         data: {
@@ -259,7 +295,7 @@ router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Respons
     }
 
     try {
-      const tracking = await shippingProvider.trackByAwb(order.tracking.trackingNumber);
+      const tracking = await providerClient.trackByAwb(order.tracking.trackingNumber);
 
       return res.json({
         success: true,
@@ -279,7 +315,7 @@ router.get('/track/:orderId', verifyToken, async (req: AuthRequest, res: Respons
         },
       });
     } catch (trackError: any) {
-      console.error('Blue Dart tracking error:', trackError);
+      console.error('Shipping provider tracking error:', trackError);
       return res.json({
         success: true,
         data: {
@@ -311,15 +347,25 @@ router.post('/cancel/:orderId', verifyToken, requireAdmin, async (req: AuthReque
       return next(createError('No shipment to cancel', 400));
     }
 
-    if (shippingProvider.isConfigured()) {
+    const runtimeConfig = await getShippingRuntimeConfig();
+    let providerClient: ReturnType<typeof getShippingProvider> | null = null;
+    if (runtimeConfig.provider !== 'manual') {
+      try {
+        providerClient = getShippingProvider(runtimeConfig.provider);
+      } catch (err) {
+        console.error('[Shipping] Failed to resolve provider in cancel:', err);
+      }
+    }
+
+    if (providerClient && providerClient.isConfigured()) {
       try {
         const shipmentReference =
           order.tracking.providerShipmentId ||
           order.tracking.shipmentId ||
           order.tracking.trackingNumber;
-        await shippingProvider.cancelShipment(String(shipmentReference));
+        await providerClient.cancelShipment(String(shipmentReference));
       } catch (cancelError: any) {
-        console.error('Blue Dart cancel error:', cancelError);
+        console.error('Shipping provider cancel error:', cancelError);
       }
     }
 
@@ -348,16 +394,26 @@ router.get(
   requireAdmin,
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-      if (!shippingProvider.isConfigured()) {
+      const runtimeConfig = await getShippingRuntimeConfig();
+      let providerClient: ReturnType<typeof getShippingProvider> | null = null;
+      if (runtimeConfig.provider !== 'manual') {
+        try {
+          providerClient = getShippingProvider(runtimeConfig.provider);
+        } catch (err) {
+          console.error('[Shipping] Failed to resolve provider in pickup-locations:', err);
+        }
+      }
+
+      if (!providerClient || !providerClient.isConfigured()) {
         res.json({
           success: true,
           data: [],
-          message: 'Blue Dart not configured',
+          message: 'Shipping provider not configured',
         });
         return;
       }
 
-      const locations = await shippingProvider.getPickupLocations();
+      const locations = await providerClient.getPickupLocations();
       res.json({
         success: true,
         data: locations,
@@ -374,8 +430,18 @@ router.post('/generate-label/:orderId', verifyToken, requireAdmin, async (req: A
     await connectDB();
     const { orderId } = req.params;
 
-    if (!shippingProvider.isConfigured()) {
-      return next(createError('Blue Dart not configured', 400));
+    const runtimeConfig = await getShippingRuntimeConfig();
+    let providerClient: ReturnType<typeof getShippingProvider> | null = null;
+    if (runtimeConfig.provider !== 'manual') {
+      try {
+        providerClient = getShippingProvider(runtimeConfig.provider);
+      } catch (err) {
+        console.error('[Shipping] Failed to resolve provider in generate-label:', err);
+      }
+    }
+
+    if (!providerClient || !providerClient.isConfigured()) {
+      return next(createError('Shipping provider not configured', 400));
     }
 
     const order = await Order.findById(orderId);
@@ -392,7 +458,7 @@ router.post('/generate-label/:orderId', verifyToken, requireAdmin, async (req: A
       return next(createError('No shipment found for this order', 400));
     }
 
-    const result = await shippingProvider.generateLabel(String(shipmentReference));
+    const result = await providerClient.generateLabel(String(shipmentReference));
 
     return res.json({
       success: true,
@@ -410,12 +476,21 @@ router.get('/admin/status', verifyToken, requireAdmin, async (req: AuthRequest, 
   try {
     await connectDB();
     const runtimeConfig = await getShippingRuntimeConfig();
+    let configured = false;
+    if (runtimeConfig.provider !== 'manual') {
+      try {
+        const providerClient = getShippingProvider(runtimeConfig.provider);
+        configured = providerClient.isConfigured();
+      } catch (err) {
+        console.error('[Shipping] Failed to resolve provider in admin/status:', err);
+      }
+    }
 
     return res.json({
       success: true,
       data: {
         provider: runtimeConfig.provider,
-        configured: shippingProvider.isConfigured(),
+        configured,
         autoCreateShipment: runtimeConfig.autoCreateShipment,
         pickupPincode: runtimeConfig.pickupPincode,
         defaults: {
@@ -492,17 +567,26 @@ router.put('/admin/config', verifyToken, requireAdmin, async (req: AuthRequest, 
 
 router.post('/admin/test-connection', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
   try {
-    if (!shippingProvider.isConfigured()) {
+    const runtimeConfig = await getShippingRuntimeConfig();
+    let providerClient: ReturnType<typeof getShippingProvider> | null = null;
+    if (runtimeConfig.provider !== 'manual') {
+      try {
+        providerClient = getShippingProvider(runtimeConfig.provider);
+      } catch (err) {
+        console.error('[Shipping] Failed to resolve provider in admin/test-connection:', err);
+      }
+    }
+
+    if (!providerClient || !providerClient.isConfigured()) {
       return res.status(400).json({
         success: false,
-        message: 'Blue Dart is not configured',
+        message: 'Shipping provider is not configured',
       });
     }
 
     let check: any = null;
     try {
-      const runtimeConfig = await getShippingRuntimeConfig();
-      check = await shippingProvider.checkServiceability(
+      check = await providerClient.checkServiceability(
         runtimeConfig.pickupPincode,
         runtimeConfig.pickupPincode,
         runtimeConfig.defaultWeight,
@@ -517,7 +601,7 @@ router.post('/admin/test-connection', verifyToken, requireAdmin, async (req: Aut
 
     return res.json({
       success: true,
-      message: 'Blue Dart connection is working',
+      message: 'Shipping provider connection is working',
       data: {
         configured: true,
         serviceableSelfCheck: check?.serviceable ?? null,
@@ -545,11 +629,17 @@ router.post('/admin/request-pickup/:orderId', verifyToken, requireAdmin, async (
       return next(createError('No shipment found for this order', 400));
     }
 
-    await shippingProvider.requestPickup(String(shipmentReference));
+    const runtimeConfig = await getShippingRuntimeConfig();
+    if (runtimeConfig.provider === 'manual') {
+      return next(createError('Shipping provider is set to manual; cannot request pickup', 400));
+    }
+
+    const providerClient = getShippingProvider(runtimeConfig.provider);
+    await providerClient.requestPickup(String(shipmentReference));
     order.timeline.push({
       status: order.status,
       timestamp: new Date(),
-      note: 'Pickup requested from Blue Dart',
+      note: `Pickup requested from ${order.tracking?.carrier || 'shipping provider'}`,
     } as any);
     await order.save();
 
@@ -573,7 +663,16 @@ router.post('/admin/refresh-tracking/:orderId', verifyToken, requireAdmin, async
       return next(createError('Tracking number not found for this order', 400));
     }
 
-    const tracking = await shippingProvider.trackByAwb(order.tracking.trackingNumber);
+    const runtimeConfig = await getShippingRuntimeConfig();
+    const providerClient = runtimeConfig.provider === 'manual'
+      ? null
+      : getShippingProvider(runtimeConfig.provider);
+
+    if (!providerClient || !providerClient.isConfigured()) {
+      return next(createError('Shipping provider is not configured', 400));
+    }
+
+    const tracking = await providerClient.trackByAwb(order.tracking.trackingNumber);
     if (tracking.trackingUrl) {
       order.tracking.trackingUrl = tracking.trackingUrl;
     }
@@ -587,7 +686,7 @@ router.post('/admin/refresh-tracking/:orderId', verifyToken, requireAdmin, async
       order.timeline.push({
         status: mappedStatus,
         timestamp: new Date(),
-        note: `Blue Dart tracking refresh: ${tracking.currentStatus || 'Status updated'}`,
+        note: `Shipping tracking refresh: ${tracking.currentStatus || 'Status updated'}`,
       } as any);
     }
 
@@ -641,7 +740,7 @@ router.post('/webhook', async (req: Request, res: Response) => {
       req.body?.reference_number;
     const etd = req.body?.etd || req.body?.estimated_delivery || req.body?.edd;
 
-    console.log('[Blue Dart Webhook] Received:', { awb, currentStatus, providerOrderId });
+    console.log('[Shipping Webhook] Received:', { awb, currentStatus, providerOrderId });
 
     if (!awb && !providerOrderId) {
       return res.status(400).json({ error: 'Missing awb or provider order id' });
@@ -659,7 +758,7 @@ router.post('/webhook', async (req: Request, res: Response) => {
 
     const order = await Order.findOne(query).populate('user', 'email firstName lastName');
     if (!order) {
-      console.log('[Blue Dart Webhook] Order not found for:', query);
+      console.log('[Shipping Webhook] Order not found for:', query);
       return res.status(200).json({ received: true, message: 'Order not found' });
     }
 
@@ -667,11 +766,17 @@ router.post('/webhook', async (req: Request, res: Response) => {
     const previousStatus = order.status;
 
     if (newStatus && newStatus !== order.status) {
+      const providerLabel =
+        order.tracking?.provider === 'delhivery'
+          ? 'Delhivery'
+          : order.tracking?.provider === 'bluedart'
+            ? 'Blue Dart'
+            : 'Shipping provider';
       order.status = newStatus as any;
       order.timeline.push({
         status: newStatus,
         timestamp: new Date(),
-        note: `Blue Dart: ${currentStatus || 'Status update'}`,
+        note: `${providerLabel}: ${currentStatus || 'Status update'}`,
       } as any);
 
       if (etd && order.tracking) {
@@ -718,13 +823,13 @@ router.post('/webhook', async (req: Request, res: Response) => {
           }
         }
       } catch (emailError) {
-        console.error('[Blue Dart Webhook] Email send failed:', emailError);
+        console.error('[Shipping Webhook] Email send failed:', emailError);
       }
     }
 
     return res.status(200).json({ received: true, status: 'processed' });
   } catch (error: any) {
-    console.error('[Blue Dart Webhook] Error:', error);
+    console.error('[Shipping Webhook] Error:', error);
     return res.status(200).json({ received: true, error: error.message });
   }
 });

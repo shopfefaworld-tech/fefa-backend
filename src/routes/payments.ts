@@ -10,7 +10,7 @@ import StockMovement from '../models/StockMovement';
 import Settings from '../models/Settings';
 import { connectDB } from '../config/database';
 import { sendOrderConfirmationEmail } from '../config/email';
-import shippingProvider from '../services/shippingProvider';
+import { getShippingProvider } from '../services/shippingProvider';
 
 const router = Router();
 
@@ -26,7 +26,27 @@ const createProviderShipmentAsync = async (
   }
 ) => {
   try {
-    if (!shippingProvider.isConfigured()) {
+    const settings = await Settings.findOne().select('shippingProvider');
+    const providerKey =
+      (settings?.shippingProvider as 'bluedart' | 'delhivery' | 'manual') ||
+      ((process.env.SHIPPING_PROVIDER as 'bluedart' | 'delhivery' | 'manual' | undefined) ??
+        'bluedart');
+
+    if (providerKey === 'manual') {
+      console.log('[Shipping] Provider set to manual; skipping auto-shipment creation');
+      return;
+    }
+
+    let providerClient;
+    try {
+      providerClient = getShippingProvider(providerKey);
+    } catch (err) {
+      console.error('[Shipping] Failed to resolve provider for auto-shipment:', err);
+      console.log('[Shipping] Skipping auto-shipment creation');
+      return;
+    }
+
+    if (!providerClient.isConfigured()) {
       console.log('[Shipping] Provider not configured, skipping auto-shipment creation');
       return;
     }
@@ -43,9 +63,12 @@ const createProviderShipmentAsync = async (
       return;
     }
 
-    console.log('[Shipping] Auto-creating Blue Dart shipment for order:', order.orderNumber);
+    console.log(
+      `[Shipping] Auto-creating shipment (provider: ${providerKey}) for order:`,
+      order.orderNumber
+    );
 
-    const shipmentResult = await shippingProvider.createShipment(order, {
+    const shipmentResult = await providerClient.createShipment(order, {
       autoPickup: true,
       weight: options?.defaultWeight,
       dimensions: options?.defaultDimensions,
@@ -56,8 +79,10 @@ const createProviderShipmentAsync = async (
     // Update order with tracking info
     order.tracking = {
       ...order.tracking,
-      provider: 'bluedart',
-      carrier: shipmentResult.courierName || 'Blue Dart',
+      provider: providerKey,
+      carrier:
+        shipmentResult.courierName ||
+        (providerKey === 'delhivery' ? 'Delhivery' : providerKey === 'bluedart' ? 'Blue Dart' : 'Courier'),
       trackingNumber: shipmentResult.awbCode,
       trackingUrl: shipmentResult.trackingUrl,
       providerOrderId:
@@ -77,7 +102,7 @@ const createProviderShipmentAsync = async (
     order.timeline.push({
       status: 'processing',
       timestamp: new Date(),
-      note: `Shipment auto-created with ${shipmentResult.courierName}`,
+      note: `Shipment auto-created with ${shipmentResult.courierName || 'shipping provider'}`,
     });
 
     await order.save();
