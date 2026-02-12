@@ -77,6 +77,7 @@ router.get('/top-banner', async (req: any, res: Response, next) => {
     await connectDB();
 
     const settings = await Settings.findOne().select('topBannerText topBannerLink topBannerActive topBannerBackgroundColor topBannerTextColor');
+    res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
     
     if (!settings) {
       return res.json({

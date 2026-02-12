@@ -46,6 +46,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const enableRequestLogs =
+  process.env.ENABLE_REQUEST_LOGS === 'true' || process.env.NODE_ENV === 'development';
 
 // Trust proxy - REQUIRED for Vercel and rate limiting to work correctly
 // This tells Express to trust the X-Forwarded-* headers from Vercel's proxy
@@ -55,6 +57,7 @@ app.set('trust proxy', true);
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://fefa-frontend.vercel.app',
+  'https://frontend-dev.vercel.app',
   'https://www.shopfefa.world',
   'https://shopfefa.world',
   'http://localhost:3000',
@@ -135,6 +138,7 @@ app.use((req, res, next) => {
       const allowedOrigins = [
         process.env.FRONTEND_URL,
         'https://fefa-frontend.vercel.app',
+        'https://frontend-dev.vercel.app',
         'https://www.shopfefa.world',
         'https://shopfefa.world',
         'http://localhost:3000',
@@ -196,16 +200,14 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Compression middleware
 app.use(compression());
 
-// Logging middleware
-app.use(morgan('combined'));
+if (enableRequestLogs) {
+  app.use(morgan('combined'));
 
-// Custom request logging middleware to track all requests
-app.use((req, res, next) => {
-  console.log(`[EXPRESS] ${req.method} ${req.originalUrl || req.url}`);
-  console.log(`[EXPRESS] Origin: ${req.headers.origin || 'none'}`);
-  console.log(`[EXPRESS] Content-Type: ${req.headers['content-type'] || 'none'}`);
-  next();
-});
+  app.use((req, _res, next) => {
+    console.log(`[EXPRESS] ${req.method} ${req.originalUrl || req.url}`);
+    next();
+  });
+}
 
 // Favicon handler - prevent 404/500 errors from browser favicon requests
 app.get('/favicon.ico', (req, res) => {
@@ -437,13 +439,9 @@ const initializeServices = async () => {
 // Check if running on Vercel
 const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
 
-// Initialize services (for both Vercel and regular server)
-if (isVercel) {
-  // On Vercel, initialize services but don't start HTTP server
-  initializeServices().catch((error) => {
-    console.error('❌ Failed to initialize services on Vercel:', error);
-  });
-} else {
+// On Vercel, initialization is handled in api/index.ts.
+// In local mode, initialize services and start HTTP server.
+if (!isVercel) {
   // Regular server mode - start HTTP server
   const startServer = async () => {
     try {

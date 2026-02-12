@@ -43,6 +43,9 @@ router.get('/', async (req: Request, res: Response) => {
       .sort(sort)
       .select('-__v');
 
+    if (admin !== 'true') {
+      res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
+    }
     res.status(200).json({
       success: true,
       count: collections.length,
@@ -77,6 +80,7 @@ router.get('/:slug', async (req: Request, res: Response) => {
       });
     }
 
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({
       success: true,
       data: collection

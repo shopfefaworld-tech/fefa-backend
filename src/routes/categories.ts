@@ -42,23 +42,40 @@ router.get('/', async (req: Request, res: Response) => {
 
     const categories = await Category.find(filter)
       .sort(sort)
-      .select('-__v');
+      .select('-__v')
+      .lean();
 
-    // Get product counts for each category
-    const categoriesWithCounts = await Promise.all(
-      categories.map(async (category) => {
-        const productCount = await Product.countDocuments({
-          category: category._id,
-          isActive: true
-        });
-        
-        return {
-          ...category.toObject(),
-          productCount
-        };
-      })
+    const categoryIds = categories.map((category: any) => category._id);
+    const productCounts = categoryIds.length
+      ? await Product.aggregate([
+          {
+            $match: {
+              category: { $in: categoryIds },
+              $or: [{ isActive: true }, { isActive: 'true' }]
+            }
+          },
+          {
+            $group: {
+              _id: '$category',
+              count: { $sum: 1 }
+            }
+          }
+        ])
+      : [];
+
+    const productCountMap = new Map<string, number>(
+      productCounts.map((item: any) => [String(item._id), Number(item.count || 0)])
     );
 
+    const categoriesWithCounts = categories.map((category: any) => ({
+      ...category,
+      productCount: productCountMap.get(String(category._id)) || 0
+    }));
+
+    // Allow edge/CDN caching for public reads; reduces backend load under traffic
+    if (admin !== 'true') {
+      res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+    }
     res.status(200).json({
       success: true,
       count: categoriesWithCounts.length,

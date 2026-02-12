@@ -24,6 +24,7 @@ router.get('/',
         .sort({ sortOrder: 1, createdAt: -1 })
         .select('-__v');
 
+      res.setHeader('Cache-Control', 'public, s-maxage=180, stale-while-revalidate=600');
       res.status(200).json({
         success: true,
         count: banners.length,
@@ -49,6 +50,7 @@ router.get('/active',
     try {
       const banners = await (Banner as any).getActiveBanners();
 
+      res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=300');
       return res.status(200).json({
         success: true,
         count: banners.length,
@@ -94,6 +96,7 @@ router.get('/by-target',
         typeof slug === 'string' ? slug : undefined
       );
 
+      res.setHeader('Cache-Control', 'public, s-maxage=180, stale-while-revalidate=600');
       return res.status(200).json({
         success: true,
         count: banners.length,
@@ -128,6 +131,7 @@ router.get('/:id',
         });
       }
 
+      res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
       return res.status(200).json({
         success: true,
         data: banner

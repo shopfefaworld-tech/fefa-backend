@@ -59,6 +59,9 @@ router.use((req: Request, res: Response, next: NextFunction): void => {
     const allowedOrigins = [
       process.env.FRONTEND_URL,
       'https://fefa-frontend.vercel.app',
+      'https://frontend-dev.vercel.app',
+      'https://www.shopfefa.world',
+      'https://shopfefa.world',
       'http://localhost:3000',
       'http://localhost:3001'
     ].filter(Boolean);
@@ -93,6 +96,8 @@ router.get('/occasions', async (req: Request, res: Response) => {
       value: occ.value,
       image: occ.image || undefined
     }));
+
+    res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
     
     return res.status(200).json({
       success: true,
@@ -115,11 +120,6 @@ router.get('/occasions', async (req: Request, res: Response) => {
 // IMPORTANT: This route must come BEFORE GET /:id to avoid route conflicts
 router.get('/collections', async (req: Request, res: Response) => {
   try {
-    console.log('[PRODUCTS] GET /collections endpoint hit', {
-      occasions: req.query.occasions,
-      admin: req.query.admin,
-      url: req.url
-    });
     const { occasions, admin } = req.query;
     
     // Build filter - by default show only active collections unless admin
@@ -175,12 +175,10 @@ router.get('/collections', async (req: Request, res: Response) => {
     }
     // If admin === 'true', always return all collections regardless of occasions
     
-    console.log('[PRODUCTS] Collections endpoint returning:', {
-      totalCollections: collections.length,
-      filteredCollections: filteredCollections.length,
-      admin: admin
-    });
-    
+    if (admin !== 'true') {
+      res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
+    }
+
     return res.status(200).json({
       success: true,
       data: filteredCollections,
@@ -733,6 +731,9 @@ router.get('/', async (req: Request, res: Response) => {
 
     const total = await Product.countDocuments(filter);
 
+    if (admin !== 'true') {
+      res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+    }
     return res.json({
       success: true,
       data: products,

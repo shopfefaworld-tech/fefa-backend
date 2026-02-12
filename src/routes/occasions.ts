@@ -45,6 +45,9 @@ router.get('/', async (req: Request, res: Response) => {
       .select('-__v')
       .lean();
 
+    if (admin !== 'true') {
+      res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
+    }
     res.status(200).json({
       success: true,
       count: occasions.length,
@@ -79,6 +82,7 @@ router.get('/:value', async (req: Request, res: Response) => {
       });
     }
 
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({
       success: true,
       data: occasion

@@ -143,6 +143,7 @@ class CacheService {
    * Middleware to cache GET requests
    */
   cacheMiddleware(options: CacheOptions = {}) {
+    const cacheService = this;
     return async (req: Request, res: Response, next: NextFunction) => {
       // Only cache GET requests
       if (req.method !== 'GET' || options.skipCache) {
@@ -163,8 +164,7 @@ class CacheService {
         // Store original res.json to intercept response
         const originalJson = res.json;
         res.json = function(data: any) {
-          // Cache the response
-          const cacheService = new CacheService();
+          // Cache the response in the shared service instance
           cacheService.set(cacheKey, data, options.ttl);
           
           return originalJson.call(this, data);
@@ -182,14 +182,13 @@ class CacheService {
    * Middleware to invalidate cache on data changes
    */
   invalidateCacheMiddleware() {
+    const cacheService = this;
     return async (req: Request, res: Response, next: NextFunction) => {
       // Store original res.json to intercept response
       const originalJson = res.json;
       res.json = function(data: any) {
         // Only invalidate cache on successful operations
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          const cacheService = new CacheService();
-          
           // Clear banner cache for any banner-related operations
           if (req.originalUrl.includes('/banners')) {
             cacheService.clearBannerCache();
