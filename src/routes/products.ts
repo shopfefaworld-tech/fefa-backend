@@ -614,6 +614,7 @@ router.get('/', async (req: Request, res: Response) => {
       page = 1,
       limit = 20,
       category,
+      collection: collectionParam,
       occasion,
       occasions,
       minPrice,
@@ -668,6 +669,18 @@ router.get('/', async (req: Request, res: Response) => {
       
       if (categoryDoc) {
         filter.category = categoryDoc._id;
+      }
+    }
+
+    if (collectionParam) {
+      const slugOrId = collectionParam as string;
+      const orConditions: any[] = [{ slug: slugOrId }];
+      if (slugOrId.match(/^[0-9a-fA-F]{24}$/)) {
+        orConditions.push({ _id: slugOrId });
+      }
+      const collectionDoc = await Collection.findOne({ $or: orConditions }).select('_id');
+      if (collectionDoc) {
+        filter.collections = collectionDoc._id;
       }
     }
     
