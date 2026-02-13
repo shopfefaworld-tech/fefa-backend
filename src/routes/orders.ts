@@ -32,6 +32,7 @@ router.get('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
     const limit = parseInt(req.query.limit as string) || 10;
     const search = req.query.search as string;
     const status = req.query.status as string;
+    const paymentStatus = req.query.paymentStatus as string;
     const sortBy = req.query.sortBy as string || 'createdAt';
     const sortOrder = req.query.sortOrder as string || 'desc';
 
@@ -51,6 +52,10 @@ router.get('/', verifyToken, async (req: AuthRequest, res: Response, next) => {
       }
       if (status) {
         query.status = status;
+      }
+      if (paymentStatus) {
+        // Allow admin to filter by payment status (e.g. pending, paid)
+        query['payment.status'] = paymentStatus;
       }
     }
 
