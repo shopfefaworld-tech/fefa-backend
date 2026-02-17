@@ -28,6 +28,13 @@ const escapeCsv = (value: any): string => {
   return text;
 };
 
+const extractImageUrl = (image: any): string => {
+  if (!image) return '';
+  if (typeof image === 'string') return image;
+  if (typeof image.url === 'string') return image.url;
+  return '';
+};
+
 const buildProductFilter = async (query: any) => {
   const filter: any = {};
   const andConditions: any[] = [];
@@ -441,7 +448,7 @@ router.post('/bulk', verifyToken, requireAdmin, async (req: AuthRequest, res: Re
 });
 
 // @route   GET /api/inventory/export
-// @desc    Export stock summary as CSV
+// @desc    Export stock summary as CSV (with image URLs for Shopify/import workflows)
 // @access  Private/Admin
 router.get('/export', verifyToken, requireAdmin, async (req: AuthRequest, res: Response, next) => {
   try {
@@ -457,6 +464,10 @@ router.get('/export', verifyToken, requireAdmin, async (req: AuthRequest, res: R
       'Item Code',
       'Item Name',
       'Category',
+      'Image Src',
+      'Primary Image URL',
+      'Additional Image URLs',
+      'All Image URLs',
       'Quantity',
       'Unit',
       'Sales Price',
@@ -474,11 +485,21 @@ router.get('/export', verifyToken, requireAdmin, async (req: AuthRequest, res: R
       const stockValue = quantity * purchasePrice;
       const status =
         quantity <= 0 ? 'Out of Stock' : quantity <= lowStockThreshold ? 'Low Stock' : 'In Stock';
+      const imageUrls = Array.isArray(product.images)
+        ? product.images.map((img: any) => extractImageUrl(img)).filter(Boolean)
+        : [];
+      const primaryImage =
+        extractImageUrl(product.images?.find((img: any) => img?.isPrimary)) || imageUrls[0] || '';
+      const additionalImages = imageUrls.filter((url: string) => url !== primaryImage).join(', ');
 
       return [
         product.sku || '',
         product.name || '',
         product.category?.name || 'Uncategorized',
+        primaryImage,
+        primaryImage,
+        additionalImages,
+        imageUrls.join(', '),
         quantity,
         'PCS',
         salesPrice,
@@ -504,4 +525,3 @@ router.get('/export', verifyToken, requireAdmin, async (req: AuthRequest, res: R
 });
 
 export default router;
-
